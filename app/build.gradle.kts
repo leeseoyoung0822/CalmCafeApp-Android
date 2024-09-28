@@ -37,7 +37,9 @@ android {
     }
 
     buildFeatures{
-        viewBinding = true
+        dataBinding=true
+        viewBinding=true
+        buildConfig=true
     }
 }
 
@@ -60,4 +62,19 @@ dependencies {
     implementation ("com.kakao.sdk:v2-friend:2.20.6") // 피커 API 모듈
     implementation ("com.kakao.sdk:v2-navi:2.20.6") // 카카오내비 API 모듈
     implementation ("com.kakao.sdk:v2-cert:2.20.6") // 카카오톡 인증 서비스 API 모듈
+    
+    //네비게이션
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
+    //서버통신
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+    //프로필 이미지뷰
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    //카드뷰
+    implementation("com.google.android.material:material:1.12.0")
+
+
 }
