@@ -13,7 +13,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:iconifiedByDefault="false"/> <!-- 처음부터 확장된 상태로 설정 -->
+        android:iconifiedByDefault="false"
+        android:queryHint="검색"/>
+
 
     <HorizontalScrollView
         android:id="@+id/scrollview"
