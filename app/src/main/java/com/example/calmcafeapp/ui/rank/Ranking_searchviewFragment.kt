@@ -6,14 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.calmcafeapp.R
-import com.example.calmcafeapp.ui.ARG_PARAM1
-import com.example.calmcafeapp.ui.ARG_PARAM2
-
 /**
  * A simple [Fragment] subclass.
  * Use the [Ranking_searchviewFragment.newInstance] factory method to
  * create an instance of this fragment.
+ *
  */
+
+
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
+
 class Ranking_searchviewFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
