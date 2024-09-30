@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- 왼쪽에 이미지 -->
+    <ImageView
+        android:id="@+id/cafe_img"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp" />
+
+    <TextView
+        android:id="@+id/cafe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/cafe_img"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20dp"
+        android:text="한산한 가 카페"/>
+
+    <TextView
+        android:id="@+id/congestion_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/cafe_name"
+        app:layout_constraintTop_toBottomOf="@id/cafe_name"
+        android:drawableStart="@drawable/baseline_people_24"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/brown"
+        android:text="현재혼잡도 : "
+        android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/cafe_congestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="   보통   "
+        android:textSize="15dp"
+        app:layout_constraintStart_toEndOf="@id/congestion_txt"
+        app:layout_constraintTop_toTopOf="@id/congestion_txt"/>
+
+    <ImageButton
+        android:id="@+id/likes_btn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/heart_empty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/cafe_congestion"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@null"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
