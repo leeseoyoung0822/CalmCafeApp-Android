@@ -33,7 +33,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,32 +42,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:backgroundTint="@color/beige"/>
+                android:background="@drawable/button"
+                android:padding="16dp"
 
-            <Button
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="#혼잡도 순"
                 android:textColor="@color/black"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintStart_toEndOf="@id/btn1"
                 app:layout_constraintTop_toTopOf="@id/btn1"
                 app:layout_constraintBottom_toBottomOf="@id/btn1"
-                android:backgroundTint="@color/beige"/>
+                android:background="@drawable/button"
+                android:padding="16dp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="#거리 순"
                 android:textColor="@color/black"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintStart_toEndOf="@id/btn2"
                 app:layout_constraintTop_toTopOf="@id/btn1"
                 app:layout_constraintBottom_toBottomOf="@id/btn1"
-                android:backgroundTint="@color/beige"/>
+                android:background="@drawable/button"
+                android:padding="16dp"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -76,15 +81,60 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/scrollview">
+        app:layout_constraintTop_toBottomOf="@id/scrollview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/scrollview"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/category_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="제목"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:layout_margin="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <ImageButton
+                android:id="@+id/update_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/baseline_update_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="새로고침"
+                android:layout_margin="16dp"
+                />
+
+            <TextView
+                android:id="@+id/update_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="새로고침"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/update_btn"
+                android:textSize="12sp"
+                android:textColor="@color/brown"
+                app:layout_constraintTop_toBottomOf="@id/update_btn"
+                app:layout_constraintEnd_toEndOf="@id/update_btn" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/category_title"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </ScrollView>
 
 
