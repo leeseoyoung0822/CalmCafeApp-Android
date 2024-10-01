@@ -125,12 +125,12 @@
                 app:layout_constraintEnd_toEndOf="@id/update_btn" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/category_title"/>
+                app:layout_constraintTop_toBottomOf="@id/update_txt"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
