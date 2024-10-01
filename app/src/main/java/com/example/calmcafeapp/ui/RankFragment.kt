@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.calmcafeapp.R
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentRankBinding
 
@@ -15,7 +14,7 @@ class RankFragment : Fragment() {
     private var _binding: FragmentRankBinding? = null
     private val binding get() = _binding!! // ViewBinding 안전하게 접근하기 위해 사용
 
-    private lateinit var adapter: RecyclerViewAdapter // 어댑터 객체 선언
+    private lateinit var adapter: CafeRecyclerViewAdapter // 어댑터 객체 선언
 
     val mDatas = mutableListOf<CafeData>() // 데이터 리스트
 
@@ -41,10 +40,10 @@ class RankFragment : Fragment() {
 
     // RecyclerView 초기화 함수
     private fun initCafeRecyclerView() {
-        adapter = RecyclerViewAdapter() // 어댑터 객체 생성
+        adapter = CafeRecyclerViewAdapter() // 어댑터 객체 생성
         adapter.datalist = mDatas // 데이터 넣어줌
-        binding.recyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
+        binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
+        binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
     }
 
     // 데이터 리스트 초기화 함수

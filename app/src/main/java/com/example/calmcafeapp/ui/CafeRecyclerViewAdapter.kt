@@ -8,7 +8,7 @@ import com.example.calmcafeapp.databinding.RankingItemViewBinding
 import com.example.calmcafeapp.R
 
 
-class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.CafeViewHolder>() {
+class CafeRecyclerViewAdapter : RecyclerView.Adapter<CafeRecyclerViewAdapter.CafeViewHolder>() {
 
     var datalist = mutableListOf<CafeData>()//리사이클러뷰에서 사용할 데이터 미리 정의 -> 나중에 MainActivity등에서 datalist에 실제 데이터 추가
 
@@ -40,9 +40,9 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.CafeViewHol
 
 
     //만들어진 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewAdapter.CafeViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeRecyclerViewAdapter.CafeViewHolder {
         val binding=RankingItemViewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return RecyclerViewAdapter.CafeViewHolder(binding)
+        return CafeRecyclerViewAdapter.CafeViewHolder(binding)
     }
 
     override fun getItemCount(): Int =datalist.size
