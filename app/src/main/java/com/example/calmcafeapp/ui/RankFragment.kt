@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import android.widget.Button
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentRankBinding
@@ -18,8 +19,7 @@ class RankFragment : Fragment() {
     private val binding get() = _binding!! // ViewBinding 안전하게 접근하기 위해 사용
 
     private lateinit var adapter: CafeRecyclerViewAdapter // 어댑터 객체 선언
-
-    val mDatas = mutableListOf<CafeData>() // 데이터 리스트
+    private val mDatas = mutableListOf<CafeData>() // 데이터 리스트
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +33,14 @@ class RankFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // RecyclerView 초기화 함수 호출
+        // RecyclerView 초기화
         initCafeRecyclerView()
 
         // 디폴트로 btn1 클릭 이벤트와 동일한 데이터를 로드
         loadData1()
+
         setButtonSelected(binding.btn1)
+
 
         binding.btn1.setOnClickListener{
             loadData1()
@@ -54,13 +56,31 @@ class RankFragment : Fragment() {
             setButtonSelected(binding.btn3) // 버튼3을 선택 상태로
 
         }
+        // SearchView에서 텍스트가 변경될 때마다 필터링 수행
+        setOnQueryTextListener()
     }
+
+    // SearchView 초기화 및 검색 기능 추가
+    private fun setOnQueryTextListener() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // 검색 텍스트 제출 시 동작 (필요에 따라 처리)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.performSearch(newText ?: "") // 어댑터의 필터링 함수 호출
+                return true
+            }
+        })
+    }
+
+
 
 
     // RecyclerView 초기화 함수
     private fun initCafeRecyclerView() {
-        adapter = CafeRecyclerViewAdapter() // 어댑터 객체 생성
-        adapter.datalist = mDatas // 데이터 넣어줌
+        adapter = CafeRecyclerViewAdapter(mDatas) // 어댑터 객체 생성
         binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
         binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
     }
@@ -80,7 +100,7 @@ class RankFragment : Fragment() {
     private fun loadData1() {
         mDatas.clear() // 기존 데이터 초기화
         mDatas.addAll(listOf(
-            CafeData("", "스타벅스 연남점", "보통"),
+            CafeData("", "starbucks 연남점", "보통"),
             CafeData("", "빽다방 연남점", "여유"),
             CafeData("", "메가커피 연남점", "혼잡") ,
             CafeData("", "스타벅스 연남점", "보통"),
@@ -116,23 +136,6 @@ class RankFragment : Fragment() {
         ))
         adapter.notifyDataSetChanged()
     }
-
-
-
-
-    /* 데이터 리스트 초기화 함수
-    private fun initializelist() {
-        // 임의의 데이터를 리스트에 추가
-        with(mDatas) {
-            add(CafeData("", "스타벅스 연남점","보통" ))
-            add(CafeData("", "빽다방 연남점","여유" ))
-            add(CafeData("", "메가커피 연남점","매우혼잡" ))
-            add(CafeData("", "컴포즈커피 연남점","혼잡" ))
-            add(CafeData("", "할리스 연남점","보통" ))
-            add(CafeData("", "투썸플레이스 연남점","보통" ))
-
-        }
-    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()

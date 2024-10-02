@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/baseline_search_24"
+        android:src="@drawable/search"
         android:layout_marginBottom="30dp"
         />
 
