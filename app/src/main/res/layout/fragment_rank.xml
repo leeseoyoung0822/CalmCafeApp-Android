@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.RankFragment">
 
-    <SearchView
+    <EditText
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:iconifiedByDefault="false"
-        android:queryHint="검색"/>
+        app:closeIcon="@drawable/baseline_clear_24"
+        android:hint="검색"/>
 
 
     <HorizontalScrollView

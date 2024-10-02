@@ -14,22 +14,22 @@ class CafeRecyclerViewAdapter : RecyclerView.Adapter<CafeRecyclerViewAdapter.Caf
 
     class CafeViewHolder(private val binding: RankingItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
-        // 좋아요 상태를 나타내는 변수
-        private var isLiked = false
-
         fun bind(cafeData:CafeData){
             //binding.dogPhotoImg.=dogData.dog_img
             binding.cafeNameTv.text=cafeData.cafe_name
             binding.cafeStateTv.text= cafeData.cafe_state
 
+            // 좋아요 버튼 상태 초기화
+            updateLikeButton(cafeData.isLiked)
+
             // 좋아요 버튼 클릭 이벤트 설정
             binding.likesBtn.setOnClickListener {
-                isLiked = !isLiked // 좋아요 상태 토글
-                updateLikeButton() // 좋아요 버튼 이미지 업데이트
+                cafeData.isLiked = !cafeData.isLiked // 좋아요 상태 반전
+                updateLikeButton(cafeData.isLiked) // 좋아요 버튼 이미지 업데이트
             }
         }
 
-        private fun updateLikeButton() {
+        private fun updateLikeButton(isLiked:Boolean) {
             if (isLiked) {
                 binding.likesBtn.setImageResource(R.drawable.heart_filled) // 채워진 하트 이미지로 변경
             } else {

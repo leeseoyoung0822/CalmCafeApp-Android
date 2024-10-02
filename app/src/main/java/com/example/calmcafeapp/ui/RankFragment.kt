@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentRankBinding
+import com.example.calmcafeapp.R
 
 class RankFragment : Fragment() {
 
@@ -30,11 +33,27 @@ class RankFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 데이터 초기화 함수 호출
-        initializelist()
-
         // RecyclerView 초기화 함수 호출
         initCafeRecyclerView()
+
+        // 디폴트로 btn1 클릭 이벤트와 동일한 데이터를 로드
+        loadData1()
+        setButtonSelected(binding.btn1)
+
+        binding.btn1.setOnClickListener{
+            loadData1()
+            setButtonSelected(binding.btn1) // 버튼1을 선택 상태로
+        }
+        binding.btn2.setOnClickListener {
+            loadData2() // 버튼2 클릭 시 데이터 변경
+            setButtonSelected(binding.btn2) // 버튼2을 선택 상태로
+        }
+
+        binding.btn3.setOnClickListener {
+            loadData3() // 버튼3 클릭 시 데이터 변경
+            setButtonSelected(binding.btn3) // 버튼3을 선택 상태로
+
+        }
     }
 
 
@@ -46,7 +65,62 @@ class RankFragment : Fragment() {
         binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
     }
 
-    // 데이터 리스트 초기화 함수
+    // 선택된 버튼의 선택 상태를 유지하고 나머지 버튼의 선택을 해제하는 함수
+    private fun setButtonSelected(selectedButton:android.widget.Button) {
+        // 모든 버튼의 선택 상태 해제
+        binding.btn1.isSelected = false
+        binding.btn2.isSelected = false
+        binding.btn3.isSelected = false
+
+        // 선택된 버튼만 선택 상태로 설정
+        selectedButton.isSelected = true
+    }
+
+    // 버튼 1에 대한 더미 데이터 로드
+    private fun loadData1() {
+        mDatas.clear() // 기존 데이터 초기화
+        mDatas.addAll(listOf(
+            CafeData("", "스타벅스 연남점", "보통"),
+            CafeData("", "빽다방 연남점", "여유"),
+            CafeData("", "메가커피 연남점", "혼잡") ,
+            CafeData("", "스타벅스 연남점", "보통"),
+            CafeData("", "빽다방 연남점", "여유"),
+            CafeData("", "메가커피 연남점", "혼잡")
+        ))
+        adapter.notifyDataSetChanged() // 어댑터에 데이터 변경 통보
+    }
+    // 버튼 2에 대한 더미 데이터 로드
+    private fun loadData2() {
+        mDatas.clear()
+        mDatas.addAll(listOf(
+            CafeData("", "카페A", "혼잡"),
+            CafeData("", "카페B", "매우혼잡"),
+            CafeData("", "카페C", "보통"),
+            CafeData("", "스타벅스 연남점", "보통"),
+            CafeData("", "빽다방 연남점", "여유"),
+            CafeData("", "메가커피 연남점", "혼잡")
+        ))
+        adapter.notifyDataSetChanged()
+    }
+
+    // 버튼 3에 대한 더미 데이터 로드
+    private fun loadData3() {
+        mDatas.clear()
+        mDatas.addAll(listOf(
+            CafeData("", "카페X", "매우여유"),
+            CafeData("", "카페Y", "여유"),
+            CafeData("", "카페Z", "혼잡"),
+            CafeData("", "스타벅스 연남점", "보통"),
+            CafeData("", "빽다방 연남점", "여유"),
+            CafeData("", "메가커피 연남점", "혼잡")
+        ))
+        adapter.notifyDataSetChanged()
+    }
+
+
+
+
+    /* 데이터 리스트 초기화 함수
     private fun initializelist() {
         // 임의의 데이터를 리스트에 추가
         with(mDatas) {
@@ -58,7 +132,7 @@ class RankFragment : Fragment() {
             add(CafeData("", "투썸플레이스 연남점","보통" ))
 
         }
-    }
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()
