@@ -102,28 +102,32 @@
                 app:layout_constraintTop_toTopOf="parent"
                 />
 
-            <ImageButton
-                android:id="@+id/update_btn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/baseline_update_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="새로고침"
-                android:layout_margin="16dp"
-                />
-
             <TextView
                 android:id="@+id/update_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="새로고침"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/update_btn"
                 android:textSize="12sp"
                 android:textColor="@color/brown"
-                app:layout_constraintTop_toBottomOf="@id/update_btn"
-                app:layout_constraintEnd_toEndOf="@id/update_btn" />
+                app:layout_constraintEnd_toStartOf="@id/update_btn"
+                app:layout_constraintTop_toTopOf="@id/update_btn"
+                app:layout_constraintBottom_toBottomOf="@id/update_btn"
+                 />
+
+            <ImageButton
+                android:id="@+id/update_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_update_24"
+                android:background="@null"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="pa"
+                android:contentDescription="새로고침"
+                android:layout_margin="16dp"
+                android:scaleType="centerInside"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cafe_recyclerView"
@@ -131,7 +135,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/update_txt"/>
+                app:layout_constraintTop_toBottomOf="@id/update_btn"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
