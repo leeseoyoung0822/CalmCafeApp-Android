@@ -13,9 +13,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:iconifiedByDefault="false"
         app:closeIcon="@drawable/clear"
-        android:hint="검색"/>
+        app:iconifiedByDefault="false"
+        app:queryHint="가게 이름"/>
 
 
     <HorizontalScrollView
