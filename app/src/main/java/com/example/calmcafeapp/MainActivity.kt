@@ -5,6 +5,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.databinding.ActivityMainBinding
 import com.example.calmcafeapp.ui.HomeFragment
 import com.example.calmcafeapp.ui.RankFragment

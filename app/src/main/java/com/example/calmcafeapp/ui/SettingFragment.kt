@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.example.calmcafeapp.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +37,22 @@ class SettingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_setting, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 즐겨찾기 섹션 클릭 시 이벤트 설정
+        val favoriteSection = view.findViewById<LinearLayout>(R.id.favoritesSection)
+
+        favoriteSection.setOnClickListener {
+            // Fragment 전환
+            val favoriteFragment = FavoriteFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, favoriteFragment) // fragment_container는 메인 액티비티에서 프래그먼트를 표시하는 컨테이너
+                .addToBackStack(null) // 뒤로 가기 버튼 클릭 시 이전 프래그먼트로 돌아가기
+                .commit()
+        }
     }
 
     companion object {
