@@ -4,4 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="beige">#E3D3BF</color>
     <color name="brown">#A2845E</color>
+    <color name="darkgray">@color/material_dynamic_neutral40</color>
+    <color name="lightgray">@color/material_dynamic_neutral70</color>
+    <color name="whitegray">@color/material_dynamic_neutral80</color>
+
+
+
 </resources>

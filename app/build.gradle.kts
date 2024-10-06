@@ -24,25 +24,25 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // 네이버 오픈 API 키 설정
-        val naverOpenApiClientId = properties.getProperty("NAVER_OPEN_API_CLIENT_ID")
-            ?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_ID가 local.properties에 정의되어 있지 않습니다.")
-        val naverOpenApiClientSecret = properties.getProperty("NAVER_OPEN_API_CLIENT_SECRET")
-            ?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_SECRET가 local.properties에 정의되어 있지 않습니다.")
+        val naverOpenApiClientId = properties.getProperty("NAVER_OPEN_API_CLIENT_ID","")
+            //?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_ID가 local.properties에 정의되어 있지 않습니다.")
+        val naverOpenApiClientSecret = properties.getProperty("NAVER_OPEN_API_CLIENT_SECRET","")
+            //?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_SECRET가 local.properties에 정의되어 있지 않습니다.")
 
         buildConfigField("String", "NAVER_OPEN_API_CLIENT_ID", "\"$naverOpenApiClientId\"")
         buildConfigField("String", "NAVER_OPEN_API_CLIENT_SECRET", "\"$naverOpenApiClientSecret\"")
 
         // 네이버 클라우드 플랫폼 API 키 설정
-        val ncpApiKeyId = properties.getProperty("NCP_API_KEY_ID")
-            ?: throw IllegalArgumentException("NCP_API_KEY_ID가 local.properties에 정의되어 있지 않습니다.")
-        val ncpApiKey = properties.getProperty("NCP_API_KEY")
-            ?: throw IllegalArgumentException("NCP_API_KEY가 local.properties에 정의되어 있지 않습니다.")
+        val ncpApiKeyId = properties.getProperty("NCP_API_KEY_ID","")
+            //?: throw IllegalArgumentException("NCP_API_KEY_ID가 local.properties에 정의되어 있지 않습니다.")
+        val ncpApiKey = properties.getProperty("NCP_API_KEY","")
+            //?: throw IllegalArgumentException("NCP_API_KEY가 local.properties에 정의되어 있지 않습니다.")
 
         buildConfigField("String", "NCP_API_KEY_ID", "\"$ncpApiKeyId\"")
         buildConfigField("String", "NCP_API_KEY", "\"$ncpApiKey\"")
 
 
-        buildConfigField("String","AUTH_BASE_URL",properties.getProperty("base.url"))
+        buildConfigField("String","AUTH_BASE_URL" ,"\"${properties.getProperty("base.url", "https://default.url")}\"")
         manifestPlaceholders["NCP_API_KEY_ID"] = ncpApiKeyId
     }
 

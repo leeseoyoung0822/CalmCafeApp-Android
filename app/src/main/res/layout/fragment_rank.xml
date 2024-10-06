@@ -6,20 +6,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.RankFragment">
 
-    <SearchView
-        android:id="@+id/search_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:iconifiedByDefault="false"
-        android:queryHint="검색"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/search_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/baseline_search"
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="검색버튼"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <HorizontalScrollView
         android:id="@+id/scrollview"
-        app:layout_constraintTop_toBottomOf="@id/search_view"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="match_parent"
@@ -93,23 +102,12 @@
                 android:id="@+id/category_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="제목"
+                android:text=""
                 android:textStyle="bold"
-                android:textSize="30dp"
+                android:textSize="25sp"
                 android:layout_margin="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                />
-
-            <ImageButton
-                android:id="@+id/update_btn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/baseline_update_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="새로고침"
-                android:layout_margin="16dp"
                 />
 
             <TextView
@@ -118,19 +116,33 @@
                 android:layout_height="wrap_content"
                 android:text="새로고침"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@id/update_btn"
                 android:textSize="12sp"
                 android:textColor="@color/brown"
-                app:layout_constraintTop_toBottomOf="@id/update_btn"
-                app:layout_constraintEnd_toEndOf="@id/update_btn" />
+                app:layout_constraintEnd_toStartOf="@id/update_btn"
+                app:layout_constraintTop_toTopOf="@id/update_btn"
+                app:layout_constraintBottom_toBottomOf="@id/update_btn"
+                 />
+
+            <ImageButton
+                android:id="@+id/update_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/baseline_update_24"
+                android:background="@null"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="새로고침"
+                android:layout_margin="16dp"
+                android:scaleType="centerInside"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cafe_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/category_title"/>
+                app:layout_constraintTop_toBottomOf="@id/update_btn"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
