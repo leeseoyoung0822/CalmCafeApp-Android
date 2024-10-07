@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="카페 이름"
+            android:text=""
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/black" />
@@ -37,7 +37,7 @@
             android:id="@+id/cafeLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="서울특별시 00구"
+            android:text=""
             android:textSize="14sp"
             android:textColor="@android:color/darker_gray" />
 
@@ -45,7 +45,7 @@
             android:id="@+id/cafeStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="현재 혼잡도: 보통"
+            android:text=""
             android:textSize="14sp"
             android:textColor="@android:color/holo_red_light" />
 

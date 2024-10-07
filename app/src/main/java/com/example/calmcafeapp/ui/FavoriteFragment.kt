@@ -30,8 +30,14 @@ class FavoriteFragment : Fragment() {
 
         // RecyclerView 어댑터 설정 (임시 데이터 설정)
         val initialCafeList = mutableListOf(
-            Cafe("카페 A", "서울특별시 00구", "혼잡도: 보통", R.drawable.logo),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite)
+            Cafe("카페 A", "서울특별시 00구", "혼잡도: 보통", R.drawable.favorite),
+            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+
         )
 
         val adapter = CafeAdapter(initialCafeList)
