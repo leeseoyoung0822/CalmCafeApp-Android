@@ -97,6 +97,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation ("org.locationtech.proj4j:proj4j:1.1.0")
+
     // Retrofit 라이브러리
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     // Gson 변환기
