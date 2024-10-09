@@ -3,7 +3,7 @@ package com.example.calmcafeapp.data
 
 data class ReverseGeocodingResponse(
     val status: Status,
-    val results: List<Result>
+    val results: List<ReverseGeocodingResult>
 )
 
 data class Status(
@@ -12,7 +12,7 @@ data class Status(
     val message: String
 )
 
-data class Result(
+data class ReverseGeocodingResult(
     val name: String,
     val code: Code,
     val region: Region,
