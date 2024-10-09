@@ -24,25 +24,35 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // 네이버 오픈 API 키 설정
-        val naverOpenApiClientId = properties.getProperty("NAVER_OPEN_API_CLIENT_ID","")
-            //?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_ID가 local.properties에 정의되어 있지 않습니다.")
-        val naverOpenApiClientSecret = properties.getProperty("NAVER_OPEN_API_CLIENT_SECRET","")
-            //?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_SECRET가 local.properties에 정의되어 있지 않습니다.")
-
+        val naverOpenApiClientId = properties.getProperty("NAVER_OPEN_API_CLIENT_ID")
+            ?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_ID가 local.properties에 정의되어 있지 않습니다.")
+        val naverOpenApiClientSecret = properties.getProperty("NAVER_OPEN_API_CLIENT_SECRET")
+            ?: throw IllegalArgumentException("NAVER_OPEN_API_CLIENT_SECRET가 local.properties에 정의되어 있지 않습니다.")
         buildConfigField("String", "NAVER_OPEN_API_CLIENT_ID", "\"$naverOpenApiClientId\"")
         buildConfigField("String", "NAVER_OPEN_API_CLIENT_SECRET", "\"$naverOpenApiClientSecret\"")
 
         // 네이버 클라우드 플랫폼 API 키 설정
-        val ncpApiKeyId = properties.getProperty("NCP_API_KEY_ID","")
-            //?: throw IllegalArgumentException("NCP_API_KEY_ID가 local.properties에 정의되어 있지 않습니다.")
-        val ncpApiKey = properties.getProperty("NCP_API_KEY","")
-            //?: throw IllegalArgumentException("NCP_API_KEY가 local.properties에 정의되어 있지 않습니다.")
+        val ncpApiKeyId = properties.getProperty("NCP_API_KEY_ID")
+            ?: throw IllegalArgumentException("NCP_API_KEY_ID가 local.properties에 정의되어 있지 않습니다.")
+        val ncpApiKey = properties.getProperty("NCP_API_KEY")
+            ?: throw IllegalArgumentException("NCP_API_KEY가 local.properties에 정의되어 있지 않습니다.")
 
         buildConfigField("String", "NCP_API_KEY_ID", "\"$ncpApiKeyId\"")
         buildConfigField("String", "NCP_API_KEY", "\"$ncpApiKey\"")
 
 
-        buildConfigField("String","AUTH_BASE_URL" ,"\"${properties.getProperty("base.url", "https://default.url")}\"")
+        val ODSAYApiKey = properties.getProperty("ODSAY_API_KEY")
+            ?: throw IllegalArgumentException("ODSAY_API_KEY가 local.properties에 정의되어 있지 않습니다.")
+
+        buildConfigField("String", "ODSAY_API_KEY", "\"$ODSAYApiKey\"")
+
+        val TAMPApiKey = properties.getProperty("TMAP_API_KEY")
+            ?: throw IllegalArgumentException("TMAP_API_KEY가 local.properties에 정의되어 있지 않습니다.")
+
+        buildConfigField("String", "TMAP_API_KEY", "\"$TAMPApiKey\"")
+
+
+        buildConfigField("String","AUTH_BASE_URL",properties.getProperty("base.url"))
         manifestPlaceholders["NCP_API_KEY_ID"] = ncpApiKeyId
     }
 
@@ -87,6 +97,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation ("org.locationtech.proj4j:proj4j:1.1.0")
+
     // Retrofit 라이브러리
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     // Gson 변환기
@@ -120,5 +132,7 @@ dependencies {
     //뷰모델
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+
+    implementation ("com.google.maps.android:android-maps-utils:2.2.5")
 
 }
