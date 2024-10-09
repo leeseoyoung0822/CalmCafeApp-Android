@@ -9,7 +9,7 @@ interface MapService {
     @GET("v1/search/local.json")
     fun searchLocal(
         @Query("query") query: String,
-        @Query("display") display: Int,
+        @Query("display") display: Int = 20,
         @Query("start") start: Int,
         @Query("sort") sort: String
     ): Call<SearchMapResponse>

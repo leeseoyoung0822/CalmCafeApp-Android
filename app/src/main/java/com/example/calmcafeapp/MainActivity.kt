@@ -24,9 +24,11 @@ class MainActivity : AppCompatActivity() {
         showInit()
         initBottomNav()
 
-        setSupportActionBar(binding.toolbar)
+//        setSupportActionBar(binding.toolbar)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        binding.navigationMain.selectedItemId = R.id.navigation_map
 
 
     }
