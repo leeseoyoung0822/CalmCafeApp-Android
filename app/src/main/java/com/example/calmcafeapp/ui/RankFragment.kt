@@ -42,24 +42,30 @@ class RankFragment : Fragment() {
         loadData1()
 
         setButtonSelected(binding.btn1)
-        binding.categoryTitle.text = "즐겨찾기 Top 10" // 초기 텍스트 설정
+        binding.categoryTitle.text = "실시간 방문 수 TOP 랭킹" // 초기 텍스트 설정
 
 
         binding.btn1.setOnClickListener{
             loadData1()
             setButtonSelected(binding.btn1)
-            binding.categoryTitle.text = "즐겨찾기 Top 10" // 초기 텍스트 설정  버튼1을 선택 상태로
+            binding.categoryTitle.text = "실시간 방문 수 TOP 랭킹" // 초기 텍스트 설정  버튼1을 선택 상태로
         }
         binding.btn2.setOnClickListener {
             loadData2() // 버튼2 클릭 시 데이터 변경
             setButtonSelected(binding.btn2) // 버튼2을 선택 상태로
-            binding.categoryTitle.text = "혼잡도 순 Top 10"
+            binding.categoryTitle.text = "실시간 테이크아웃 TOP 랭킹"
         }
 
         binding.btn3.setOnClickListener {
             loadData3() // 버튼3 클릭 시 데이터 변경
             setButtonSelected(binding.btn3) // 버튼3을 선택 상태로
-            binding.categoryTitle.text = "거리 순 Top 10"
+            binding.categoryTitle.text = "실시간 할인률 TOP 랭킹"
+        }
+
+        binding.btn4.setOnClickListener {
+            loadData3() // 버튼3 클릭 시 데이터 변경
+            setButtonSelected(binding.btn4) // 버튼3을 선택 상태로
+            binding.categoryTitle.text = "실시간 즐겨찾기 TOP 랭킹"
 
         }
 
@@ -87,6 +93,8 @@ class RankFragment : Fragment() {
         binding.btn1.isSelected = false
         binding.btn2.isSelected = false
         binding.btn3.isSelected = false
+        binding.btn4.isSelected = false
+
         // 선택된 버튼만 선택 상태로 설정
         selectedButton.isSelected = true
     }

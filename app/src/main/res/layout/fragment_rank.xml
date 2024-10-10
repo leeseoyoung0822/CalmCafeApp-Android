@@ -31,14 +31,13 @@
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
 
@@ -46,13 +45,14 @@
                 android:id="@+id/btn1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="#즐겨찾기 많은 순"
+                android:text="#방문자"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/button"
                 android:padding="16dp"
+                android:layout_marginStart="16dp"
 
                 />
 
@@ -60,7 +60,7 @@
                 android:id="@+id/btn2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="#혼잡도 순"
+                android:text="#테이크아웃"
                 android:textColor="@color/black"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
@@ -74,12 +74,27 @@
                 android:id="@+id/btn3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="#거리 순"
+                android:text="#할인률"
                 android:textColor="@color/black"
                 android:layout_marginStart="16dp"
                 app:layout_constraintStart_toEndOf="@id/btn2"
-                app:layout_constraintTop_toTopOf="@id/btn1"
-                app:layout_constraintBottom_toBottomOf="@id/btn1"
+                app:layout_constraintTop_toTopOf="@id/btn2"
+                app:layout_constraintBottom_toBottomOf="@id/btn2"
+                android:background="@drawable/button"
+                android:padding="16dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="#즐겨찾기"
+                android:textColor="@color/black"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn3"
+                app:layout_constraintTop_toTopOf="@id/btn3"
+                app:layout_constraintBottom_toBottomOf="@id/btn3"
                 android:background="@drawable/button"
                 android:padding="16dp"/>
 
@@ -104,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textStyle="bold"
-                android:textSize="25sp"
+                android:textSize="22sp"
                 android:layout_margin="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
