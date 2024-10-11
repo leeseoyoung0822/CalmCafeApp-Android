@@ -7,25 +7,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.SettingFragment">
 
-    <Button
+
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_height="30dp"
+        android:layout_marginStart="177dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/btn_logout"
         android:text="로그아웃"
-        tools:layout_editor_absoluteX="276dp"
-        tools:layout_editor_absoluteY="27dp" />
+        app:layout_constraintBottom_toTopOf="@+id/view1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.029"
+        app:layout_constraintStart_toEndOf="@+id/myprofile" />
 
     <TextView
         android:id="@+id/myprofile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:text="내 프로필"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/profileCard"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="32dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
@@ -69,8 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="000 님 ☕"
-                android:textColor="@color/white"
+                android:text="000 님"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -84,15 +89,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="4dp"
-                android:text="1000 P"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
+                android:text="보유 포인트 : 1000 P"
+                android:textColor="@color/orange"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.086"
+                app:layout_constraintHorizontal_bias="0.219"
                 app:layout_constraintStart_toEndOf="@+id/profileImage"
                 app:layout_constraintTop_toBottomOf="@+id/profileName"
-                app:layout_constraintVertical_bias="0.562" />
+                app:layout_constraintVertical_bias="0.4" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -107,19 +112,17 @@
         app:layout_constraintBottom_toTopOf="@+id/favoritesSection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileCard"
-        app:layout_constraintVertical_bias="0.566" />
+        app:layout_constraintTop_toBottomOf="@+id/profileCard" />
 
     <View
         android:id="@+id/view1"
         android:layout_width="345dp"
         android:layout_height="3dp"
-        android:background="#92AC814C"
+        android:background="@color/beige"
         app:layout_constraintBottom_toTopOf="@+id/profileCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myprofile"
-        app:layout_constraintVertical_bias="0.403" />
+        app:layout_constraintTop_toBottomOf="@+id/myprofile" />
 
     <View
         android:id="@+id/view3"
@@ -128,28 +131,35 @@
         android:background="@color/beige"
         app:layout_constraintBottom_toTopOf="@+id/mycoupon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/favoritesSection" />
 
-    <LinearLayout
-        android:id="@+id/favoritesSection"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="298dp">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/favoritesSection"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/mycoupon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileCard">
+
+        <!-- Favorite Icon -->
         <ImageView
             android:id="@+id/favoriteIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/favorite" /> <!-- 즐겨찾기 아이콘 -->
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/favorite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Favorite Text -->
+
+        <!-- Next Button -->
         <TextView
             android:id="@+id/favoriteText"
             android:layout_width="100dp"
@@ -157,35 +167,50 @@
             android:layout_marginStart="8dp"
             android:paddingStart="20dp"
             android:text="즐겨찾기"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/next_btn"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/favoriteIcon"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/next_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="200dp"
-            android:src="@drawable/next" />
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mycoupon"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toTopOf="@id/surveySection"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="369dp">
+        app:layout_constraintTop_toBottomOf="@+id/favoritesSection">
 
+        <!-- Coupon Icon -->
         <ImageView
             android:id="@+id/couponId"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/coupon" /> <!-- 즐겨찾기 아이콘 -->
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/coupon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Coupon Text -->
+
+        <!-- Next Button -->
         <TextView
             android:id="@+id/couponText"
             android:layout_width="100dp"
@@ -193,44 +218,59 @@
             android:layout_marginStart="8dp"
             android:paddingStart="20dp"
             android:text=" 내 쿠폰"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/next_btn2"
+            app:layout_constraintHorizontal_bias="0.004"
+            app:layout_constraintStart_toEndOf="@id/couponId"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/next_btn2"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="200dp"
-            android:src="@drawable/next" />
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/view4"
         android:layout_width="345dp"
         android:layout_height="2dp"
         android:background="@color/beige"
+        app:layout_constraintBottom_toTopOf="@id/surveySection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="429dp" />
+        app:layout_constraintTop_toBottomOf="@+id/mycoupon" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/surveySection"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="442dp">
+        app:layout_constraintTop_toBottomOf="@+id/mycoupon">
 
+        <!-- Survey Image -->
         <ImageView
             android:id="@+id/surveyImg"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/survey" />
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/survey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Survey Text -->
+
+        <!-- Next Button -->
         <TextView
             android:id="@+id/surveyText"
             android:layout_width="100dp"
@@ -238,16 +278,37 @@
             android:layout_marginStart="8dp"
             android:paddingStart="20dp"
             android:text=" 설문조사"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/surveyPop"
+            app:layout_constraintHorizontal_bias="0.025"
+            app:layout_constraintStart_toEndOf="@id/surveyImg"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/next_btn3"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="200dp"
-            android:src="@drawable/next" />
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/next"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/surveyPop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/beigebackground"
+            android:padding="3dp"
+            android:text="설문조사하면 커피 쿠폰 증정"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/next_btn3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,10 @@ class CouponFragment : Fragment() {
 
         val couponAdapter = CouponAdapter(couponList)
         binding.recyclerView.adapter = couponAdapter
+
+        binding.backButton.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
     override fun onDestroyView() {
