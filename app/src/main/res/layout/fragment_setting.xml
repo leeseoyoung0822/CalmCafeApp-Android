@@ -7,6 +7,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.SettingFragment">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:text="로그아웃"
+        tools:layout_editor_absoluteX="276dp"
+        tools:layout_editor_absoluteY="27dp" />
+
     <TextView
         android:id="@+id/myprofile"
         android:layout_width="wrap_content"
@@ -26,7 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="120dp"
-        android:backgroundTint="#AC814C"
+        android:backgroundTint="@color/beige"
+        android:background="@color/brown"
+
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,12 +102,13 @@
     <View
         android:id="@+id/view2"
         android:layout_width="345dp"
-        android:layout_height="1dp"
-        android:background="#92AC814C"
+        android:layout_height="2dp"
+        android:background="@color/beige"
         app:layout_constraintBottom_toTopOf="@+id/favoritesSection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileCard" />
+        app:layout_constraintTop_toBottomOf="@+id/profileCard"
+        app:layout_constraintVertical_bias="0.566" />
 
     <View
         android:id="@+id/view1"
@@ -113,10 +124,11 @@
     <View
         android:id="@+id/view3"
         android:layout_width="345dp"
-        android:layout_height="1dp"
-        android:background="#92AC814C"
+        android:layout_height="2dp"
+        android:background="@color/beige"
         app:layout_constraintBottom_toTopOf="@+id/mycoupon"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/favoritesSection" />
 
@@ -125,12 +137,12 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginTop="92dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profileCard">
+        tools:layout_editor_absoluteY="298dp">
 
         <ImageView
             android:id="@+id/favoriteIcon"
@@ -161,13 +173,12 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginTop="110dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favoritesSection">
+        tools:layout_editor_absoluteY="369dp">
 
         <ImageView
             android:id="@+id/couponId"
@@ -192,5 +203,51 @@
             android:src="@drawable/next" />
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="345dp"
+        android:layout_height="2dp"
+        android:background="@color/beige"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="429dp" />
+
+    <LinearLayout
+        android:id="@+id/surveySection"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="442dp">
+
+        <ImageView
+            android:id="@+id/surveyImg"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/survey" />
+
+        <TextView
+            android:id="@+id/surveyText"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingStart="20dp"
+            android:text=" 설문조사"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/next_btn3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="200dp"
+            android:src="@drawable/next" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
