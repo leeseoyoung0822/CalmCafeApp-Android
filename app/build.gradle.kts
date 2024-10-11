@@ -53,7 +53,14 @@ android {
 
 
         buildConfigField("String","AUTH_BASE_URL",properties.getProperty("base.url"))
+
+        // 카카오 네이티브 앱 키 설정
+        val nativeAppKey = properties.getProperty("NATIVE_APP_KEY")
+            ?: throw IllegalArgumentException("NATIVE_APP_KEY가 local.properties에 정의되어 있지 않습니다.")
+        buildConfigField("String", "NATIVE_APP_KEY", "\"$nativeAppKey\"")
+
         manifestPlaceholders["NCP_API_KEY_ID"] = ncpApiKeyId
+        manifestPlaceholders["NATIVE_APP_KEY"] = nativeAppKey
     }
 
     buildTypes {

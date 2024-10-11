@@ -1,6 +1,8 @@
 package com.example.calmcafeapp
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -9,34 +11,68 @@ import com.example.calmcafeapp.databinding.ActivityMainBinding
 import com.example.calmcafeapp.ui.HomeFragment
 import com.example.calmcafeapp.ui.RankFragment
 import com.example.calmcafeapp.ui.SettingFragment
+import com.kakao.sdk.user.UserApiClient
 
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        // 카카오 로그인 정보 확인
+        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            if (error != null) {
+                // 로그인 정보가 없으면 LoginActivity로 이동
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            else if (tokenInfo != null) {
+                // 토큰 정보가 있으면 자동 로그인
+                showInit()
+            }
+        }
 
 
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        showInit()
+        // 로그아웃 버튼 클릭 시 로그아웃 처리
+        binding.logoutBtn.setOnClickListener {
+            logout()
+        }
+
         initBottomNav()
 
 //        setSupportActionBar(binding.toolbar)
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
         binding.navigationMain.selectedItemId = R.id.navigation_map
-
-
     }
 
+    // 로그아웃 처리 메서드
+    private fun logout() {
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                // 로그아웃 실패 처리
+                Toast.makeText(this, "로그아웃 실패: $error", Toast.LENGTH_SHORT).show()
+            } else {
+                // 로그아웃 성공 처리 후 로그인 화면으로 이동
+                Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish() // 현재 액티비티 종료
+            }
+        }
+    }
+
+
     private fun showInit() {
-        val transaction = supportFragmentManager.beginTransaction()
-            .add(R.id.container_main, HomeFragment())
-        transaction.commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container_main, HomeFragment()) // HomeFragment를 FragmentContainerView에 교체
+            .commit()
     }
 
     private fun initBottomNav() {
