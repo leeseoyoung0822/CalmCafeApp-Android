@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
+    android:background="@color/beige"
     tools:context=".LoginActivity">
 
     <ImageView
@@ -40,10 +41,10 @@
 
     <View
         android:layout_width="300dp"
-        android:layout_height="3dp"
+        android:layout_height="1dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"
-        android:background="@color/beige"/>
+        android:background="@color/brown"/>
 
     <ImageView
         android:id="@+id/login_btn"
@@ -51,6 +52,13 @@
         android:layout_height="wrap_content"
         android:src="@drawable/kakao_login_medium_wide"
         android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"/>
 
 
 
