@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- 왼쪽에 이미지 -->
     <ImageView
         android:id="@+id/cafePhoto_Imv"
         android:layout_width="100dp"

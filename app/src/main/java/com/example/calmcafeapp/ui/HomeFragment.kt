@@ -2,20 +2,16 @@
 package com.example.calmcafeapp.ui
 
 import android.os.Handler
-import android.os.Looper
 import android.os.Bundle
 import android.util.Log
 import android.Manifest
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Color.parseColor
 import androidx.core.app.ActivityCompat
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import com.example.calmcafeapp.MainActivity
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.LocalItem
@@ -28,14 +24,15 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PolylineOverlay
 import android.location.Location
-import android.net.Uri
+import android.widget.TextView
 import com.example.calmcafeapp.data.GraphPos
+import com.example.calmcafeapp.data.OnRouteStartListener
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 
 
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), OnMapReadyCallback {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), OnMapReadyCallback, OnRouteStartListener {
 
     // 지도 뷰
     private lateinit var mapView: MapView
@@ -83,6 +80,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private var currentSearchEndX: Double? = null
     private var currentSearchEndY: Double? = null
 
+    // 남은 거리와 시간을 표시할 TextView
+    private lateinit var tvRemainingInfo: TextView
+
+    // 총 도보 거리와 대중교통 거리
+    private var totalWalk: Int = 0
+    private var trafficDistance: Double = 0.0
+    private var totalDistance: Double = 0.0 // 총 거리 (도보 + 대중교통)
+    private var totalTime: Int = 0 // 총 소요시간 (분 단위)
+
+    // 사용자가 현재 이동한 거리
+    private var traveledDistance: Float = 0f
+
     // 레이아웃이 화면에 표시되기 직후에 호출, 뷰나 액티비티의 속성을 초기화하는 데 사용
     override fun initStartView() {
         super.initStartView()
@@ -96,6 +105,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         binding.btnCancelRoute.setOnClickListener {
             cancelRouteSearch() // 취소 버튼 클릭 시 호출
         }
+
 
         // 지도 비동기 호출
         mapView.getMapAsync(this)
@@ -155,10 +165,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         naverMap.locationSource = locationSource
         naverMap.uiSettings.isLocationButtonEnabled = true
 
-        // 현재 위치를 나타내는 오버레이를 가져와서 커스텀 아이콘을 설정
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.isVisible = true  // 위치 오버레이를 보이도록 설정
-        locationOverlay.icon = OverlayImage.fromResource(R.drawable.walking_72672)  // 커스텀 아이콘 설정
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.walking_72672)
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             naverMap.locationTrackingMode = LocationTrackingMode.Follow
@@ -174,8 +183,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         } else {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         }
-
-        // 지도 방향이 바뀔 때 위치 아이콘의 회전각도 변경
         naverMap.addOnCameraChangeListener { reason, animated ->
             val cameraPosition = naverMap.cameraPosition
             locationOverlay.bearing = cameraPosition.bearing.toFloat()  // 카메라 방향에 따라 아이콘 회전
@@ -236,7 +243,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         viewModel.address.observe(viewLifecycleOwner) { address ->
             val area = viewModel.extractAreaFromAddress(address)
             Log.d("add2", "${area}")
-            // 해당 지역의 카페 검색
+            // 해당 지역의 카페 요청
             viewModel.searchCafesInArea(area)
         }
 
@@ -300,19 +307,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             if (paths != null && paths.isNotEmpty()) {
                 Log.d("경로 리스트", "경로 리스트: ${paths}")
                 val path = paths[0]  // 첫 번째 경로 선택
+
                 displayPublicTransportRoutes(path)
 
-                // 첫 번째 subPath에서 대중교통을 타고 내리는 위치 찾기
-                val firstSubPath = path.subPath.firstOrNull { it.trafficType == 1 || it.trafficType == 2 }
-                if (
-                    firstSubPath != null &&
+                val publicTransportSubPaths = path.subPath.filter { it.trafficType == 1 || it.trafficType == 2 }
+                val firstSubPath = publicTransportSubPaths.firstOrNull()
+                val lastSubPath = publicTransportSubPaths.lastOrNull()
+
+                if (firstSubPath != null && lastSubPath != null &&
                     currentSearchStartX != null && currentSearchStartY != null &&
                     currentSearchEndX != null && currentSearchEndY != null
                 ) {
+
                     val transitStartX = firstSubPath.startX ?: currentSearchStartX!!
                     val transitStartY = firstSubPath.startY ?: currentSearchStartY!!
 
-                    // 현재 위치에서 대중교통 타는 위치까지 도보 경로 요청
                     viewModel.getWalkingStartRoute(
                         currentSearchStartX!!,
                         currentSearchStartY!!,
@@ -326,10 +335,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                         "TMAP 도보 경로 요청: Start(${currentSearchStartX}, ${currentSearchStartY}) -> 대중교통 출발($transitStartX, $transitStartY)"
                     )
 
-                    val transitEndX = firstSubPath.endX ?: currentSearchEndX!!
-                    val transitEndY = firstSubPath.endY ?: currentSearchEndY!!
+                    val transitEndX = lastSubPath.endX ?: currentSearchEndX!!
+                    val transitEndY = lastSubPath.endY ?: currentSearchEndY!!
 
-                    // 대중교통 하차 지점에서 목적지까지 도보 경로 요청
                     viewModel.getWalkingDestinationRoute(
                         transitEndX,
                         transitEndY,
@@ -342,11 +350,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                         "Request",
                         "TMAP 도보 경로 요청: 대중교통 하차($transitEndX, $transitEndY) -> End($currentSearchEndX, $currentSearchEndY)"
                     )
+                } else {
+                    Log.e("RouteError", "Public transport segments not found or coordinates missing.")
+                    Toast.makeText(requireContext(), "경로 정보를 처리하는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        // Route Graphic Data 관찰
+        //노선 그래픽
         viewModel.routeGraphicData.observe(viewLifecycleOwner) { graphPosList ->
             if (graphPosList != null && graphPosList.isNotEmpty()) {
                 val coords = graphPosList.map { LatLng(it.y, it.x) }
@@ -376,13 +387,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
             val marker = Marker().apply {
                 position = latLng
-                icon = OverlayImage.fromResource(R.drawable.cafe_marker)
+                icon = OverlayImage.fromResource(R.drawable.cafe_m)
                 width = 100
                 height = 100
                 map = naverMap
             }
             marker.setOnClickListener {
                 showCafeInfo(cafe)
+
                 true
             }
             markerList.add(marker)
@@ -426,20 +438,32 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     // 카페 정보 표시
     private fun showCafeInfo(cafe: LocalItem) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(cafe.title)
-            .setMessage(cafe.address)
-            .setPositiveButton("길찾기") { dialog, which ->
-                // 선택된 카페를 업데이트
-                selectedCafe = cafe
-                // 길찾기 시작 및 마커 업데이트
-                startRouteSearchToCafe(cafe)
-                // 길찾기 선택된 카페 마커 표시
-                updateSelectedCafeMarker(cafe)
-            }
-            .setNegativeButton("닫기", null)
-            .show()
+        selectedCafe = cafe  // 선택된 카페 정보 저장
+        val cafeDetailFragment = CafeDetailFragment()
+        cafeDetailFragment.setTargetFragment(this, 0)
+        // 카페 정보를 프래그먼트로 전달
+        val bundle = Bundle().apply {
+            putString("cafeTitle", cafe.title)
+            putString("cafeAddress", cafe.address)
+            // 필요한 다른 정보도 여기에 추가
+        }
+        cafeDetailFragment.arguments = bundle
+
+        // 프래그먼트를 팝업으로 보여줌
+        cafeDetailFragment.show(parentFragmentManager, "CafeDetailFragment")
     }
+
+    override fun onRouteStart() {
+        Log.d("touch start", "실행")
+        selectedCafe?.let { cafe ->
+            // 길찾기 시작
+            Log.d("touch start", "${cafe}")
+            startRouteSearchToCafe(cafe)
+        } ?: run {
+            Toast.makeText(requireContext(), "카페를 선택하지 않았습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun displayPublicTransportRoutes(path: Path) {
         // 기존 대중교통 경로 삭제
@@ -594,8 +618,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
 
-
-
     private fun showSelectedMarkers(cafe: LocalItem) {
         // 기존의 선택된 카페 마커 제거
         selectedCafeMarker?.map = null
@@ -603,12 +625,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 도착지 마커
         selectedCafeMarker = Marker().apply {
             position = cafe.latLng
-            icon = OverlayImage.fromResource(R.drawable.cafe_marker)  // 커스텀 아이콘 사용
+            icon = OverlayImage.fromResource(R.drawable.cafe_m)  // 커스텀 아이콘 사용
             width = 100
-            height = 100
+            height = 120
             captionText = cafe.title  // 마커 아래에 카페 타이틀 표시
             captionTextSize = 14f  // 캡션 텍스트 크기
-            captionColor = Color.parseColor("#A52A2A")  // 브라운 색상으로 설정
+            captionColor = Color.parseColor("#000000")
             captionRequestedWidth = 200  // 캡션 텍스트 최대 너비
             captionOffset = 10  // 마커와 캡션 사이의 간격 (마커 아래에 위치)
             zIndex = 1000  // 마커가 다른 마커보다 위에 표시되도록 설정
@@ -648,25 +670,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
 
-    // 선택된 카페 마커 업데이트
-    private fun updateSelectedCafeMarker(cafe: LocalItem) {
-        selectedCafeMarker?.map = null
-
-        selectedCafeMarker = Marker().apply {
-            position = cafe.latLng
-            icon = OverlayImage.fromResource(R.drawable.cafe_marker)
-            width = 100
-            height = 100
-            captionText = cafe.title
-            captionTextSize = 14f
-            captionColor = Color.parseColor("#A52A2A")
-            captionRequestedWidth = 200
-            captionOffset = 10
-            zIndex = 1000
-            map = naverMap
-        }
-    }
-
     // 카페 마커 표시 함수
     private fun showCafeMarkers() {
         markerList.forEach { it.map = naverMap }
@@ -680,4 +683,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
+
+
 }
