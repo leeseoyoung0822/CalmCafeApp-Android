@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:labelVisibilityMode="labeled"
-        android:background="@color/beige"
+        android:background="@color/green"
         app:itemTextColor="@color/black"
         android:layout_gravity="bottom"
         app:itemBackground="@android:color/transparent"

@@ -31,6 +31,7 @@ data class Guide(
 )
 
 data class Info(
+    val trafficDistance: Double,
     val totalTime: Int,
     val totalWalk: Int,
     val payment: Int,

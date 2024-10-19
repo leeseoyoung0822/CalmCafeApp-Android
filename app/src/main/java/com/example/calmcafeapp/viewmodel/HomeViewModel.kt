@@ -170,27 +170,25 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    // 카페 검색 함수
     fun searchCafesInArea(area: String) {
-        val query = "$area 근처 카페"
-        Log.d("query11", "${query}")
+        val query = "$area 카페"
+        Log.d("query11", query)
         _isLoading.value = true
-
         val call = naverApiService.searchLocal(
             query = query,
             display = 50,
             start = 1,
             sort = "sim"
         )
-
         call.enqueue(object : Callback<SearchMapResponse> {
             override fun onResponse(call: Call<SearchMapResponse>, response: Response<SearchMapResponse>) {
-                Log.d("search","${response}")
+                Log.d("search", response.toString())
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    val items = response.body()?.items ?: emptyList()
-                    Log.d("item", "${items}")
-                    // 여기서items가 null 값 반환
+                    val items = response.body()?.items?.map { item ->
+                        item.copy(title = removeHtmlTags(item.title))
+                    } ?: emptyList()
+                    Log.d("item", items.toString())
                     _cafes.value = items
                 } else {
                     _errorMessage.value = "API 호출에 실패했습니다."
@@ -203,6 +201,7 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
+
 
 
     fun resetGraphicDataCounters() {
@@ -368,6 +367,12 @@ class HomeViewModel : ViewModel() {
                 _errorMessage.value = "도보 경로 검색 오류: ${t.message}"
             }
         })
+    }
+
+    fun removeHtmlTags(input: String): String {
+        return input.replace(Regex("<.*?>"), "")
+
+
     }
 
 }
