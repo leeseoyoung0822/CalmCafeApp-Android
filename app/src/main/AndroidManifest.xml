@@ -4,9 +4,12 @@
 
     <!-- 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
 
     <application
         android:name=".KakaoApplication"
@@ -19,6 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalmCafeApp"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="${NCP_API_KEY_ID}" />
+
+
 
         <!-- 로그인 액티비티 -->
         <activity

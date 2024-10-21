@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/navigation_rank"
-        android:icon="@drawable/ic_rank"
+        android:icon="@drawable/rank_selector"
         android:title="" />
 
     <item
         android:id="@+id/navigation_map"
-        android:icon="@drawable/ic_mappin"
+        android:icon="@drawable/mappin_selector"
         android:title="" />
 
     <item
         android:id="@+id/navigation_setting"
-        android:icon="@drawable/ic_setting"
+        android:icon="@drawable/setting_selector"
         android:title="" />
 
 </menu>
