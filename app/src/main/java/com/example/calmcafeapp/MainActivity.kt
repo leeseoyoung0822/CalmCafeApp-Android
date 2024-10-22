@@ -38,10 +38,10 @@ class MainActivity : AppCompatActivity() {
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 로그아웃 버튼 클릭 시 로그아웃 처리
+        /* 로그아웃 버튼 클릭 시 로그아웃 처리
         binding.logoutBtn.setOnClickListener {
             logout()
-        }
+        }*/
 
         initBottomNav()
 
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         binding.navigationMain.selectedItemId = R.id.navigation_map
     }
 
-    // 로그아웃 처리 메서드
+    /* 로그아웃 처리 메서드
     private fun logout() {
         UserApiClient.instance.logout { error ->
             if (error != null) {
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                 finish() // 현재 액티비티 종료
             }
         }
-    }
+    }*/
 
 
     private fun showInit() {
