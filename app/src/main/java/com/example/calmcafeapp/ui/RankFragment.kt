@@ -71,6 +71,12 @@ class RankFragment : Fragment() {
             binding.categoryTitle.text = "즐겨찾기 TOP 랭킹"
         }
 
+        binding.updateBtn.setOnClickListener {
+            val selectedRegion = getCurrentRegion() // 현재 선택된 지역
+            val selectedButton = getSelectedButton() // 현재 선택된 버튼
+            loadData(selectedRegion, selectedButton) // 데이터를 다시 불러옴
+        }
+
         /*
         binding.searchBtn.setOnClickListener {
             // SearchFragment로 이동
