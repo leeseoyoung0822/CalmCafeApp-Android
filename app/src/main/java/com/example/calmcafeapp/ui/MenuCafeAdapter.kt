@@ -42,7 +42,7 @@ class MenuCafeAdapter(private var list: ArrayList<CafeMenuData>):RecyclerView.Ad
         )
     }
 
-    override fun onBindViewHolder(holder: MenuCafeAdapter.MenuCafeHolder, position: Int) {
+    override fun onBindViewHolder(holder: MenuCafeHolder, position: Int) {
         val menu = list[position]
         Glide.with(holder.itemView.context)
             .load(menu.menu_img)
