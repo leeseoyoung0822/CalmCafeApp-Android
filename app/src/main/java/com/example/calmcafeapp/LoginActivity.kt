@@ -8,10 +8,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.calmcafeapp.apiManager.ApiManager
+import com.example.calmcafeapp.data.TokenResponse
+import com.example.calmcafeapp.data.UserInfo
 import com.example.calmcafeapp.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.user.UserApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
@@ -49,18 +55,55 @@ class LoginActivity : AppCompatActivity() {
         kakaoCallback = { token, error ->
             if (error != null) {
                 Log.d("[카카오로그인]", "로그인 실패: ${error.message}")
-                // 에러 처리 추가 가능
             } else if (token != null) {
                 Log.d("[카카오로그인]", "로그인에 성공하였습니다. 액세스 토큰${token.accessToken}")
-                // 로그인 성공 후 MainActivity로 이동하여 HomeFragment로 전환
-                val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                finish() // 현재 액티비티 종료
 
-            } else {
-                Log.d("[카카오로그인]", "토큰==null error==null")
+                // 카카오 사용자 정보 요청
+                UserApiClient.instance.me { user, meError ->
+                    if (meError != null) {
+                        Log.e("[카카오사용자정보]", "사용자 정보 요청 실패", meError)
+                    } else if (user != null) {
+                        // 백엔드로 전달할 사용자 정보 생성
+                        val userInfo = UserInfo(
+                            email = user.kakaoAccount?.email ?: "",
+                            username = user.kakaoAccount?.profile?.nickname ?: "",
+                            provider = "kakao"
+                        )
+
+                        // Retrofit을 사용하여 백엔드 API 호출
+                        val call = ApiManager.instance.generateToken(userInfo)
+                        call.enqueue(object : Callback<TokenResponse> {
+                            override fun onResponse(
+                                call: Call<TokenResponse>,
+                                response: Response<TokenResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val tokenResponse = response.body()
+                                    if (tokenResponse?.isSuccess == true) {
+                                        Log.d("[백엔드]", "토큰 생성 성공: ${tokenResponse.result.accessToken}")
+
+                                        // 로그인 성공 후 MainActivity로 이동
+                                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        startActivity(intent)
+                                        finish() // 현재 액티비티 종료
+                                    } else {
+                                        Log.e("[백엔드]", "토큰 생성 실패: ${tokenResponse?.message}")
+                                    }
+                                } else {
+                                    Log.e("[백엔드]", "응답 실패")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                                Log.e("[백엔드]", "API 호출 실패", t)
+                            }
+                        })
+                    }
+                }
             }
         }
     }
+
+
 }
