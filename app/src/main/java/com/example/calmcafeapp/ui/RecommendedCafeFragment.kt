@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.calmcafeapp.MainActivity
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.RecommendCafe
 import com.example.calmcafeapp.databinding.FragmentRecommendedCafeBinding
@@ -36,7 +37,7 @@ class RecommendedCafeFragment : BaseFragment<FragmentRecommendedCafeBinding>(R.l
                         putString("title", cafe.title)
                     }
                 }
-                (activity as MainActivity).addFragment(fragment)
+                (activity as UserActivity).addFragment(fragment)
             }
         })
     }

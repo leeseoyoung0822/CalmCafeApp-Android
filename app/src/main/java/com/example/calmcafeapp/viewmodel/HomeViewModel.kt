@@ -134,8 +134,9 @@ class HomeViewModel : ViewModel() {
                         val area1 = region.area1.name
                         val area2 = region.area2.name
                         val area3 = region.area3.name
+                        val area4 = region.area4.name
 
-                        val address = "$area1 $area2 $area3"
+                        val address = "$area1 $area2 $area3 $area4"
                         _address.value = address
                     } else {
                         Log.d("add", "${response.body()}")
@@ -160,6 +161,7 @@ class HomeViewModel : ViewModel() {
         val part1 = parts.getOrNull(1) ?: ""
         val part2 = parts.getOrNull(2) ?: ""
         val part3 = parts.getOrNull(3) ?: ""
+
 
         return when {
             part0.isNotEmpty() && part1.isNotEmpty() && part3.isNotEmpty() -> "$part0 $part1 $part3"
