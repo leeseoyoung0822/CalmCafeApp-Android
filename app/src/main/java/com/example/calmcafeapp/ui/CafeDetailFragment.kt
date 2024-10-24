@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.data.BottomSheetExpander
 import com.example.calmcafeapp.data.OnRouteStartListener
 import com.example.calmcafeapp.databinding.FragmentCafeDetailBinding
@@ -76,6 +77,9 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         // 출발하기 버튼 클릭 리스너 설정
         binding.startBtn.setOnClickListener {
             // 버튼이 눌리면 인터페이스 메서드 호출
+            (activity as?UserActivity)?.addFragment(NavigatorFragment())
+
+
             listener?.onRouteStart()
             dismiss() // 바텀 시트 닫기
         }
