@@ -1,48 +1,36 @@
 package com.example.calmcafeapp.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.base.BaseFragment
+import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentFavoriteBinding
 
-class FavoriteFragment : Fragment() {
+class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
 
-    private var _binding: FragmentFavoriteBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun initStartView() {
         // RecyclerView 초기화
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         // RecyclerView 어댑터 설정 (임시 데이터 설정)
         val initialCafeList = mutableListOf(
-            Cafe("카페 A", "서울특별시 00구", "혼잡도: 보통", R.drawable.favorite),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
-            Cafe("카페 B", "서울특별시 00구", "혼잡도: 혼잡", R.drawable.favorite),
+            CafeData("R.drawable.favorite", "카페 A", "혼잡도: 보통"),
+            CafeData("R.drawable.favorite", "카페 B", "혼잡도: 혼잡"),
+            CafeData("R.drawable.favorite", "카페 C", "혼잡도: 혼잡"),
+            CafeData("R.drawable.favorite", "카페 D", "혼잡도: 혼잡"),
+            CafeData("R.drawable.favorite", "카페 E", "혼잡도: 혼잡"),
+            CafeData("R.drawable.favorite", "카페 F", "혼잡도: 혼잡"),
+            CafeData("R.drawable.favorite", "카페 G", "혼잡도: 혼잡")
         )
 
         val adapter = CafeAdapter(initialCafeList)
         binding.recyclerView.adapter = adapter
+    }
 
+    override fun initAfterBinding() {
+        // 뒤로가기 버튼 설정
         binding.backButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
@@ -50,6 +38,5 @@ class FavoriteFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }

@@ -1,47 +1,33 @@
 package com.example.calmcafeapp.ui
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.calmcafeapp.R
+import com.example.calmcafeapp.base.BaseFragment
+import com.example.calmcafeapp.data.CafeCouponData
 import com.example.calmcafeapp.databinding.FragmentCouponBinding
 
-class CouponFragment : Fragment() {
+class CouponFragment : BaseFragment<FragmentCouponBinding>(R.layout.fragment_coupon) {
 
-    private var _binding: FragmentCouponBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentCouponBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun initStartView() {
         // RecyclerView의 layoutManager 설정
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // 샘플 데이터 추가
-        val couponList = mutableListOf(
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            Coupon("스타벅스", "take-out 10% 할인쿠폰", "24.10.20", "24.10.22")
+        val couponList: ArrayList<CafeCouponData> = arrayListOf(
+            CafeCouponData(1, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
+            CafeCouponData(2, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
+            CafeCouponData(3, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
+            CafeCouponData(4, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
+            CafeCouponData(5, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
+            CafeCouponData(6, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22")
         )
 
-        val couponAdapter = CouponAdapter(couponList)
+        val couponAdapter = CouponCafeAdapter(couponList)
         binding.recyclerView.adapter = couponAdapter
+    }
 
+    override fun initAfterBinding() {
+        // 뒤로가기 버튼 설정
         binding.backButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
@@ -49,7 +35,5 @@ class CouponFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }
-

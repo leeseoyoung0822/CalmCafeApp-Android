@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRrlfight="true"
+            android:layout_alignParentRight="true"
             android:backgroundTint="@color/green"
             android:layout_margin="16dp"
             android:text="길찾기 취소"
@@ -28,7 +28,7 @@
 <!--            android:id="@+id/tvRemainingInfo"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:text="남은 거리: &#45;&#45;, 남은 시간: &#45;&#45;"-->
+<!--            android:text="남은 거리: -, 남은 시간: -"-->
 <!--            android:textSize="16sp"-->
 <!--            android:layout_alignParentTop="true"-->
 <!--            android:layout_centerHorizontal="true"-->
@@ -37,4 +37,3 @@
     </RelativeLayout>
 
 </layout>
-

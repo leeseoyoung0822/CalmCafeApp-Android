@@ -13,6 +13,7 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
     private lateinit var menuCafeAdapter: MenuCafeAdapter
     private lateinit var couponCafeAdapter: CouponCafeAdapter
 
+
     override fun initStartView() {
         super.initStartView()
 
