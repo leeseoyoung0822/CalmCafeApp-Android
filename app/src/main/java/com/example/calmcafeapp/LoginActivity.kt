@@ -8,10 +8,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.calmcafeapp.apiManager.ApiManager
+import com.example.calmcafeapp.data.TokenResponse
+import com.example.calmcafeapp.data.UserInfo
 import com.example.calmcafeapp.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.user.UserApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.util.Base64
@@ -29,7 +35,6 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getKeyHash()
 
         // 카카오 로그인 콜백 설정
         setKakaoCallback()
@@ -59,30 +64,53 @@ class LoginActivity : AppCompatActivity() {
             } else if (token != null) {
                 Log.d("[카카오로그인]", "로그인에 성공하였습니다. 액세스 토큰${token.accessToken}")
 
-                // 예시: 서버에서 role을 받아왔다고 가정하고 role에 따른 분기 처리
-                val role = "CAFE" // 실제로는 API 응답에서 받아오는 값으로 대체
-                handleLoginResponse(token.accessToken, role)
-            } else {
-                Log.d("[카카오로그인]", "토큰==null error==null")
-            }
-        }
-    }
+                // 카카오 사용자 정보 요청
+                UserApiClient.instance.me { user, meError ->
+                    if (meError != null) {
+                        Log.e("[카카오사용자정보]", "사용자 정보 요청 실패", meError)
+                    } else if (user != null) {
+                        // 백엔드로 전달할 사용자 정보 생성
+                        val userInfo = UserInfo(
+                            email = user.kakaoAccount?.email ?: "",
+                            username = user.kakaoAccount?.profile?.nickname ?: "",
+                            provider = "kakao"
+                        )
 
-    private fun getKeyHash() {
-        try {
-            val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-            for (signature in info.signatures) {
-                val md: MessageDigest = MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                val keyHash = Base64.encodeToString(md.digest(), Base64.NO_WRAP)
-                Log.d("KeyHash", "KeyHash: $keyHash")
+                        // Retrofit을 사용하여 백엔드 API 호출
+                        val call = ApiManager.instance.generateToken(userInfo)
+                        call.enqueue(object : Callback<TokenResponse> {
+                            override fun onResponse(
+                                call: Call<TokenResponse>,
+                                response: Response<TokenResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val tokenResponse = response.body()
+                                    if (tokenResponse?.isSuccess == true) {
+                                        Log.d("[백엔드]", "토큰 생성 성공: ${tokenResponse.result.accessToken}")
+
+                                        // 로그인 성공 후 MainActivity로 이동
+                                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        startActivity(intent)
+                                        finish() // 현재 액티비티 종료
+                                    } else {
+                                        Log.e("[백엔드]", "토큰 생성 실패: ${tokenResponse?.message}")
+                                    }
+                                } else {
+                                    Log.e("[백엔드]", "응답 실패")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                                Log.e("[백엔드]", "API 호출 실패", t)
+                            }
+                        })
+                    }
+                }
             }
-        } catch (e: PackageManager.NameNotFoundException) {
-            Log.e("KeyHash", "NameNotFoundException: ${e.message}")
-        } catch (e: NoSuchAlgorithmException) {
-            Log.e("KeyHash", "NoSuchAlgorithmException: ${e.message}")
         }
-    }
+
+
 
     fun handleLoginResponse(accessToken: String, role: String) {
         when (role) {
@@ -92,12 +120,14 @@ class LoginActivity : AppCompatActivity() {
                 intent.putExtra("accessToken", accessToken)
                 startActivity(intent)
             }
+
             "USER" -> {
                 // 일반 유저용 메인 화면으로 이동
                 val intent = Intent(this, UserActivity::class.java)
                 intent.putExtra("accessToken", accessToken)
                 startActivity(intent)
             }
+
             else -> {
                 Log.e("Login", "알 수 없는 역할: $role")
                 // 예외 처리
@@ -105,5 +135,6 @@ class LoginActivity : AppCompatActivity() {
         }
         finish() // 현재 액티비티 종료
     }
-
+    }
 }
+
