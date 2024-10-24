@@ -2,6 +2,7 @@ package com.example.calmcafeapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         // 카카오 로그인 정보 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            Log.d("login", "${tokenInfo}")
             if (error != null) {
                 // 로그인 정보가 없으면 LoginActivity로 이동
                 val intent = Intent(this, LoginActivity::class.java)
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
     }*/
     private fun navigateToRoleActivity(role: String) {
+        Log.d("role", "${role}")
         val intent = when (role) {
             "CAFE" -> Intent(this, OwnerActivity::class.java) // 카페 주인용 액티비티로 이동
             "USER" -> Intent(this, UserActivity::class.java) // 일반 유저용 액티비티로 이동
