@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.data.BottomSheetExpander
+import com.example.calmcafeapp.data.LocalItem
 import com.example.calmcafeapp.data.OnRouteStartListener
 import com.example.calmcafeapp.databinding.FragmentCafeDetailBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -77,6 +78,7 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         // 출발하기 버튼 클릭 리스너 설정
         binding.startBtn.setOnClickListener {
             // 버튼이 눌리면 인터페이스 메서드 호출
+            // 네비게이션
             (activity as?UserActivity)?.addFragment(NavigatorFragment())
 
 
@@ -149,5 +151,19 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             }
         }
     }
+
+//    private fun showrouteInfo(route: LocalItem) {
+//        selectedroute = route  // 선택된 카페 정보 저장
+//        val navigatorFragment = NavigatorFragment()
+//        navigatorFragment.setTargetFragment(this, 0)
+//        // 카페 정보를 프래그먼트로 전달
+//        val bundle = Bundle().apply {
+//            putString("cafeTitle", cafe.title)
+//            putString("cafeAddress", cafe.address)
+//            // 필요한 다른 정보도 여기에 추가
+//        }
+//        cafeDetailFragment.arguments = bundle
+//        cafeDetailFragment.show(parentFragmentManager, "CafeDetailFragment")
+//    }
 
 }
