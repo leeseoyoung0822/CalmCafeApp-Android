@@ -22,9 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiManager {
-
-    // 회원 토큰 반환 api
     private var BASE_URL = BuildConfig.AUTH_BASE_URL
+    //회원 토큰 반환 api
     val instance: LoginService by lazy {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
