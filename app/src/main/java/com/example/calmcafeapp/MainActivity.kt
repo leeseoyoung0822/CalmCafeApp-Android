@@ -2,6 +2,7 @@ package com.example.calmcafeapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,15 +23,19 @@ class MainActivity : AppCompatActivity() {
 
         // 카카오 로그인 정보 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            Log.d("login", "${tokenInfo}")
             if (error != null) {
                 // 로그인 정보가 없으면 LoginActivity로 이동
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
+            } else if (tokenInfo != null) {
+                // role에 따라 분기 처리
+                val role = getUserRole() // role 값 가져옴
+                navigateToRoleActivity(role)
             }
             else if (tokenInfo != null) {
                 // 토큰 정보가 있으면 자동 로그인
-                showInit()
             }
         }
 
@@ -43,12 +48,6 @@ class MainActivity : AppCompatActivity() {
             logout()
         }*/
 
-        initBottomNav()
-
-//        setSupportActionBar(binding.toolbar)
-
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.navigationMain.selectedItemId = R.id.navigation_map
     }
 
     /* 로그아웃 처리 메서드
@@ -63,55 +62,26 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
-                finish() // 현재 액티비티 종료
+                finish()
             }
         }
     }*/
-
-
-    private fun showInit() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container_main, HomeFragment()) // HomeFragment를 FragmentContainerView에 교체
-            .commit()
-    }
-
-    private fun initBottomNav() {
-        binding.navigationMain.itemIconTintList = null
-
-        binding.navigationMain.setOnItemSelectedListener {
-            when(it.itemId) {
-                R.id.navigation_map -> {
-                    addFragment(HomeFragment())
-                }
-
-                R.id.navigation_rank -> {
-                    addFragment(RankFragment())
-                }
-
-                R.id.navigation_setting -> {
-                    addFragment(SettingFragment())
-                }
+    private fun navigateToRoleActivity(role: String) {
+        Log.d("role", "${role}")
+        val intent = when (role) {
+            "CAFE" -> Intent(this, OwnerActivity::class.java) // 카페 주인용 액티비티로 이동
+            "USER" -> Intent(this, UserActivity::class.java) // 일반 유저용 액티비티로 이동
+            else -> {
+                Toast.makeText(this, "알 수 없는 역할입니다.", Toast.LENGTH_SHORT).show()
+                return
             }
-            return@setOnItemSelectedListener true
         }
-
-        binding.navigationMain.setOnItemReselectedListener {  } // 바텀네비 재클릭시 화면 재생성 방지
+        startActivity(intent)
+        finish()
     }
-    fun changeFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.container_main, fragment).commit()
-    }
-    fun addFragment(fragment: Fragment) {
-        supportFragmentManager
-            .commit {
-                setCustomAnimations(
-                    R.anim.slide_3,
-                    R.anim.fade_out,
-                    R.anim.slide_1,
-                    R.anim.fade_out
-                )
-                replace(R.id.container_main, fragment)
 
-                addToBackStack(null)
-            }
+    private fun getUserRole(): String {
+
+        return "USER"
     }
 }
