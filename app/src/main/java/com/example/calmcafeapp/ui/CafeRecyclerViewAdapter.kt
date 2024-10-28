@@ -1,34 +1,42 @@
 package com.example.calmcafeapp.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.RankingItemViewBinding
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.data.RankingResponse
+import com.example.calmcafeapp.data.StoreRanking
 
 
-class CafeRecyclerViewAdapter(private var mItem: List<CafeData>) : RecyclerView.Adapter<CafeRecyclerViewAdapter.CafeViewHolder>() {
+class CafeRecyclerViewAdapter(private var mItem: MutableList<StoreRanking>) : RecyclerView.Adapter<CafeRecyclerViewAdapter.CafeViewHolder>() {
 
     class CafeViewHolder(private val binding: RankingItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(cafeData:CafeData){
-            binding.cafePhotoImv.setImageResource(cafeData.cafe_img)
+        fun bind(storeRanking: StoreRanking, position: Int) {
+            Glide.with(binding.cafePhotoImv.context)
+                .load(storeRanking.image)
+                .into(binding.cafePhotoImv) // 서버에서 가져온 이미지 로딩
+            binding.cafeNameTv.text = storeRanking.name
+            binding.cafeStateTv.text = storeRanking.userCongestionLevel
 
-
-            binding.cafeNameTv.text=cafeData.cafe_name
-            binding.cafeStateTv.text= cafeData.cafe_state
+            // 상위 3개의 아이템에만 순위 배지를 표시
+            if (position < 3) {
+                binding.rankingBadge.visibility = View.VISIBLE
+                binding.rankingBadge.text = (position + 1).toString()
+            } else {
+                binding.rankingBadge.visibility = View.GONE
+            }
 
             // 좋아요 버튼 상태 초기화
-            updateLikeButton(cafeData.isLiked)
+            updateLikeButton(storeRanking.isFavorite)
 
             // 좋아요 버튼 클릭 이벤트 설정
             binding.likesBtn.setOnClickListener {
-                cafeData.isLiked = !cafeData.isLiked // 좋아요 상태 반전
-                updateLikeButton(cafeData.isLiked) // 좋아요 버튼 이미지 업데이트
+                storeRanking.isFavorite = !storeRanking.isFavorite // 좋아요 상태 반전
+                updateLikeButton(storeRanking.isFavorite) // 좋아요 버튼 이미지 업데이트
             }
         }
 
@@ -44,18 +52,21 @@ class CafeRecyclerViewAdapter(private var mItem: List<CafeData>) : RecyclerView.
 
     //만들어진 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeRecyclerViewAdapter.CafeViewHolder {
-        val binding=RankingItemViewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return CafeRecyclerViewAdapter.CafeViewHolder(binding)
+        val binding = RankingItemViewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return CafeViewHolder(binding)
     }
 
     override fun getItemCount(): Int = mItem.size
 
     override fun onBindViewHolder(holder: CafeViewHolder, position: Int) {
-        holder.bind(mItem[position])
+        holder.bind(mItem[position],position)
+
+
     }
 
-    fun updateData(newData: List<CafeData>) {
-        mItem = newData
+    fun updateData(newCafeList: List<StoreRanking>) {
+        mItem.clear()
+        mItem.addAll(newCafeList)
         notifyDataSetChanged()
     }
 
