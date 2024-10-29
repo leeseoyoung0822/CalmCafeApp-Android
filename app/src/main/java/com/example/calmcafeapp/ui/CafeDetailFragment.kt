@@ -3,9 +3,11 @@ package com.example.calmcafeapp.ui
 import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.UserActivity
@@ -13,24 +15,32 @@ import com.example.calmcafeapp.data.BottomSheetExpander
 import com.example.calmcafeapp.data.LocalItem
 import com.example.calmcafeapp.data.OnRouteStartListener
 import com.example.calmcafeapp.databinding.FragmentCafeDetailBinding
+import com.example.calmcafeapp.viewmodel.RankViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayoutMediator
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     private var _binding: FragmentCafeDetailBinding? = null
     private val binding get() = _binding!!
-
+    private val rankViewModel: RankViewModel by viewModels() // ViewModel 가져오기
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     // 라우트 시작을 위한 리스너
     private var listener: OnRouteStartListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // targetFragment가 OnRouteStartListener를 구현하고 있는지 확인
-        listener = targetFragment as? OnRouteStartListener
+        listener = parentFragment as? OnRouteStartListener ?: context as? OnRouteStartListener
         if (listener == null) {
-            throw ClassCastException("$targetFragment must implement OnRouteStartListener")
+            Log.e("CafeDetailFragment", "OnRouteStartListener가 구현되지 않았습니다. 일부 기능이 제한될 수 있습니다.")
+
         }
     }
 
@@ -49,6 +59,37 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         // 전달된 데이터 받기
         val cafeTitle = arguments?.getString("cafeTitle") ?: "카페 이름 없음"
         binding.cafeName.text = cafeTitle
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // 전달받은 storeId 가져오기
+        val storeId = arguments?.getInt("storeId") ?: return
+
+        // 사용자 위치 가져오기
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                val userLatitude = location.latitude
+                val userLongitude = location.longitude
+
+                // ViewModel을 통해 API 호출 (위도와 경도를 함께 전달)
+                rankViewModel.fetchCafeDetail(storeId, userLatitude, userLongitude)
+            } else {
+                // 위치를 가져올 수 없는 경우 예외 처리
+                Log.e("CafeDetailFragment", "사용자 위치 정보를 가져올 수 없습니다.")
+            }
+        }
+        // API 응답 관찰 및 UI 업데이트
+        rankViewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetail ->
+            cafeDetail?.let {
+                binding.cafeName.text = cafeDetail.name
+                binding.likesNum.text = "${cafeDetail.favoriteCount}개"
+                val (hour, minute) = parseTime(cafeDetail.openingTime) ?: Pair(0, 0)
+                binding.openTime.text = "$hour:$minute 오픈"
+                // 거리 변환 후 TextView에 설정
+                binding.distance.text = formatDistance(cafeDetail.distance)
+            }
+        }
+
 
         // ViewPager2와 TabLayout 설정
         val viewPager = binding.viewPager
@@ -117,6 +158,28 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             binding.likesNum.text = "${currentLikes + 1}개"
         }
         binding.likesBtn.tag = !isLiked
+    }
+
+    // 시간 형식 파싱 함수
+    private fun parseTime(timeString: String): Pair<Int, Int>? {
+        return try {
+            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val date = dateFormat.parse(timeString)
+            val calendar = Calendar.getInstance().apply { time = date }
+            Pair(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+        } catch (e: Exception) {
+            Log.e("CafeDetailFragment", "시간 형식 파싱 오류: ${e.message}")
+            null
+        }
+    }
+
+    private fun formatDistance(distanceInMeters: Double): String {
+        return if (distanceInMeters >= 1000) {
+            val distanceInKm = distanceInMeters / 1000.0
+            "내 위치에서 %.1fkm".format(distanceInKm)
+        } else {
+            "내 위치에서 ${distanceInMeters}m"
+        }
     }
 
     override fun onDestroyView() {

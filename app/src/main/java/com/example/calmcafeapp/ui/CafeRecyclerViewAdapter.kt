@@ -11,16 +11,20 @@ import com.example.calmcafeapp.data.RankingResponse
 import com.example.calmcafeapp.data.StoreRanking
 
 
-class CafeRecyclerViewAdapter(private var mItem: MutableList<StoreRanking>) : RecyclerView.Adapter<CafeRecyclerViewAdapter.CafeViewHolder>() {
+class CafeRecyclerViewAdapter(private var mItem: MutableList<StoreRanking>,private val onItemClick: (storeId: Int) -> Unit) : RecyclerView.Adapter<CafeRecyclerViewAdapter.CafeViewHolder>() {
 
     class CafeViewHolder(private val binding: RankingItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(storeRanking: StoreRanking, position: Int) {
+        fun bind(storeRanking: StoreRanking, position: Int, onItemClick: (storeId: Int) -> Unit) {
             Glide.with(binding.cafePhotoImv.context)
                 .load(storeRanking.image)
                 .into(binding.cafePhotoImv) // 서버에서 가져온 이미지 로딩
             binding.cafeNameTv.text = storeRanking.name
             binding.cafeStateTv.text = storeRanking.userCongestionLevel
+
+            itemView.setOnClickListener {
+                onItemClick(storeRanking.id)  // 클릭 시 storeId를 전달
+            }
 
             // 상위 3개의 아이템에만 순위 배지를 표시
             if (position < 3) {
@@ -50,7 +54,7 @@ class CafeRecyclerViewAdapter(private var mItem: MutableList<StoreRanking>) : Re
     }
 
 
-    //만들어진 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
+    // 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeRecyclerViewAdapter.CafeViewHolder {
         val binding = RankingItemViewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return CafeViewHolder(binding)
@@ -59,7 +63,7 @@ class CafeRecyclerViewAdapter(private var mItem: MutableList<StoreRanking>) : Re
     override fun getItemCount(): Int = mItem.size
 
     override fun onBindViewHolder(holder: CafeViewHolder, position: Int) {
-        holder.bind(mItem[position],position)
+        holder.bind(mItem[position],position,onItemClick)
 
 
     }

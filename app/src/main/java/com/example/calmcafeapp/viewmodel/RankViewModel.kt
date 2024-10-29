@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.calmcafeapp.api.RankingService
 import com.example.calmcafeapp.apiManager.ApiManager
+import com.example.calmcafeapp.data.CafeDetail
+import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.RankingResponse
 import com.example.calmcafeapp.data.StoreRanking
 import retrofit2.Call
@@ -18,6 +20,10 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _storeList = MutableLiveData<List<StoreRanking>>()
     val storeList: LiveData<List<StoreRanking>> = _storeList
+
+    private val _cafeDetail = MutableLiveData<CafeDetail>()
+    val cafeDetail: LiveData<CafeDetail> = _cafeDetail
+
     private val apiService: RankingService = ApiManager.rankingService
 
 
@@ -72,6 +78,25 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
 
             override fun onFailure(call: Call<RankingResponse>, t: Throwable) {
                 // 실패 시 로깅 또는 에러 처리
+            }
+        })
+    }
+
+    // 카페 상세 정보를 가져오는 함수
+    fun fetchCafeDetail(storeId: Int, userLatitude: Double, userLongitude: Double) {
+        apiService.getCafeDetail(storeId, userLatitude, userLongitude).enqueue(object : Callback<CafeDetailResponse> {
+            override fun onResponse(call: Call<CafeDetailResponse>, response: Response<CafeDetailResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    _cafeDetail.value = response.body()?.result
+                    Log.d("RankViewModel", "Cafe detail fetched: ${response.body()?.result}")
+                } else {
+                    val errorMessage = response.errorBody()?.string()
+                    Log.e("RankViewModel", "Failed to fetch cafe detail. Status code: ${response.code()}, Error: $errorMessage")
+                }
+            }
+
+            override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
+                Log.e("RankViewModel", "Network error: ${t.message}")
             }
         })
     }

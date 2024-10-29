@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentRankBinding
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.viewmodel.RankViewModel
@@ -111,7 +110,15 @@ class RankFragment : Fragment() {
     }
     // RecyclerView 초기화 함수
     private fun initCafeRecyclerView() {
-        adapter = CafeRecyclerViewAdapter(mutableListOf()) // 어댑터 객체 생성
+        // RankFragment에서 어댑터를 초기화할 때 클릭 리스너를 설정하여, 클릭 시 CafeDetailFragment로 이동하게 만듦
+        adapter = CafeRecyclerViewAdapter(mutableListOf()){ storeId ->
+            val bundle = Bundle().apply {
+                putInt("storeId", storeId)
+            }
+            val detailFragment = CafeDetailFragment()
+            detailFragment.arguments = bundle
+            detailFragment.show(parentFragmentManager, "CafeDetailFragment")  // BottomSheetDialogFragment로 열기
+        }
         binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
         binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
     }

@@ -50,6 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:backgroundTint="@color/green"
                     android:text="출발하기"
                     android:textColor="@color/white"
@@ -101,7 +102,7 @@
                     android:id="@+id/open_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
                     android:text="21:00 라스트 오더"
                     app:layout_constraintStart_toEndOf="@id/open_state"
                     app:layout_constraintTop_toTopOf="@id/open_state" />
@@ -113,7 +114,7 @@
                     android:layout_marginTop="8dp"
                     android:drawableStart="@drawable/location"
                     android:drawablePadding="8dp"
-                    android:text="내 위치에서 200m"
+                    android:text=""
                     app:layout_constraintStart_toStartOf="@id/open_state"
                     app:layout_constraintTop_toBottomOf="@id/open_state" />
 
