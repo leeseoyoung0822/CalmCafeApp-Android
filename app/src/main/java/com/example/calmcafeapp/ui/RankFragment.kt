@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import android.widget.Button
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -23,7 +24,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 class RankFragment : Fragment() {
 
     private lateinit var binding: FragmentRankBinding
-    private val rankViewModel: RankViewModel by viewModels()
+    private val rankViewModel: RankViewModel by activityViewModels()
     private lateinit var adapter: CafeRecyclerViewAdapter // 어댑터 객체 선언
     private val regions = listOf(
         "전국", "서울", "경기",
@@ -53,11 +54,18 @@ class RankFragment : Fragment() {
         setButtonSelected(binding.btn1)
         binding.categoryTitle.text = "실시간 방문자 수 TOP 랭킹"
 
-        // ViewModel의 데이터 변화 관찰
-        rankViewModel.storeList.observe(viewLifecycleOwner, Observer { storeList ->
-            Log.d("RankFragment", "Observed data for RecyclerView: $storeList")
+        // 데이터 변경 감지 및 업데이트
+        rankViewModel.storeList.observe(viewLifecycleOwner) { storeList ->
             adapter.updateData(storeList)
-        })
+        }
+
+        // 즐겨찾기 상태 변경을 감지하여 어댑터 업데이트
+        rankViewModel.favoriteStoreId.observe(viewLifecycleOwner) { updatedStoreId ->
+            if (updatedStoreId != null) {
+                adapter.updateLikeStatus(updatedStoreId) // 해당 아이템만 업데이트
+                rankViewModel.resetFavoriteStoreId() // 초기화하여 중복 반영 방지
+            }
+        }
 
         setupTableLayout()
 
@@ -108,17 +116,29 @@ class RankFragment : Fragment() {
 
         }*/
     }
+
     // RecyclerView 초기화 함수
     private fun initCafeRecyclerView() {
         // RankFragment에서 어댑터를 초기화할 때 클릭 리스너를 설정하여, 클릭 시 CafeDetailFragment로 이동하게 만듦
-        adapter = CafeRecyclerViewAdapter(mutableListOf()){ storeId ->
-            val bundle = Bundle().apply {
-                putInt("storeId", storeId)
+        adapter = CafeRecyclerViewAdapter(
+            mItem = mutableListOf(),
+            onItemClick = { storeId ->
+                val bundle = Bundle().apply {
+                    putInt("storeId", storeId)
+                }
+                val detailFragment = CafeDetailFragment()
+                detailFragment.arguments = bundle
+                detailFragment.show(parentFragmentManager, "CafeDetailFragment")  // BottomSheetDialogFragment로 열기
+            },
+            onFavoriteClick = { storeId, isFavorite ->
+                if (isFavorite) {
+                    rankViewModel.removeFavorite(storeId)
+                } else {
+                    rankViewModel.addFavorite(storeId)
+                }
             }
-            val detailFragment = CafeDetailFragment()
-            detailFragment.arguments = bundle
-            detailFragment.show(parentFragmentManager, "CafeDetailFragment")  // BottomSheetDialogFragment로 열기
-        }
+        )
+        // 어댑터에 즐겨찾기 상태 업데이트 관찰 설정
         binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
         binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
     }

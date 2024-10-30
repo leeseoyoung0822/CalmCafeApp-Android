@@ -1,6 +1,6 @@
 package com.example.calmcafeapp.data
 
-data class CafeDetailResponse(
+data class CafeDetailResponse (
     val isSuccess: Boolean,
     val code: String,
     val message: String,

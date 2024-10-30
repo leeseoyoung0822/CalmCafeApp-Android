@@ -10,6 +10,7 @@ import com.example.calmcafeapp.api.RankingService
 import com.example.calmcafeapp.apiManager.ApiManager
 import com.example.calmcafeapp.data.CafeDetail
 import com.example.calmcafeapp.data.CafeDetailResponse
+import com.example.calmcafeapp.data.FavoriteResponse
 import com.example.calmcafeapp.data.RankingResponse
 import com.example.calmcafeapp.data.StoreRanking
 import retrofit2.Call
@@ -24,8 +25,10 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
     private val _cafeDetail = MutableLiveData<CafeDetail>()
     val cafeDetail: LiveData<CafeDetail> = _cafeDetail
 
-    private val apiService: RankingService = ApiManager.rankingService
+    private val _favoriteStoreId = MutableLiveData<Int?>()
+    val favoriteStoreId: LiveData<Int?> = _favoriteStoreId
 
+    private val apiService: RankingService = ApiManager.rankingService
 
 
     // 실시간 방문자 수 데이터를 요청하는 함수
@@ -67,7 +70,7 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    // 즐겨찾기 데이터를 요청하는 함수
+    // 즐겨찾기 랭킹 데이터를 요청하는 함수
     fun fetchFavoriteRanking(location: String) {
         apiService.getFavoriteRanking(location).enqueue(object : Callback<RankingResponse>{
             override fun onResponse(call: Call<RankingResponse>, response: Response<RankingResponse>) {
@@ -101,11 +104,50 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
+    // 즐겨찾기 추가 함수
+    fun addFavorite(storeId: Int) {
+        apiService.addFavorite(storeId).enqueue(object : Callback<FavoriteResponse> {
+            override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
+                if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    Log.d("RankViewModel", "즐겨찾기 성공: ${response.body()?.message}")
+                    _favoriteStoreId.value = storeId  // 즐겨찾기 상태 업데이트
+                } else {
+                    Log.e("RankViewModel", "즐겨찾기 실패 - 코드: ${response.code()}, 오류: ${response.errorBody()?.string()}")
+                }
+            }
+            override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                Log.e("RankViewModel", "네트워크 오류: ${t.message}")
+            }
+        })
+    }
+    // 즐겨찾기 취소 함수
+    fun removeFavorite(storeId: Int) {
+        apiService.removeFavorite(storeId).enqueue(object : Callback<FavoriteResponse> {
+            override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
+                if (response.isSuccessful) {
+                    _favoriteStoreId.value = storeId
+                    Log.d("RankViewModel", "즐겨찾기 취소: $storeId")
+                } else {
+                    Log.e("RankViewModel", "즐겨찾기 취소 실패: ${response.code()}")
+                }
+            }
+            override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                Log.e("RankViewModel", "Network error: ${t.message}")
+            }
+        })
+    }
+
+    // 즐겨찾기 ID 초기화 함수
+    fun resetFavoriteStoreId() {
+        _favoriteStoreId.value = null
+    }
+
     // SharedPreferences에서 Access Token을 가져오는 함수
     private fun getAccessToken(): String? {
         val sharedPreferences = getApplication<Application>().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
         val accessToken = sharedPreferences.getString("ACCESS_TOKEN", null)
         Log.d("RankViewModel", "Access Token in ViewModel: $accessToken") // 추가된 로그
         return accessToken
+        //return sharedPreferences.getString("ACCESS_TOKEN", null)
     }
 }

@@ -44,13 +44,12 @@ class LoginActivity : AppCompatActivity() {
         setKakaoCallback()
 
         //Swagger에서 발급받은 토큰을 여기에 입력
-        val swaggerToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzAxMDg0NjQsImV4cCI6MTczMDIxNjQ2NCwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.DL9qQETMXJZlS9O2h0zcnRbqG5nOGylxS7zjw0OwGK7sQisfduaLhedi-n1Z02T8u-DHWQ4moa_BbLAoEhi4Dw"
+        val swaggerToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzAyNTAwMjMsImV4cCI6MTczMDM1ODAyMywiYXV0aG9yaXRpZXMiOiJVU0VSIn0.yQ17c6s8cFULMh1Ep1Dx-vq-lC3AG3R3ek1XAKCRmdJAglYLWGNBexV2ZJa_aq6ArUo7RvwxNvwBrLB4qTYWCA"
 
         // SharedPreferences에 저장
         val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
         sharedPreferences.edit().putString("ACCESS_TOKEN", swaggerToken).apply()
-
-        //Log.d("TokenTest", "Swagger 토큰이 SharedPreferences에 저장되었습니다.")
+        Log.d("TokenTest", "Swagger 토큰이 SharedPreferences에 저장되었습니다.")
 
         // 로그인 버튼 클릭 시 카카오 로그인 실행
         binding.loginBtn.setOnClickListener {
@@ -63,7 +62,6 @@ class LoginActivity : AppCompatActivity() {
         binding.logo.text = spannable
     }
 
-
     fun clikcKakaoLoginBtn(view: View) {
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
             UserApiClient.instance.loginWithKakaoTalk(this, callback = kakaoCallback)
@@ -71,7 +69,6 @@ class LoginActivity : AppCompatActivity() {
             UserApiClient.instance.loginWithKakaoAccount(this, callback = kakaoCallback)
         }
     }
-
     fun setKakaoCallback() {
         kakaoCallback = { token, error ->
             if (error != null) {
