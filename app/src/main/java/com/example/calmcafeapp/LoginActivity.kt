@@ -43,8 +43,7 @@ class LoginActivity : AppCompatActivity() {
         // 카카오 로그인 콜백 설정
         setKakaoCallback()
 
-        //Swagger에서 발급받은 토큰을 여기에 입력
-        val swaggerToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzAyNTAwMjMsImV4cCI6MTczMDM1ODAyMywiYXV0aG9yaXRpZXMiOiJVU0VSIn0.yQ17c6s8cFULMh1Ep1Dx-vq-lC3AG3R3ek1XAKCRmdJAglYLWGNBexV2ZJa_aq6ArUo7RvwxNvwBrLB4qTYWCA"
+        val swaggerToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0NjA4NzAsImV4cCI6MTczMDU2ODg3MCwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.G6nKEEFWptr3nUxm6JxOXnHif8MVKlLf0SN8J0sdPaENQxbReePq6PNXAQn5FB-Bz82sGXHzxclKaPg_Qw2qDw"
 
         // SharedPreferences에 저장
         val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)

@@ -3,8 +3,6 @@ package com.example.calmcafeapp.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.databinding.RankingItemViewBinding
@@ -38,7 +36,6 @@ class CafeRecyclerViewAdapter(private var mItem: MutableList<StoreRanking>,
             // 좋아요 버튼 클릭 이벤트
             binding.likesBtn.setOnClickListener {
                 onFavoriteClick(storeRanking.id, storeRanking.isFavorite) // 클릭 시 storeId를 전달하여 ViewModel에서 API 호출
-                storeRanking.isFavorite = !storeRanking.isFavorite // 좋아요 상태 반전
                 updateLikeButton(storeRanking.isFavorite) // 버튼 이미지 업데이트
             }
 

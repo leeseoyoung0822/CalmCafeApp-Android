@@ -1,6 +1,5 @@
 package com.example.calmcafeapp.ui
 
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -9,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.UserActivity
@@ -23,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 
 class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
@@ -81,9 +78,13 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             cafeDetail?.let {
                 binding.cafeName.text = cafeDetail.name
                 binding.likesNum.text = "${cafeDetail.favoriteCount}개"
-                binding.openTime.text = formatTime(cafeDetail.openingTime)
+                val formattedOpeningTime = formatTime(it.openingTime)
+                val formattedClosingTime = formatTime(it.closingTime)
+                val operatingHours = "$formattedOpeningTime - $formattedClosingTime"
+                binding.openTime.text = operatingHours
                 // 거리 변환 후 TextView에 설정
                 binding.distance.text = formatDistance(cafeDetail.distance)
+                binding.openState.text = it.storeState
                 isFavorite = cafeDetail.isFavorite
                 updateLikeButton(isFavorite)
             }
@@ -161,12 +162,11 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     private fun formatTime(timeString: String): String {
         return try {
-            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-            val date = dateFormat.parse(timeString)
-            val calendar = Calendar.getInstance().apply { time = date }
-            "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)} 오픈"
+            val originalFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val targetFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val date = originalFormat.parse(timeString)
+            date?.let { targetFormat.format(it) } ?: ""
         } catch (e: Exception) {
-            Log.e("CafeDetailFragment", "시간 형식 파싱 오류: ${e.message}")
             ""
         }
     }
