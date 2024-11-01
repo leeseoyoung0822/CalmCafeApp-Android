@@ -35,11 +35,12 @@ class SplashActivity : AppCompatActivity() {
 
         //스플래시 화면 표시 후 메인 액티비티로 이동 추후 JoinActivity로 변경
         Handler(Looper.getMainLooper()).postDelayed({
-            checkAutoLogin()
+            //checkAutoLogin()
+            moveToLoginActivity()
         }, 1000)
 
     }
-    private fun checkAutoLogin() {
+    /*private fun checkAutoLogin() {
         val accessToken = sharedPreferences.getString("ACCESS_TOKEN", null)
         if (accessToken != null) {
             // 액세스 토큰이 존재하면 MainActivity로 이동
@@ -52,6 +53,12 @@ class SplashActivity : AppCompatActivity() {
             finish()
         }
         //finish() // 현재 SplashActivity 종료
+    }*/
+
+    private fun moveToLoginActivity() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // SplashActivity 종료
     }
 
 }

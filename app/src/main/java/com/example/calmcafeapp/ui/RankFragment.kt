@@ -1,6 +1,7 @@
 package com.example.calmcafeapp.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +9,22 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import android.widget.Button
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentRankBinding
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.viewmodel.RankViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class RankFragment : Fragment() {
 
     private lateinit var binding: FragmentRankBinding
+    private val rankViewModel: RankViewModel by activityViewModels()
     private lateinit var adapter: CafeRecyclerViewAdapter // 어댑터 객체 선언
     private val regions = listOf(
         "전국", "서울", "경기",
@@ -44,29 +47,44 @@ class RankFragment : Fragment() {
 
         initCafeRecyclerView()
 
-        setupTableLayout()
+        // 기본으로 '전국' 지역과 '실시간 방문자 수' 데이터를 로드
+        rankViewModel.fetchRealTimeRanking("전국")  // 초기 지역은 '전국', 카테고리는 '실시간 방문자 수'
 
-        // 디폴트로 '실시간 방문자 수' 버튼 클릭 처리
-
+        // 기본 선택 버튼과 제목 설정
         setButtonSelected(binding.btn1)
         binding.categoryTitle.text = "실시간 방문자 수 TOP 랭킹"
 
+        // 데이터 변경 감지 및 업데이트
+        rankViewModel.storeList.observe(viewLifecycleOwner) { storeList ->
+            adapter.updateData(storeList)
+        }
+
+        // 즐겨찾기 상태 변경을 감지하여 어댑터 업데이트
+        rankViewModel.favoriteStoreId.observe(viewLifecycleOwner) { updatedStoreId ->
+            if (updatedStoreId != null) {
+                adapter.updateLikeStatus(updatedStoreId) // 해당 아이템만 업데이트
+                rankViewModel.resetFavoriteStoreId() // 초기화하여 중복 반영 방지
+            }
+        }
+
+        setupTableLayout()
+
         binding.btn1.setOnClickListener{
             val selectedRegion = getCurrentRegion()
-
+            rankViewModel.fetchRealTimeRanking(selectedRegion)
             setButtonSelected(binding.btn1)
             binding.categoryTitle.text = "실시간 방문자 수 TOP 랭킹" // 초기 텍스트 설정  버튼1을 선택 상태로
         }
         binding.btn2.setOnClickListener {
             val selectedRegion = getCurrentRegion()
-
+            rankViewModel.fetchTotalRanking(selectedRegion)
             setButtonSelected(binding.btn2) // 버튼2을 선택 상태로
             binding.categoryTitle.text = "누적 방문자 수 TOP 랭킹"
         }
 
         binding.btn3.setOnClickListener {
             val selectedRegion = getCurrentRegion()
-
+            rankViewModel.fetchFavoriteRanking(selectedRegion)
             setButtonSelected(binding.btn3) // 버튼3을 선택 상태로
             binding.categoryTitle.text = "즐겨찾기 TOP 랭킹"
         }
@@ -75,9 +93,19 @@ class RankFragment : Fragment() {
             val selectedRegion = getCurrentRegion() // 현재 선택된 지역
             val selectedButton = getSelectedButton() // 현재 선택된 버튼
 
+            // 데이터 로드 (선택된 버튼과 지역에 맞춰 호출)
+            when (selectedButton) {
+                "실시간 방문자 수" -> rankViewModel.fetchRealTimeRanking(selectedRegion)
+                "누적 방문자 수" -> rankViewModel.fetchTotalRanking(selectedRegion)
+                "즐겨찾기" -> rankViewModel.fetchFavoriteRanking(selectedRegion)
+            }
+
+            // RecyclerView를 맨 위로 스크롤
+            binding.cafeRecyclerView.scrollToPosition(0)
+
         }
 
-        /*
+        /*  // 검색버튼 누르면
         binding.searchBtn.setOnClickListener {
             // SearchFragment로 이동
             val searchFragment = SearchFragment()
@@ -88,9 +116,29 @@ class RankFragment : Fragment() {
 
         }*/
     }
+
     // RecyclerView 초기화 함수
     private fun initCafeRecyclerView() {
-        adapter = CafeRecyclerViewAdapter(mutableListOf()) // 어댑터 객체 생성
+        // RankFragment에서 어댑터를 초기화할 때 클릭 리스너를 설정하여, 클릭 시 CafeDetailFragment로 이동하게 만듦
+        adapter = CafeRecyclerViewAdapter(
+            mItem = mutableListOf(),
+            onItemClick = { storeId ->
+                val bundle = Bundle().apply {
+                    putInt("storeId", storeId)
+                }
+                val detailFragment = CafeDetailFragment()
+                detailFragment.arguments = bundle
+                detailFragment.show(parentFragmentManager, "CafeDetailFragment")  // BottomSheetDialogFragment로 열기
+            },
+            onFavoriteClick = { storeId, isFavorite ->
+                if (isFavorite) {
+                    rankViewModel.removeFavorite(storeId)
+                } else {
+                    rankViewModel.addFavorite(storeId)
+                }
+            }
+        )
+        // 어댑터에 즐겨찾기 상태 업데이트 관찰 설정
         binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
         binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
     }
@@ -105,8 +153,15 @@ class RankFragment : Fragment() {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.let {
-                        val selectedRegion = it.text.toString()
+                        val selectedRegion = it.text.toString()  // Tab의 텍스트를 가져와서 지역 변수에 할당
                         val selectedButton = getSelectedButton()
+
+                        // 선택된 버튼에 따라 적절한 데이터를 로드합니다.
+                        when (selectedButton) {
+                            "실시간 방문자 수" -> rankViewModel.fetchRealTimeRanking(selectedRegion)
+                            "누적 방문자 수" -> rankViewModel.fetchTotalRanking(selectedRegion)
+                            "즐겨찾기" -> rankViewModel.fetchFavoriteRanking(selectedRegion)
+                        }
                     }
                 }
 
@@ -115,10 +170,6 @@ class RankFragment : Fragment() {
             })
         }
     }
-
-
-
-
 
     // 선택된 버튼을 반환하는 함수
     private fun getSelectedButton(): String {
@@ -146,4 +197,6 @@ class RankFragment : Fragment() {
     private fun getCurrentRegion(): String {
         return binding.tabLayout.getTabAt(binding.tabLayout.selectedTabPosition)?.text.toString()
     }
+
+
 }
