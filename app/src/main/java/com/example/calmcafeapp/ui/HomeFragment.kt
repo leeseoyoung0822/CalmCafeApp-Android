@@ -24,6 +24,10 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PolylineOverlay
 import android.location.Location
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import com.example.calmcafeapp.MainActivity
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.OnRouteStartListener
 import com.naver.maps.map.overlay.OverlayImage
@@ -36,7 +40,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private lateinit var locationSource: FusedLocationSource
     private lateinit var naverMap: NaverMap
     private val markerList = mutableListOf<Marker>()
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
+
     private var hasFetchedAddress = false
     private var polylineList: MutableList<PolylineOverlay> = mutableListOf()
     private var publicTransportPolylineList: MutableList<PolylineOverlay> = mutableListOf()  // 대중교통 경로
@@ -50,16 +55,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private var currentSearchStartY: Double? = null
     private var currentSearchEndX: Double? = null
     private var currentSearchEndY: Double? = null
+
+
     override fun initStartView() {
         super.initStartView()
         // mapView 초기화
         mapView = binding.mapView ?: throw IllegalStateException("mapView가 null")
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
-        binding.btnCancelRoute.setOnClickListener {
+        (activity as UserActivity).binding.btnBack.setOnClickListener {
             cancelRouteSearch() // 취소 버튼 클릭 시 호출
         }
+        // 교통정보 버튼 초기화 및 클릭 리스너 설정
+        binding.btnShowNavigator.setOnClickListener {
+            showNavigatorBottomSheet()
+        }
         mapView.getMapAsync(this)
-        setupObservers()
     }
     override fun initDataBinding() {
         super.initDataBinding()
@@ -67,6 +77,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     override fun initAfterBinding() {
         super.initAfterBinding()
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewLifecycleOwnerLiveData.observe(this) { owner ->
+            owner?.let {
+                setupObservers(it)
+            }
+        }
+    }
+
+
+
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
@@ -74,7 +97,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.isVisible = true  // 위치 오버레이를 보이도록 설정
-        locationOverlay.icon = OverlayImage.fromResource(R.drawable.walking_72672)
+
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             naverMap.locationTrackingMode = LocationTrackingMode.Follow
@@ -145,39 +168,40 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
     // 옵저버 설정
-    private fun setupObservers() {
+    private fun setupObservers(owner: LifecycleOwner) {
         // 주소 관찰
-        viewModel.address.observe(viewLifecycleOwner) { address ->
+        viewModel.address.observe(owner) { address ->
             val area = viewModel.extractAreaFromAddress(address)
             Log.d("add2", "${area}")
             // 해당 지역의 카페 요청
             viewModel.searchCafesInArea(area)
+            viewModel.setStartAddress(address)
         }
 
         // 카페 목록 관찰
-        viewModel.cafes.observe(viewLifecycleOwner) { cafes ->
+        viewModel.cafes.observe(owner) { cafes ->
             Log.d("FRAGMENT", "Received cafes: $cafes")
             // 마커 표시
             displayMarkers(cafes)
         }
 
         // 에러 메시지 관찰
-        viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+        viewModel.errorMessage.observe(owner) { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
         // 로딩 상태 관찰
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        viewModel.isLoading.observe(owner) { isLoading ->
             // 예: binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
         // 그래픽 에러 메시지 관찰
-        viewModel.graphicErrorMessage.observe(viewLifecycleOwner) { errorMessage ->
+        viewModel.graphicErrorMessage.observe(owner) { errorMessage ->
             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
         }
 
         // 전체 그래픽 경로 관찰
-        viewModel.allGraphPosList.observe(viewLifecycleOwner) { allGraphPosList ->
+        viewModel.allGraphPosList.observe(owner) { allGraphPosList ->
             if (!allGraphPosList.isNullOrEmpty()) {
                 // 경로가 있으면 경로를 지도에 표시
                 displayAllRouteGraphics(allGraphPosList)
@@ -185,14 +209,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // 경로가 비어 있을 때 메시지 표시
                 Handler().postDelayed({
                     if (isRouteSearching && polylineList.isEmpty()) {
-                        Toast.makeText(requireContext(), "표시할 경로가 없습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
                     }
                 }, 1000)  // 1초 정도 기다린 후 다시 확인
             }
         }
 
         // 도보 경로 관찰 (현재 위치에서 대중교통 출발지까지)
-        viewModel.walkingRouteCoordinatesFromStart.observe(viewLifecycleOwner) { coordinates ->
+        viewModel.walkingRouteCoordinatesFromStart.observe(owner) { coordinates ->
             if (coordinates != null && coordinates.isNotEmpty()) {
                 Log.d("walkingRouteFromStart", "${coordinates}")
                 // 현재 위치에서 대중교통 출발지까지의 도보 경로 추가
@@ -201,7 +225,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
 
         // 도보 경로 관찰 (대중교통 하차 지점에서 카페까지)
-        viewModel.walkingRouteCoordinatesToDestination.observe(viewLifecycleOwner) { coordinates ->
+        viewModel.walkingRouteCoordinatesToDestination.observe(owner) { coordinates ->
             if (coordinates != null && coordinates.isNotEmpty()) {
                 Log.d("walkingRouteToDestination", "${coordinates}")
                 // 대중교통 하차 지점에서 카페까지의 도보 경로 추가
@@ -210,7 +234,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
 
         // 대중교통 경로 관찰
-        viewModel.pubTransPaths.observe(viewLifecycleOwner) { paths ->
+        viewModel.pubTransPaths.observe(owner) { paths ->
             if (paths != null && paths.isNotEmpty()) {
                 Log.d("경로 리스트", "경로 리스트: ${paths}")
                 val path = paths[0]  // 첫 번째 경로 선택
@@ -256,7 +280,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             }
         }
 
-        viewModel.routeGraphicData.observe(viewLifecycleOwner) { graphPosList ->
+        viewModel.routeGraphicData.observe(owner) { graphPosList ->
             if (graphPosList != null && graphPosList.isNotEmpty()) {
                 val coords = graphPosList.map { LatLng(it.y, it.x) }
                 val publicTransportPolyline = PolylineOverlay().apply {
@@ -268,6 +292,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 publicTransportPolylineList.add(publicTransportPolyline)
             }
         }
+
+
+
     }
     private fun displayMarkers(cafes: List<LocalItem>) {
         if (isRouteSearching) return  // 길찾기 중에는 마커 표시 생략
@@ -278,6 +305,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         markerList.clear()
         for (cafe in cafes) {
             val latLng = cafe.latLng
+            Log.d("latLng", "${latLng}")
             if (latLng.latitude == 0.0 && latLng.longitude == 0.0) continue
 
             val marker = Marker().apply {
@@ -289,6 +317,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             }
             marker.setOnClickListener {
                 showCafeInfo(cafe)
+                viewModel.fetchCafeDetailInfo(1, latLng.latitude, latLng.longitude)
 
                 true
             }
@@ -329,6 +358,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     // 카페 정보 표시
     private fun showCafeInfo(cafe: LocalItem) {
         selectedCafe = cafe  // 선택된 카페 정보 저장
+        Log.d("Information", "${cafe}")
+        viewModel.setDestinationCafeName(cafe.title)
         val cafeDetailFragment = CafeDetailFragment()
         cafeDetailFragment.setTargetFragment(this, 0)
         // 카페 정보를 프래그먼트로 전달
@@ -346,6 +377,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             // 길찾기 시작
             Log.d("touch start", "${cafe}")
             startRouteSearchToCafe(cafe)
+            binding.btnShowNavigator.visibility = View.VISIBLE
+
+
         } ?: run {
             Toast.makeText(requireContext(), "카페를 선택하지 않았습니다.", Toast.LENGTH_SHORT).show()
         }
@@ -435,7 +469,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 현재 위치와 선택한 카페에 마커 표시
         showSelectedMarkers(cafe)
         selectedCafe = cafe  // 선택된 카페 저장
-        binding.btnCancelRoute.visibility = View.VISIBLE
+        (activity as UserActivity).binding.btnBack.visibility = View.VISIBLE
         if (currentLocation != null) {
             val startX = currentLocation!!.longitude
             val startY = currentLocation!!.latitude
@@ -454,11 +488,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // TMAP 도보 경로 요청
                 viewModel.getWalkingStartRoute(startX, startY, endX, endY, "현재 위치", cafe.title)
                 Log.d("Request", "TMAP 도보 경로 요청: Start($startX, $startY) -> End($endX, $endY)")
+                Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
+                binding.btnShowNavigator.visibility = View.GONE
             } else {
                 // ODSAY 대중교통 경로 요청
                 viewModel.searchRoute(startX, startY, endX, endY)
                 Log.d("Request", "ODSAY 대중교통 경로 요청: Start($startX, $startY) -> End($endX, $endY)")
-
+                binding.btnShowNavigator.visibility = View.VISIBLE
             }
         } else {
             Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -491,7 +527,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         selectedCafe = null  // 선택된 카페 정보도 초기화
 
         // 취소 버튼 숨기기
-        binding.btnCancelRoute.visibility = View.GONE
+        (activity as UserActivity).binding.btnBack.visibility = View.GONE
+        binding.btnShowNavigator.visibility = View.GONE
         // 모든 경로 삭제
         clearRoutes()
         // ViewModel 데이터 초기화
@@ -510,6 +547,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private fun hideCafeMarkers() {
         markerList.forEach { it.map = null }
     }
+    private fun showNavigatorBottomSheet() {
+        val navigatorFragment = NavigatorFragment()
+        navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
+    }
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }

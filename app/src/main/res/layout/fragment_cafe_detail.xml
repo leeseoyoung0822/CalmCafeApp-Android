@@ -98,15 +98,6 @@
                     app:layout_constraintTop_toTopOf="@+id/view" />
 
                 <TextView
-                    android:id="@+id/open_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="21:00 라스트 오더"
-                    app:layout_constraintStart_toEndOf="@id/open_state"
-                    app:layout_constraintTop_toTopOf="@id/open_state" />
-
-                <TextView
                     android:id="@+id/distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

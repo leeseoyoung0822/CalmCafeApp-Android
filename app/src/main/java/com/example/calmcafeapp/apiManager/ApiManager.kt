@@ -1,11 +1,13 @@
 package com.example.calmcafeapp.apiManager
 
 import com.example.calmcafeapp.BuildConfig
+import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.api.LoginService
 import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.api.NaverReverseGeocodingService
 import com.example.calmcafeapp.api.ODsayService
 import com.example.calmcafeapp.api.TmapService
+import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GeometryDeserializer
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
@@ -19,6 +21,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 object ApiManager {
@@ -153,12 +156,17 @@ object ApiManager {
         .registerTypeAdapter(Geometry::class.java, GeometryDeserializer())
         .create()
 
+    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0MzkwOTIsImV4cCI6MTczMDU0NzA5MiwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.qSQCfwnxjw8w70tQKpwM-fMjjbAAsvhuPvnDF5AtvH4oB8AOhMhgQq_C87PAjNhR_1LwWR2nGnMsi1Ls3BK1xg"
+    private val serverApiClient = commonClient.newBuilder()
+        .addInterceptor(AuthorizationInterceptor(SERVER_API_TOKEN))
+        .build()
 
+    // 서버 API용 Retrofit 인스턴스 (ServerRetrofit)
     private val ServerRetrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(commonClient)
+            .client(serverApiClient) // 수정된 OkHttpClient 사용
             .build()
     }
 
@@ -169,4 +177,6 @@ object ApiManager {
     val odsayService: ODsayService = odsayApiRetrofit.create(ODsayService::class.java)
     val naverApiService: MapService  = naverOpenApiRetrofit.create(MapService::class.java)
     val naverReverseGeocodingService: NaverReverseGeocodingService = naverCloudPlatformRetrofit.create(NaverReverseGeocodingService::class.java)
+    val cafeDetailService : CafeDetailService = ServerRetrofit.create(CafeDetailService::class.java)
+
 }

@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.calmcafeapp.BuildConfig
+import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.apiManager.ApiManager
+import com.example.calmcafeapp.data.CafeDetailResponse
+import com.example.calmcafeapp.data.CafeDetailResult
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.LocalItem
@@ -20,6 +23,8 @@ import com.naver.maps.geometry.LatLng
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class HomeViewModel : ViewModel() {
 
@@ -27,6 +32,7 @@ class HomeViewModel : ViewModel() {
     private val reverseGeocodingService = ApiManager.naverReverseGeocodingService
     private val odsayService = ApiManager.odsayService
     private val tmapService = ApiManager.tmapService
+    private val cafeDetailService = ApiManager.cafeDetailService
 
     private val _pubTransPaths = MutableLiveData<List<Path>?>()
     val pubTransPaths: MutableLiveData<List<Path>?> get() = _pubTransPaths
@@ -49,6 +55,20 @@ class HomeViewModel : ViewModel() {
     private val _cafes = MutableLiveData<List<LocalItem>>()
     val cafes: LiveData<List<LocalItem>> get() = _cafes
 
+    private val _cafeDetail = MutableLiveData<CafeDetailResult?>()
+    val cafeDetail: LiveData<CafeDetailResult?> get() = _cafeDetail
+
+    // 포맷팅된 거리와 시간 LiveData
+    private val _formattedDistance = MutableLiveData<String>()
+    val formattedDistance: LiveData<String> get() = _formattedDistance
+
+    private val _formattedOpeningTime = MutableLiveData<String>()
+    val formattedOpeningTime: LiveData<String> get() = _formattedOpeningTime
+
+    private val _formattedClosingTime = MutableLiveData<String>()
+    val formattedClosingTime: LiveData<String> get() = _formattedClosingTime
+
+
     // 에러 메시지를 담을 LiveData
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -68,6 +88,22 @@ class HomeViewModel : ViewModel() {
     // 대중교통 내리는 곳에서 카페까지의 경로 데이터
     private val _walkingRouteCoordinatesToDestination = MutableLiveData<List<LatLng>?>()
     val walkingRouteCoordinatesToDestination: MutableLiveData<List<LatLng>?> get() = _walkingRouteCoordinatesToDestination
+
+    private val _startAddress = MutableLiveData<String>()
+    val startAddress: LiveData<String> get() = _startAddress
+
+    private val _destinationCafeName = MutableLiveData<String>()
+    val destinationCafeName: LiveData<String> get() = _destinationCafeName
+
+    // 시작 주소 설정 메서드
+    fun setStartAddress(address: String) {
+        _startAddress.value = address
+    }
+
+    // 도착지 카페 이름 설정 메서드
+    fun setDestinationCafeName(cafeName: String) {
+        _destinationCafeName.value = cafeName
+    }
 
 
     fun resetRouteData() {
@@ -168,6 +204,69 @@ class HomeViewModel : ViewModel() {
             part0.isNotEmpty() && part1.isNotEmpty() && part2.isNotEmpty() -> "$part0 $part1 $part2"
             part0.isNotEmpty() && part1.isNotEmpty() -> "$part0 $part1"
             else -> address
+        }
+    }
+
+    // 카페 정보 호출
+    fun fetchCafeDetailInfo(storeId: Int, userLatitude: Double, userLongitude: Double){
+        _isLoading.value = true
+        val call = cafeDetailService.getCafeInfo(
+            storeId = 1,
+            userLatitude = userLatitude,
+            userLongitude = userLongitude
+        )
+        call.enqueue(object : Callback<CafeDetailResponse> {
+            override fun onResponse(call: Call<CafeDetailResponse>, response: Response<CafeDetailResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val cafeDetailResponse = response.body()
+                    Log.d("cafeDetailResponse", "${response.body()}")
+                    if (cafeDetailResponse != null && cafeDetailResponse.isSuccess) {
+                        val result = cafeDetailResponse.result
+                        _cafeDetail.value = result  // LiveData에 설정
+
+                        // 포맷팅된 거리와 시간 설정
+                        _formattedDistance.value = formatDistance(result?.distance)
+                        _formattedOpeningTime.value = formatTime(result?.openingTime)
+                        _formattedClosingTime.value = formatTime(result?.closingTime)
+                    } else {
+                        _errorMessage.value = cafeDetailResponse?.message ?: "응답이 비어 있습니다."
+                        Log.e("fetchCafeDetailInfo", "응답 실패: ${cafeDetailResponse?.message}")
+                    }
+                } else {
+                    _errorMessage.value = "API 호출에 실패했습니다. 코드: ${response.code()}"
+                    Log.e("fetchCafeDetailInfo", "응답 실패: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
+                _isLoading.value = false
+                _errorMessage.value = "네트워크 오류가 발생했습니다: ${t.message}"
+                Log.e("fetchCafeDetailInfo", "네트워크 오류", t)
+            }
+        })
+    }
+
+    fun formatDistance(distance: Int?): String {
+        return distance?.let {
+            if (it >= 1000) {
+                val km = it / 1000.0
+                String.format(Locale.getDefault(), "%.1f km", km)
+            } else {
+                "$it m"
+            }
+        } ?: "거리 정보 없음"
+    }
+
+
+    fun formatTime(time: String?): String {
+        return try {
+            val sdfInput = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val sdfOutput = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val date = sdfInput.parse(time ?: "")
+            sdfOutput.format(date)
+        } catch (e: Exception) {
+            "정보 없음"
         }
     }
 

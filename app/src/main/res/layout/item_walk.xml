@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="8dp">
+
+    <!-- 교통 수단 아이콘 및 선 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- 아이콘 -->
+        <ImageView
+            android:id="@+id/iv_transport_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/walking_72672" />
+
+        <!-- 점선 (도보의 경우 점선) -->
+        <View
+            android:id="@+id/view_dotted_line"
+            android:layout_width="24dp"
+            android:layout_height="27dp"
+            android:background="@drawable/dott_line"
+            android:rotation="90" />
+
+        <View
+            android:id="@+id/view_dotted_line1"
+            android:layout_width="24dp"
+            android:layout_height="27dp"
+            android:background="@drawable/dott_line"
+            android:rotation="90" />
+        <View
+            android:id="@+id/view_dotted_line2"
+            android:layout_width="24dp"
+            android:layout_height="27dp"
+            android:background="@drawable/dott_line"
+            android:rotation="90" />
+
+    </LinearLayout>
+
+    <!-- 도보 정보 텍스트 -->
+    <TextView
+        android:id="@+id/tv_walk_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="도보 376m, 6분"
+        android:textSize="16sp"
+        android:layout_marginStart="8dp"/>
+</LinearLayout>
