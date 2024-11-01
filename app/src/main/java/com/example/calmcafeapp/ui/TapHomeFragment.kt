@@ -1,6 +1,8 @@
 package com.example.calmcafeapp.ui
 
+import android.app.Dialog
 import android.os.Bundle
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.R
@@ -41,7 +43,12 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
         })
 
         // 혼잡도 데이터 예시로 업데이트
-        updateCircularProgress("여유") // 여기에 적절한 crowdLevel 값 전달
+        updateCircularProgress("여유")
+        couponCafeAdapter.setMyItemClickListener(object : CouponCafeAdapter.MyItemClickListener {
+            override fun onItemClick(menu: CafeCouponData) {
+                showCouponPopup(menu)
+            }
+        })
     }
 
     override fun initDataBinding() {
@@ -123,6 +130,14 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
         // 혼잡도에 따른 CircularProgressView 업데이트
         binding.circularProgressViewBoss.setPercentage(percentage, text)
         binding.circularProgressViewVisitor.setPercentage(percentage, text) // 방문자 혼잡도 예시
+    }
+
+    private fun showCouponPopup(coupon: CafeCouponData) {
+        val dialog = Dialog(requireContext(), R.style.TransparentDialog)
+        dialog.setContentView(R.layout.dialog_coupon)
+        dialog.findViewById<TextView>(R.id.couponTitle).text = coupon.coupon_type
+        dialog.findViewById<TextView>(R.id.couponExpiryDate).text = coupon.expiry_date
+        dialog.show()
     }
 
 }
