@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/cafe_image"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:src="@drawable/sample_cafe_img" />
 
@@ -45,7 +45,7 @@
                 android:src="@drawable/cafe_recommend_icon" />
 
             <TextView
-                android:id="@+id/cafe_location"
+                android:id="@+id/cafe_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="경기 고양시 덕양구"
@@ -68,7 +68,7 @@
                 android:src="@drawable/ic_crowd" />
 
             <TextView
-                android:id="@+id/cafe_crowd"
+                android:id="@+id/cafe_Congestion"
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"

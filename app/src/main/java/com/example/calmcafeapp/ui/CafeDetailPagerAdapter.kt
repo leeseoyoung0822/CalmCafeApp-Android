@@ -11,7 +11,7 @@ class CafeDetailPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment
         return when (position) {
             0 -> TapHomeFragment()   // 홈
             1 -> RecommendedCafeFragment()  // 추천카페
-            2 -> StoreFragment()        // 스토어
+            2 -> PointMenuFragment()        // 스토어
             else -> throw IllegalStateException("Unexpected position $position")
         }
     }

@@ -8,8 +8,7 @@ import com.example.calmcafeapp.data.CafeCouponData
 import com.example.calmcafeapp.data.CafeMenuData
 import com.example.calmcafeapp.data.RecommendCafe
 import com.example.calmcafeapp.databinding.ItemCouponBinding
-import com.example.calmcafeapp.databinding.ItemMenuCafeBinding
-import com.example.calmcafeapp.databinding.ItemRecommendCafeBinding
+
 
 class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerView.Adapter<CouponCafeAdapter.MenuCouponHolder>() {
 

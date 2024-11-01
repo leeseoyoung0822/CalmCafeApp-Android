@@ -20,9 +20,30 @@ data class CafeDetail(
     val storeState: String,
     val storeCongestionLevel: String,
     val userCongestionLevel: String,
-   /* val menuDetailResDtoList: List<MenuDetail>,
+    val menuDetailResDtoList: List<MenuDetail>,
     val recommendStoreResDtoList: List<RecommendStore>,
     val pointMenuDetailResDtoList: List<PointMenuDetail>,
-    val promotionDetailResDtoList: List<PromotionDetail>*/
+    //val promotionDetailResDtoList: List<PromotionDetail>
     // 필요한 필드를 추가
 )
+data class MenuDetail(
+    val id: Int,
+    val name: String,
+    val price: Int,
+    val image: String?
+)
+data class RecommendStore(
+    val id: Int,
+    val name: String,
+    val storeCongestionLevel: String,
+    val address: String,
+    val image: String?
+)
+data class PointMenuDetail(
+    val id: Int,
+    val name: String,
+    val pointPrice: Int,
+    val pointDiscount: Int,
+    val image: String?
+)
+

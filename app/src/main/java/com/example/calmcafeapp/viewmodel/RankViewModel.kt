@@ -11,7 +11,10 @@ import com.example.calmcafeapp.apiManager.ApiManager
 import com.example.calmcafeapp.data.CafeDetail
 import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.FavoriteResponse
+import com.example.calmcafeapp.data.MenuDetail
+import com.example.calmcafeapp.data.PointMenuDetail
 import com.example.calmcafeapp.data.RankingResponse
+import com.example.calmcafeapp.data.RecommendStore
 import com.example.calmcafeapp.data.StoreRanking
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,6 +30,23 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _favoriteStoreId = MutableLiveData<Int?>()
     val favoriteStoreId: LiveData<Int?> = _favoriteStoreId
+
+    private val _menuList = MutableLiveData<List<MenuDetail>>()
+    val menuList: LiveData<List<MenuDetail>> get() = _menuList
+
+    private val _recommendStoreList = MutableLiveData<List<RecommendStore>>()
+    val recommendStoreList: LiveData<List<RecommendStore>> get() = _recommendStoreList
+
+    private val _pointMenuDetailList = MutableLiveData<List<PointMenuDetail>>()
+    val pointMenuDetailList: LiveData<List<PointMenuDetail>> get() = _pointMenuDetailList
+    private val _storeCongestionLevel = MutableLiveData<String>()
+    val storeCongestionLevel: LiveData<String> = _storeCongestionLevel
+
+    private val _userCongestionLevel = MutableLiveData<String>()
+    val userCongestionLevel: LiveData<String> = _userCongestionLevel
+
+
+
 
     private val apiService: RankingService = ApiManager.rankingService
 
@@ -90,7 +110,13 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
         apiService.getCafeDetail(storeId, userLatitude, userLongitude).enqueue(object : Callback<CafeDetailResponse> {
             override fun onResponse(call: Call<CafeDetailResponse>, response: Response<CafeDetailResponse>) {
                 if (response.isSuccessful && response.body() != null) {
-                    _cafeDetail.value = response.body()?.result
+                    val cafeDetail = response.body()?.result
+                    _cafeDetail.value = cafeDetail
+                    _menuList.value = cafeDetail?.menuDetailResDtoList // 메뉴 리스트 업데이트
+                    _recommendStoreList.value = cafeDetail?.recommendStoreResDtoList
+                    _pointMenuDetailList.value = cafeDetail?.pointMenuDetailResDtoList // 포인트 메뉴 리스트 업데이트
+                    _storeCongestionLevel.value = cafeDetail?.storeCongestionLevel
+                    _userCongestionLevel.value = cafeDetail?.userCongestionLevel
                     Log.d("RankViewModel", "Cafe detail fetched: ${response.body()?.result}")
                 } else {
                     val errorMessage = response.errorBody()?.string()
@@ -100,6 +126,12 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
 
             override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
                 Log.e("RankViewModel", "Network error: ${t.message}")
+                _menuList.value = emptyList() // 실패 시 빈 리스트로 초기
+                _recommendStoreList.value = emptyList()
+                _pointMenuDetailList.value = emptyList() // 실패 시 빈 리스트로 초기화
+                _storeCongestionLevel.value = null // 실패 시 null로 설정
+                _userCongestionLevel.value = null // 실패 시 null로 설정
+
             }
         })
     }
