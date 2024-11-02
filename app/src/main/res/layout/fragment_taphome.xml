@@ -84,18 +84,18 @@
 
                 <!-- CircularProgressView for 사장님의 혼잡도 -->
                 <com.example.calmcafeapp.ui.CircularProgressView
-                    android:id="@+id/circularProgressViewBoss"
+                    android:id="@+id/owner_circularProgressViewBoss"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/owner_congestion" />
 
                 <!-- 사장님의 혼잡도 텍스트 -->
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/owner_congestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
@@ -131,18 +131,18 @@
 
                 <!-- CircularProgressView for 방문자의 혼잡도 -->
                 <com.example.calmcafeapp.ui.CircularProgressView
-                    android:id="@+id/circularProgressViewVisitor"
+                    android:id="@+id/visitor_circularProgressViewVisitor"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView1" />
+                    app:layout_constraintTop_toBottomOf="@+id/visitor_congestion" />
 
                 <!-- 방문자의 혼잡도 텍스트 -->
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/visitor_congestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"

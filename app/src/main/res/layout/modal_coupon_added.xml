@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- X 버튼 -->
+    <ImageView
+        android:id="@+id/closeButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end"
+        android:src="@drawable/clear"
+        android:contentDescription="닫기" />
+
+    <TextView
+        android:id="@+id/tvCouponAddedMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="음료 5% 쿠폰이 쿠폰함에 담겼습니다\n쿠폰함으로 갈까요?"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnGoToCoupons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/green"
+            android:text="네" />
+
+        <Button
+            android:id="@+id/btnNoThanks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아니요"
+            android:backgroundTint="@color/lightgreen"
+            android:layout_marginStart="16dp" />
+    </LinearLayout>
+</LinearLayout>
