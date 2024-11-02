@@ -18,6 +18,9 @@ import com.example.calmcafeapp.data.BottomSheetExpander
 import com.example.calmcafeapp.data.OnRouteStartListener
 import com.example.calmcafeapp.databinding.FragmentCafeDetailBinding
 import com.example.calmcafeapp.viewmodel.HomeViewModel
+import com.example.calmcafeapp.viewmodel.RankViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -28,17 +31,11 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     private var _binding: FragmentCafeDetailBinding? = null
     private val binding get() = _binding!!
-
+    private val rankViewModel: RankViewModel by activityViewModels() // ViewModel 가져오기
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var isFavorite = false
     private var listener: OnRouteStartListener? = null
-    private val viewModel: HomeViewModel by activityViewModels()
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        listener = targetFragment as? OnRouteStartListener
-        if (listener == null) {
-            throw ClassCastException("$targetFragment must implement OnRouteStartListener")
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,62 +57,74 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val cafeTitle = arguments?.getString("cafeTitle") ?: "카페 이름 없음"
-        val cafeAddress = arguments?.getString("cafeAddress") ?: "카페 주소 없음"
-        binding.cafeName.text = cafeTitle
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        // 전달받은 storeId 가져오기
+        val storeId = arguments?.getInt("storeId") ?: return
+        Log.d("CafeDetailFragment", "Store ID: $storeId")
+
+        // 사용자 위치 가져오기
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                // ViewModel을 통해 API 호출 (위도와 경도를 함께 전달)
+                rankViewModel.fetchCafeDetail(storeId, location.latitude, location.longitude)
+            } else {
+                // 위치를 가져올 수 없는 경우 예외 처리
+                Log.e("CafeDetailFragment", "사용자 위치 정보를 가져올 수 없습니다.")
+            }
+        }
+        /* API 응답 관찰 및 UI 업데이트
+        rankViewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetail ->
+            cafeDetail?.let {
+                //binding.cafeName.text = cafeDetail.name
+                //binding.likesNum.text = "${cafeDetail.favoriteCount}개"
+                //val formattedOpeningTime = formatTime(it.openingTime)
+                //val formattedClosingTime = formatTime(it.closingTime)
+                //val operatingHours = "$formattedOpeningTime - $formattedClosingTime"
+                //binding.openTime.text = operatingHours
+                // 거리 변환 후 TextView에 설정
+                //binding.distance.text = formatDistance(cafeDetail.distance)
+                //binding.openState.text = it.storeState
+                isFavorite = cafeDetail.isFavorite
+                updateLikeButton(isFavorite)
+            }
+        }*/
+
+        // 좋아요 버튼 상태 업데이트 (favoriteStoreId 관찰)
+        rankViewModel.favoriteStoreId.observe(viewLifecycleOwner) { updatedStoreId ->
+            if (updatedStoreId == storeId) {
+                isFavorite = !isFavorite // 현재 상태 반전
+                updateLikeButton(isFavorite)
+            }
+        }
+
+        // 출발하기 버튼 클릭 리스너 설정
+        binding.startBtn.setOnClickListener {
+            // 버튼이 눌리면 인터페이스 메서드 호출
+            // 네비게이션
+            (activity as?UserActivity)?.addFragment(NavigatorFragment())
+            listener?.onRouteStart()
+            dismiss() // 바텀 시트 닫기
+        }
+
+        // 좋아요 버튼 클릭 리스너 설정 (옵션)
+        binding.likesBtn.setOnClickListener {
+            if (isFavorite) {
+                rankViewModel.removeFavorite(storeId)
+            } else {
+                rankViewModel.addFavorite(storeId)
+            }
+            isFavorite = !isFavorite // 로컬 상태 업데이트
+            updateLikeButton(isFavorite)
+        }
 
 
         val viewPager = binding.viewPager
         val tabLayout = binding.tabLayout
         val adapter = CafeDetailPagerAdapter(this)
         viewPager.adapter = adapter
-
-        // 내 위치 계사
-        viewModel.pubTransPaths.observe(viewLifecycleOwner) { paths ->
-            Log.d("paths_navi", "$paths")
-            if (paths != null && paths.isNotEmpty()) {
-                val distance = paths.first().info.trafficDistance
-                binding.distance.text = "내 위치에서 ${distance}m"
-                binding.startBtn.tag = distance
-            } else {
-                Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        viewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetailResult ->
-            if (cafeDetailResult != null) {
-                // 카페 이름 설정
-                binding.cafeName.text = cafeDetailResult.name
-                binding.likesNum.text = cafeDetailResult.favoriteCount.toString()
-
-//
-//                Glide.with(this)
-//                    .load(cafeDetailResult.image)
-//                    .placeholder(R.drawable.placeholder_image) // 기본 이미지
-//                    .error(R.drawable.error_image) // 오류 시 표시할 이미지
-//                    .into(binding.ivCafeImage)
-            }
-        }
-
-        // 거리 관찰
-        viewModel.formattedDistance.observe(viewLifecycleOwner) { formattedDistance ->
-            binding.distance.text = "내 위치에서 $formattedDistance"
-        }
-
-        // 영업 시간 관찰
-        viewModel.formattedOpeningTime.observe(viewLifecycleOwner) { openingTime ->
-            val closingTime = viewModel.formattedClosingTime.value ?: "정보 없음"
-            binding.openState.text = "영업 시간: $openingTime - $closingTime"
-        }
-
-        viewModel.formattedClosingTime.observe(viewLifecycleOwner) { closingTime ->
-            val openingTime = viewModel.formattedOpeningTime.value ?: "정보 없음"
-            binding.openState.text = "영업 시간: $openingTime - $closingTime"
-        }
 
 
         expandBottomSheet()
@@ -140,8 +149,8 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                     // NavigatorFragment를 표시
                     val navigatorFragment = NavigatorFragment().apply {
                         arguments = Bundle().apply {
-                            putString("cafeTitle", cafeTitle)
-                            putString("cafeAddress", cafeAddress)
+                            //putString("cafeTitle", cafeTitle)
+                            //putString("cafeAddress", cafeAddress)
                         }
                     }
                     listener?.onRouteStart()
@@ -149,12 +158,6 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                     navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
                 }
         }
-
-        // 좋아요 버튼 클릭 리스너
-        binding.likesBtn.setOnClickListener {
-            toggleLike()
-        }
-
     }
 
     override fun expandBottomSheet() {
@@ -167,18 +170,8 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         }
     }
 
-    private fun toggleLike() {
-        val isLiked = binding.likesBtn.tag as? Boolean ?: false
-        if (isLiked) {
-            binding.likesBtn.setImageResource(R.drawable.heart_empty)
-            val currentLikes = binding.likesNum.text.toString().replace("개", "").toIntOrNull() ?: 0
-            binding.likesNum.text = "${currentLikes - 1}개"
-        } else {
-            binding.likesBtn.setImageResource(R.drawable.heart_filled)
-            val currentLikes = binding.likesNum.text.toString().replace("개", "").toIntOrNull() ?: 0
-            binding.likesNum.text = "${currentLikes + 1}개"
-        }
-        binding.likesBtn.tag = !isLiked
+    private fun updateLikeButton(isLiked: Boolean) {
+        binding.likesBtn.setImageResource(if (isLiked) R.drawable.heart_filled else R.drawable.heart_empty)
     }
 
     override fun onDestroyView() {

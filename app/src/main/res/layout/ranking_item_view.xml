@@ -14,13 +14,29 @@
         android:layout_margin="16dp" />
 
     <TextView
+        android:id="@+id/rankingBadge"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/ranking_badge"
+        android:text="1"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="@id/cafePhoto_Imv"
+        app:layout_constraintStart_toStartOf="@id/cafePhoto_Imv"
+        android:padding="4dp"/>
+
+
+    <TextView
         android:id="@+id/cafe_nameTv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/cafePhoto_Imv"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="30dp"
+        app:layout_constraintEnd_toStartOf="@id/likes_btn"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
         android:textSize="20dp"
         android:text="한산한 가 카페"/>
 
@@ -30,6 +46,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/cafe_nameTv"
         app:layout_constraintTop_toBottomOf="@id/cafe_nameTv"
+        android:layout_marginTop="8dp"
         android:drawableStart="@drawable/people"
         android:drawablePadding="8dp"
         android:drawableTint="@color/green"
@@ -47,8 +64,8 @@
 
     <ImageButton
         android:id="@+id/likes_btn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/heart_empty"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp"

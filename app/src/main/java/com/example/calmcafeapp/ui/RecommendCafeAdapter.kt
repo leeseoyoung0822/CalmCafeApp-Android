@@ -5,15 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.data.RecommendCafe
-import com.example.calmcafeapp.data.RecommendStore
+import com.example.calmcafeapp.data.RecommendStoreResDto
 import com.example.calmcafeapp.databinding.ItemRecommendCafeBinding
 
-class RecommendCafeAdapter(private var recommendList: List<RecommendStore>) :
+class RecommendCafeAdapter(private var recommendList: List<RecommendStoreResDto>) :
     RecyclerView.Adapter<RecommendCafeAdapter.RecommendCafeViewHolder>() {
 
     inner class RecommendCafeViewHolder(private val binding: ItemRecommendCafeBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(store: RecommendStore) {
+        fun bind(store: RecommendStoreResDto) {
             binding.cafeName.text = store.name
             binding.cafeAddress.text = formatAddress(store.address) // "구" 단위로 주소를 포맷
             binding.cafeCongestion.text = "현재 혼잡도: ${store.storeCongestionLevel}"
@@ -47,7 +47,7 @@ class RecommendCafeAdapter(private var recommendList: List<RecommendStore>) :
     override fun getItemCount(): Int = recommendList.size
 
     // 데이터 업데이트 함수
-    fun updateRecommendList(newList: List<RecommendStore>) {
+    fun updateRecommendList(newList: List<RecommendStoreResDto>) {
         recommendList = newList
         notifyDataSetChanged()
     }
