@@ -1,11 +1,14 @@
 package com.example.calmcafeapp.apiManager
 
+import android.content.Context
+import android.util.Log
 import com.example.calmcafeapp.BuildConfig
 import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.api.LoginService
 import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.api.NaverReverseGeocodingService
 import com.example.calmcafeapp.api.ODsayService
+import com.example.calmcafeapp.api.RankingService
 import com.example.calmcafeapp.api.TmapService
 import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.Geometry
@@ -27,13 +30,48 @@ import java.util.concurrent.TimeUnit
 object ApiManager {
     private var BASE_URL = BuildConfig.AUTH_BASE_URL
     //회원 토큰 반환 api
-    val instance: LoginService by lazy {
-        val retrofit = Retrofit.Builder()
+
+    private lateinit var appContext: Context
+
+    fun init(context: Context) {
+        appContext = context.applicationContext
+    }
+    // Access Token을 포함하는 Interceptor 생성
+    private val authInterceptor = Interceptor { chain ->
+        val sharedPreferences =
+            appContext.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
+        val accessToken = sharedPreferences.getString("ACCESS_TOKEN", null)
+
+        val request = chain.request().newBuilder().apply {
+            accessToken?.let {
+                addHeader("Authorization", "Bearer $it")
+            }
+            addHeader("Accept", "application/json")        // JSON 형식의 응답을 원할 때 추가
+            addHeader("Content-Type", "application/json")   // JSON 형식의 요청을 보낼 때 추가
+        }.build()
+
+        // Access Token 확인용 로그
+        Log.d("ApiManager", "Using Access Token from SharedPreferences: $accessToken")
+
+        chain.proceed(request)
+    }
+
+    // 공통 Retrofit 인스턴스 생성
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(commonClient)
             .build()
+    }
 
+    // 토큰 반환 api
+    val loginService: LoginService by lazy {
         retrofit.create(LoginService::class.java)
+    }
+    // 랭킹 탑 100 api
+    val rankingService: RankingService by lazy {
+        retrofit.create(RankingService::class.java)
     }
 
 
@@ -57,7 +95,8 @@ object ApiManager {
 
     // 공통 OkHttpClient
     private val commonClient = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
         .connectTimeout(100, TimeUnit.SECONDS)
         .readTimeout(100, TimeUnit.SECONDS)
         .writeTimeout(100, TimeUnit.SECONDS)

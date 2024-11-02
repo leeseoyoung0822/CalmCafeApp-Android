@@ -45,6 +45,14 @@ class LoginActivity : AppCompatActivity() {
         getKeyHash()
         setKakaoCallback()
 
+        val swaggerToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0NjA4NzAsImV4cCI6MTczMDU2ODg3MCwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.G6nKEEFWptr3nUxm6JxOXnHif8MVKlLf0SN8J0sdPaENQxbReePq6PNXAQn5FB-Bz82sGXHzxclKaPg_Qw2qDw"
+
+        // SharedPreferences에 저장
+        val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
+        sharedPreferences.edit().putString("ACCESS_TOKEN", swaggerToken).apply()
+        Log.d("TokenTest", "Swagger 토큰이 SharedPreferences에 저장되었습니다.")
+
+
         // 로그인 버튼 클릭 시 카카오 로그인 실행
         binding.loginBtn.setOnClickListener {
             clikcKakaoLoginBtn(it)
@@ -72,9 +80,9 @@ class LoginActivity : AppCompatActivity() {
             } else if (token != null) {
                 Log.d("[카카오로그인]", "로그인에 성공하였습니다. 액세스 토큰: ${token.accessToken}")
 
-                // 액세스 토큰을 SharedPreferences에 저장
+                /* 액세스 토큰을 SharedPreferences에 저장
                 val sharedPreferences = getSharedPreferences("MyAppPreferences", MODE_PRIVATE)
-                sharedPreferences.edit().putString("ACCESS_TOKEN", token.accessToken).apply()
+                sharedPreferences.edit().putString("ACCESS_TOKEN", token.accessToken).apply()*/
 
 
                 UserApiClient.instance.me { user, meError ->
@@ -96,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
                             provider = "kakao"
                         )
 
-                        val call = ApiManager.instance.generateToken(userInfo)
+                        val call = ApiManager.loginService.generateToken(userInfo)
                         call.enqueue(object : Callback<TokenResponse> {
                             override fun onResponse(
                                 call: Call<TokenResponse>,

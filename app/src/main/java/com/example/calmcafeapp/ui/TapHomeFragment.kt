@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.R
@@ -14,10 +15,12 @@ import com.example.calmcafeapp.data.CafeMenuData
 import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.databinding.FragmentTaphomeBinding
 import com.example.calmcafeapp.viewmodel.HomeViewModel
+import com.example.calmcafeapp.viewmodel.RankViewModel
 
 class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_taphome) {
     private lateinit var menuCafeAdapter: MenuCafeAdapter
     private lateinit var couponCafeAdapter: CouponCafeAdapter
+    private val rankViewModel: RankViewModel by activityViewModels()
     private val viewModel: HomeViewModel by activityViewModels()
 
 
@@ -56,7 +59,6 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
 
 
         // 혼잡도 데이터 예시로 업데이트
-        updateCircularProgress("여유")
         couponCafeAdapter.setMyItemClickListener(object : CouponCafeAdapter.MyItemClickListener {
             override fun onItemClick(menu: CafeCouponData) {
                 showCouponPopup(menu)
@@ -66,6 +68,17 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
 
     override fun initDataBinding() {
         super.initDataBinding()
+
+        rankViewModel.storeCongestionLevel.observe(viewLifecycleOwner) { storeCongestionLevel ->
+            storeCongestionLevel?.let {
+                updateCircularProgress(binding.ownerCircularProgressViewBoss, it)
+            }
+        }
+        rankViewModel.userCongestionLevel.observe(viewLifecycleOwner) { userCongestionLevel ->
+            userCongestionLevel?.let {
+                updateCircularProgress(binding.visitorCircularProgressViewVisitor, it)
+            }
+        }
     }
 
     override fun initAfterBinding() {
@@ -90,59 +103,15 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
         )
     }
 
-    private fun createDummyData(): ArrayList<CafeMenuData> {
-        return arrayListOf(
-            CafeMenuData(
-                1,
-                "아이스 아메리카노",
-                "4000원",
-                R.drawable.coffee
-            ),
-            CafeMenuData(
-                2,
-                "카페라떼",
-                "4500원",
-                R.drawable.coffee
-            ),
-            CafeMenuData(
-                3,
-                "바닐라 라떼",
-                "5000원",
-                R.drawable.coffee
-            ),
-            CafeMenuData(
-                4,
-                "콜드브루",
-                "5000원",
-                R.drawable.coffee
-            ),
-            CafeMenuData(
-                5,
-                "플랫 화이트",
-                "4500원",
-                R.drawable.coffee
-            ),
-            CafeMenuData(
-                6,
-                "카라멜 마끼아또",
-                "5500원",
-                R.drawable.coffee
-            )
-        )
-    }
 
-    private fun updateCircularProgress(crowdLevel: String) {
+    private fun updateCircularProgress(view: CircularProgressView, crowdLevel: String) {
         val (percentage, text) = when (crowdLevel) {
-            "한산" -> 25f to "한산"
-            "여유" -> 50f to "여유"
-            "보통" -> 75f to "보통"
-            "혼잡" -> 100f to "혼잡"
+            "CALM" -> 30f to "한산"
+            "NORMAL" -> 60f to "보통"
+            "BUSY" -> 100f to "혼잡"
             else -> 0f to "정보 없음"
         }
-
-        // 혼잡도에 따른 CircularProgressView 업데이트
-        binding.circularProgressViewBoss.setPercentage(percentage, text)
-        binding.circularProgressViewVisitor.setPercentage(percentage, text) // 방문자 혼잡도 예시
+        view.setPercentage(percentage, text)
     }
 
     private fun showCouponPopup(coupon: CafeCouponData) {

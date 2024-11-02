@@ -52,8 +52,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp">
+            android:layout_marginTop="9dp"
+            android:layout_marginStart="9dp">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn1"
@@ -118,9 +118,10 @@
             android:text=""
             android:textStyle="bold"
             android:textSize="22sp"
-            android:layout_margin="10dp"
+            android:layout_margin="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
 
         <TextView
@@ -132,8 +133,8 @@
             android:textSize="12sp"
             android:textColor="@color/whitegray"
             app:layout_constraintEnd_toStartOf="@id/update_btn"
-            app:layout_constraintTop_toTopOf="@id/update_btn"
-            app:layout_constraintBottom_toBottomOf="@id/update_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
              />
 
         <ImageButton
@@ -144,6 +145,7 @@
             android:background="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:contentDescription="새로고침"
             android:layout_margin="16dp"
             android:scaleType="centerInside"
