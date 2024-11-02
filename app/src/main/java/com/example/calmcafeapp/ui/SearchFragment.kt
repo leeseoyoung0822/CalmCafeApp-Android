@@ -18,7 +18,7 @@ import com.example.calmcafeapp.databinding.FragmentSearchBinding
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding // ViewBinding 사용
-    private val searchViewModel: SearchViewModel by viewModels()
+    //private val searchViewModel: SearchViewModel by viewModels()
     private lateinit var adapter: CafeRecyclerViewAdapter
 
     override fun onCreateView(
