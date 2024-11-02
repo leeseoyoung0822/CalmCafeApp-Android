@@ -3,9 +3,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="brown">#A2845E</color>
+    <color name="orange">#FF631B</color>
     <color name="green">#2E8465</color>
+
+    <color name="ligthGreen">#4D2E8465</color>
+
     <color name="lightgreen">#C0DAD1</color>
-    <color name="darkgray">@color/material_dynamic_neutral40</color>
+
+   <color name="darkgray">@color/material_dynamic_neutral40</color>
     <color name="lightgray">@color/material_dynamic_neutral70</color>
     <color name="whitegray">@color/material_dynamic_neutral80</color>
     <color name="blue">#0000FF</color>
@@ -13,4 +18,3 @@
 
 
 </resources>
-

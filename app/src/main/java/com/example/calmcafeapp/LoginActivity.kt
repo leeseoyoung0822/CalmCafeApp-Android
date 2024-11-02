@@ -16,6 +16,8 @@ import com.example.calmcafeapp.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.user.UserApiClient
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,6 +45,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         // 카카오 로그인 콜백 설정
+        getKeyHash()
         setKakaoCallback()
 
         // 로그인 버튼 클릭 시 카카오 로그인 실행
@@ -125,6 +128,24 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+    // 키해시를 확인하는 함수
+    private fun getKeyHash() {
+        try {
+            val info: PackageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+            for (signature in info.signatures) {
+                val md: MessageDigest = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                val keyHash = Base64.encodeToString(md.digest(), Base64.NO_WRAP)
+                Log.d("KeyHash", "KeyHash: $keyHash")
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.e("KeyHash", "NameNotFoundException: ${e.message}")
+        } catch (e: NoSuchAlgorithmException) {
+            Log.e("KeyHash", "NoSuchAlgorithmException: ${e.message}")
+        }
+    }
+
+}
 
 
     fun handleLoginResponse(accessToken: String, role: String) {
@@ -146,4 +167,5 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 }
+
 
