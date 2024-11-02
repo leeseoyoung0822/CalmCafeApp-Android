@@ -16,13 +16,13 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
 
         // RecyclerView 어댑터 설정 (임시 데이터 설정)
         val initialCafeList = mutableListOf(
-            CafeData("R.drawable.favorite", "카페 A", "혼잡도: 보통"),
-            CafeData("R.drawable.favorite", "카페 B", "혼잡도: 혼잡"),
-            CafeData("R.drawable.favorite", "카페 C", "혼잡도: 혼잡"),
-            CafeData("R.drawable.favorite", "카페 D", "혼잡도: 혼잡"),
-            CafeData("R.drawable.favorite", "카페 E", "혼잡도: 혼잡"),
-            CafeData("R.drawable.favorite", "카페 F", "혼잡도: 혼잡"),
-            CafeData("R.drawable.favorite", "카페 G", "혼잡도: 혼잡")
+            CafeData(R.drawable.coupon_img, "스타벅스 연남점", "혼잡도: 보통"),
+            CafeData(R.drawable.cafe_img2, "투썸플레이스 홍대점", "혼잡도: 혼잡"),
+            CafeData(R.drawable.cafe_img5, "커피 빈 용산점역", "혼잡도: 혼잡"),
+            CafeData(R.drawable.cafe_img4, "블루팟", "혼잡도: 한산"),
+            CafeData(R.drawable.cafe_img6, "라플란드 카페", "혼잡도: 혼잡"),
+            CafeData(R.drawable.sample_cafe_img, "빽다방 행신역점", "혼잡도: 보통"),
+            CafeData(R.drawable.cafe_img1, "아말룬 커피", "혼잡도: 보통")
         )
 
         val adapter = CafeAdapter(initialCafeList)
