@@ -5,18 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeMenuData
+import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.databinding.FragmentStoreBinding
 import com.example.calmcafeapp.databinding.FragmentTaphomeBinding
+import com.example.calmcafeapp.viewmodel.HomeViewModel
 
 class StoreFragment : BaseFragment<FragmentStoreBinding>(R.layout.fragment_store) {
     private lateinit var menuPointStoreAdapter: MenuPointStoreAdapter
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun initStartView() {
         super.initStartView()
@@ -24,6 +28,9 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(R.layout.fragment_store
         binding.rvPointmenu.apply {
             layoutManager = GridLayoutManager(requireContext(), 2) // 수정됨: Context 전달
             adapter = menuPointStoreAdapter // 수정됨: Adapter 설정
+        }
+        viewModel.pointMenuList.observe(viewLifecycleOwner) { pointMenuList ->
+            menuPointStoreAdapter.updateData(pointMenuList.map { PointMenuDetailResDto(it.id, it.name, it.pointPrice, it.pointDiscount,it.image) })
         }
 
     }

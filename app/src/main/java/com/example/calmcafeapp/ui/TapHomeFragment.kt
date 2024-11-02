@@ -2,24 +2,29 @@ package com.example.calmcafeapp.ui
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeCouponData
 import com.example.calmcafeapp.data.CafeMenuData
+import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.databinding.FragmentTaphomeBinding
+import com.example.calmcafeapp.viewmodel.HomeViewModel
 
 class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_taphome) {
     private lateinit var menuCafeAdapter: MenuCafeAdapter
     private lateinit var couponCafeAdapter: CouponCafeAdapter
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun initStartView() {
         super.initStartView()
 
         // 어댑터 초기화
-        menuCafeAdapter = MenuCafeAdapter(createDummyData())
+        menuCafeAdapter = MenuCafeAdapter(ArrayList())
         couponCafeAdapter = CouponCafeAdapter(createDummyCouponData())
 
         // 리사이클러뷰 설정
@@ -41,6 +46,13 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
                 }
             }
         })
+
+        viewModel.cafeMenuList.observe(viewLifecycleOwner) { menuList ->
+            menuCafeAdapter.updateData(menuList.map { MenuDetailResDto(it.id, it.name, it.price, it.image) })
+        }
+
+
+
 
         // 혼잡도 데이터 예시로 업데이트
         updateCircularProgress("여유")
@@ -64,13 +76,13 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
         return arrayListOf(
             CafeCouponData(
                 1,
-                "첫방문 50% 할인",
-                "50%",
+                "첫방문",
+                "50% 할인",
                 "2024-12-31"
             ),
             CafeCouponData(
                 2,
-                "카페라떼 1+1",
+                "카페라떼",
                 "1+1",
                 "2024-11-30"
             ),

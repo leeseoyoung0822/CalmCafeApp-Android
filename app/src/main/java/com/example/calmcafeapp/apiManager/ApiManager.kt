@@ -156,7 +156,7 @@ object ApiManager {
         .registerTypeAdapter(Geometry::class.java, GeometryDeserializer())
         .create()
 
-    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0MzkwOTIsImV4cCI6MTczMDU0NzA5MiwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.qSQCfwnxjw8w70tQKpwM-fMjjbAAsvhuPvnDF5AtvH4oB8AOhMhgQq_C87PAjNhR_1LwWR2nGnMsi1Ls3BK1xg"
+    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0Nzg5MzYsImV4cCI6MTczMDU4NjkzNiwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.TuXR_a04cJM6v_L5yHYSUJ0SzFqsLvP6XE3UMzJVwxNNEUtBkZiUNGZ5QG-TqgF7dxAdueK_NZNvskCMCNMzFA"
     private val serverApiClient = commonClient.newBuilder()
         .addInterceptor(AuthorizationInterceptor(SERVER_API_TOKEN))
         .build()

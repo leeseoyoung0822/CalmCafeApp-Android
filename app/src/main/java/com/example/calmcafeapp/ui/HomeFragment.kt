@@ -30,6 +30,7 @@ import com.example.calmcafeapp.MainActivity
 import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.OnRouteStartListener
+import com.example.calmcafeapp.data.StorePosDto
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 
@@ -50,7 +51,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private var currentLocation: Location? = null
     private var selectedCafeMarker: Marker? = null
     private var isRouteSearching = false
-    private var selectedCafe: LocalItem? = null
+    private var selectedCafe: StorePosDto? = null
     private var currentSearchStartX: Double? = null
     private var currentSearchStartY: Double? = null
     private var currentSearchEndX: Double? = null
@@ -94,6 +95,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
         naverMap.uiSettings.isLocationButtonEnabled = true
+
+        setupMapListeners()
+
+        viewModel.cafes.value?.let { displayMarkers(it) }
 
         val locationOverlay = naverMap.locationOverlay
         locationOverlay.isVisible = true  // 위치 오버레이를 보이도록 설정
@@ -174,8 +179,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             val area = viewModel.extractAreaFromAddress(address)
             Log.d("add2", "${area}")
             // 해당 지역의 카페 요청
-            viewModel.searchCafesInArea(area)
+            viewModel.fetchCafeLocation(area)
+            //viewModel.searchCafesInArea(area)
             viewModel.setStartAddress(address)
+
         }
 
         // 카페 목록 관찰
@@ -296,20 +303,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
 
     }
-    private fun displayMarkers(cafes: List<LocalItem>) {
-        if (isRouteSearching) return  // 길찾기 중에는 마커 표시 생략
+    private fun displayMarkers(cafes: List<StorePosDto>) {
+        if (!::naverMap.isInitialized || isRouteSearching) return  // 길찾기 중이거나 naverMap 초기화 안되었을 때 return
 
+        // 기존 마커 제거
         for (marker in markerList) {
             marker.map = null
         }
         markerList.clear()
+
+        // 새로운 마커 추가
         for (cafe in cafes) {
-            val latLng = cafe.latLng
-            Log.d("latLng", "${latLng}")
-            if (latLng.latitude == 0.0 && latLng.longitude == 0.0) continue
+            if (cafe.latitude == 0.0 && cafe.longitude == 0.0) continue
+
+            val latLng = LatLng(cafe.latitude, cafe.longitude)  // latLng 객체 생성
 
             val marker = Marker().apply {
-                position = latLng
+                position = latLng  // 위에서 생성한 latLng를 사용
                 icon = OverlayImage.fromResource(R.drawable.cafe_m)
                 width = 100
                 height = 100
@@ -317,13 +327,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             }
             marker.setOnClickListener {
                 showCafeInfo(cafe)
-                viewModel.fetchCafeDetailInfo(1, latLng.latitude, latLng.longitude)
-
+                viewModel.fetchCafeDetailInfo(cafe.id, cafe.latitude, cafe.longitude)  // cafe의 위도와 경도를 사용
                 true
             }
             markerList.add(marker)
         }
     }
+
     private fun displayAllRouteGraphics(allGraphPosList: List<GraphPos>) {
         val coords = allGraphPosList.map { graphPos ->
             LatLng(graphPos.y, graphPos.x)
@@ -356,15 +366,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         naverMap.moveCamera(cameraUpdate)
     }
     // 카페 정보 표시
-    private fun showCafeInfo(cafe: LocalItem) {
+    private fun showCafeInfo(cafe: StorePosDto) {
         selectedCafe = cafe  // 선택된 카페 정보 저장
         Log.d("Information", "${cafe}")
-        viewModel.setDestinationCafeName(cafe.title)
+        viewModel.setDestinationCafeName(cafe.name ?: "Unknown")
+
         val cafeDetailFragment = CafeDetailFragment()
         cafeDetailFragment.setTargetFragment(this, 0)
         // 카페 정보를 프래그먼트로 전달
         val bundle = Bundle().apply {
-            putString("cafeTitle", cafe.title)
+            putString("cafeTitle", cafe.name ?: "Unknown")
             putString("cafeAddress", cafe.address)
             // 필요한 다른 정보도 여기에 추가
         }
@@ -459,7 +470,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         viewModel.resetGraphicDataCounters()
     }
 
-    private fun startRouteSearchToCafe(cafe: LocalItem) {
+    private fun startRouteSearchToCafe(cafe: StorePosDto) {
         clearRoutes()  // 길찾기 전에 모든 경로 초기화
         viewModel.resetRouteData()
 
@@ -473,8 +484,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         if (currentLocation != null) {
             val startX = currentLocation!!.longitude
             val startY = currentLocation!!.latitude
-            val endX = cafe.latLng.longitude
-            val endY = cafe.latLng.latitude
+            val endX = cafe.longitude
+            val endY = cafe.latitude
             currentSearchStartX = startX
             currentSearchStartY = startY
             currentSearchEndX = endX
@@ -486,7 +497,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
             if (distanceInMeters <= 700) {
                 // TMAP 도보 경로 요청
-                viewModel.getWalkingStartRoute(startX, startY, endX, endY, "현재 위치", cafe.title)
+                viewModel.getWalkingStartRoute(startX, startY, endX, endY, "현재 위치", cafe.name?: "Unknown")
                 Log.d("Request", "TMAP 도보 경로 요청: Start($startX, $startY) -> End($endX, $endY)")
                 Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
                 binding.btnShowNavigator.visibility = View.GONE
@@ -500,14 +511,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
-    private fun showSelectedMarkers(cafe: LocalItem) {
+    private fun showSelectedMarkers(cafe: StorePosDto) {
         selectedCafeMarker?.map = null
+        val latLng = LatLng(cafe.latitude, cafe.longitude)
+
         selectedCafeMarker = Marker().apply {
-            position = cafe.latLng
+            position = latLng
             icon = OverlayImage.fromResource(R.drawable.cafe_m)  // 커스텀 아이콘 사용
             width = 100
             height = 120
-            captionText = cafe.title  // 마커 아래에 카페 타이틀 표시
+            captionText = cafe.name ?: "Unknown"// 마커 아래에 카페 타이틀 표시
             captionTextSize = 14f  // 캡션 텍스트 크기
             captionColor = Color.parseColor("#000000")
             captionRequestedWidth = 200  // 캡션 텍스트 최대 너비

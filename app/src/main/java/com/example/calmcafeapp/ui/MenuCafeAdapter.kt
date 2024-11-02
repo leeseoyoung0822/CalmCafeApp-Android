@@ -5,14 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.data.CafeMenuData
+import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.data.RecommendCafe
 import com.example.calmcafeapp.databinding.ItemMenuCafeBinding
 import com.example.calmcafeapp.databinding.ItemRecommendCafeBinding
 
-class MenuCafeAdapter(private var list: ArrayList<CafeMenuData>):RecyclerView.Adapter<MenuCafeAdapter.MenuCafeHolder>() {
+class MenuCafeAdapter(private var list: ArrayList<MenuDetailResDto>):RecyclerView.Adapter<MenuCafeAdapter.MenuCafeHolder>() {
 
     interface MyItemClickListener {
-        fun onItemClick(menu: CafeMenuData)
+        fun onItemClick(menu: MenuDetailResDto)
     }
     private var myItemClickListener: MyItemClickListener? = null
 
@@ -45,14 +46,20 @@ class MenuCafeAdapter(private var list: ArrayList<CafeMenuData>):RecyclerView.Ad
     override fun onBindViewHolder(holder: MenuCafeHolder, position: Int) {
         val menu = list[position]
         Glide.with(holder.itemView.context)
-            .load(menu.menu_img)
+            .load(menu.image)
             .into(holder.img)
-        holder.menu.text = menu.menu_name
-        holder.price.text = menu.price
+        holder.menu.text = menu.name
+        holder.price.text = "${menu.price.toString()}원"
 
     }
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun updateData(newData: List<MenuDetailResDto>) {
+        list.clear()
+        list.addAll(newData)
+        notifyDataSetChanged()
     }
 }

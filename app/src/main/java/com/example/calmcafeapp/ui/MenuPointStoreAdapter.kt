@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.data.CafeMenuData
+import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.data.RecommendCafe
 import com.example.calmcafeapp.databinding.ItemMenuCafeBinding
@@ -57,5 +58,11 @@ class MenuPointStoreAdapter(private var list: ArrayList<PointMenuDetailResDto>):
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun updateData(newData: List<PointMenuDetailResDto>) {
+        list.clear()
+        list.addAll(newData)
+        notifyDataSetChanged()
     }
 }
