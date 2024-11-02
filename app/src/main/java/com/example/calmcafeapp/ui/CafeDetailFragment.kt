@@ -31,7 +31,8 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     private var _binding: FragmentCafeDetailBinding? = null
     private val binding get() = _binding!!
-    private val rankViewModel: RankViewModel by activityViewModels() // ViewModel 가져오기
+    private val homeViewModel: HomeViewModel by activityViewModels()// ViewModel 가져오기
+    private val rankViewModel: RankViewModel by activityViewModels()// ViewModel 가져오기
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var isFavorite = false
     private var listener: OnRouteStartListener? = null
@@ -60,37 +61,26 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        // 전달받은 storeId 가져오기
         val storeId = arguments?.getInt("storeId") ?: return
-        Log.d("CafeDetailFragment", "Store ID: $storeId")
+        val latitude = arguments?.getDouble("latitude") ?: return
+        val longitude = arguments?.getDouble("longitude") ?: return
 
-        // 사용자 위치 가져오기
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                // ViewModel을 통해 API 호출 (위도와 경도를 함께 전달)
-                rankViewModel.fetchCafeDetail(storeId, location.latitude, location.longitude)
-            } else {
-                // 위치를 가져올 수 없는 경우 예외 처리
-                Log.e("CafeDetailFragment", "사용자 위치 정보를 가져올 수 없습니다.")
+        // ViewModel에서 카페 정보를 가져옴
+                homeViewModel.fetchCafeDetailInfo(storeId, latitude, longitude)
+
+        // LiveData 관찰하여 UI 업데이트
+        homeViewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetail ->
+            cafeDetail?.let {
+                binding.cafeName.text = it.name
+                // 기타 UI 업데이트
             }
         }
-        /* API 응답 관찰 및 UI 업데이트
-        rankViewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetail ->
-            cafeDetail?.let {
-                //binding.cafeName.text = cafeDetail.name
-                //binding.likesNum.text = "${cafeDetail.favoriteCount}개"
-                //val formattedOpeningTime = formatTime(it.openingTime)
-                //val formattedClosingTime = formatTime(it.closingTime)
-                //val operatingHours = "$formattedOpeningTime - $formattedClosingTime"
-                //binding.openTime.text = operatingHours
-                // 거리 변환 후 TextView에 설정
-                //binding.distance.text = formatDistance(cafeDetail.distance)
-                //binding.openState.text = it.storeState
-                isFavorite = cafeDetail.isFavorite
-                updateLikeButton(isFavorite)
+
+        homeViewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            errorMessage?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
-        }*/
+        }
 
         // 좋아요 버튼 상태 업데이트 (favoriteStoreId 관찰)
         rankViewModel.favoriteStoreId.observe(viewLifecycleOwner) { updatedStoreId ->

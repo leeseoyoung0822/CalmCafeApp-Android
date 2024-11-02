@@ -21,5 +21,7 @@ data class StoreRanking(
     val userCongestionLevel: String?,
     var isFavorite: Boolean,
     val image: String?,
-    val address: String?
+    val address: String?,
+    val latitude: Double, // 추가된 필드
+    val longitude: Double  // 추가된 필드
 )
