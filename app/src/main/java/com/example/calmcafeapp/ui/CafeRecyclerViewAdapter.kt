@@ -3,8 +3,6 @@ package com.example.calmcafeapp.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.databinding.RankingItemViewBinding
@@ -13,7 +11,7 @@ import com.example.calmcafeapp.data.StoreRanking
 
 class CafeRecyclerViewAdapter(
     private var mItem: MutableList<StoreRanking>,
-    private val onItemClick: (storeId: Int) -> Unit,
+    private val onItemClick: (storeId: Int, latitude: Double, longitude: Double) -> Unit,
     private val onFavoriteClick: (storeId: Int, isFavorite: Boolean) -> Unit
 ) : RecyclerView.Adapter<CafeRecyclerViewAdapter.CafeViewHolder>() {
 
@@ -23,7 +21,7 @@ class CafeRecyclerViewAdapter(
         fun bind(
             storeRanking: StoreRanking,
             position: Int,
-            onItemClick: (storeId: Int) -> Unit,
+            onItemClick: (storeId: Int, latitude: Double, longitude: Double) -> Unit,
             onFavoriteClick: (storeId: Int, isFavorite: Boolean) -> Unit
         ) {
             Glide.with(binding.cafePhotoImv.context)
@@ -34,16 +32,16 @@ class CafeRecyclerViewAdapter(
 
             // 아이템 클릭 이벤트 설정
             itemView.setOnClickListener {
-                onItemClick(storeRanking.id)  // 클릭 시 storeId를 전달
+                val latitude = storeRanking.latitude
+                val longitude = storeRanking.longitude
+                onItemClick(storeRanking.id, latitude, longitude)  // 클릭 시 storeId를 전달
             }
             // 좋아요 버튼 클릭 이벤트
             binding.likesBtn.setOnClickListener {
                 // 현재 즐겨찾기 상태 확인
                 val currentFavoriteStatus = storeRanking.isFavorite
-                storeRanking.isFavorite = !currentFavoriteStatus // 상태 반전 // 수정
                 updateLikeButton(storeRanking.isFavorite) // 버튼 이미지 업데이트 // 수정
-
-                onFavoriteClick(storeRanking.id, storeRanking.isFavorite) // API 호출 // 수정
+                onFavoriteClick(storeRanking.id, storeRanking.isFavorite) // API 호출
             }
 
             // 상위 3개의 아이템에만 순위 배지를 표시
@@ -59,11 +57,9 @@ class CafeRecyclerViewAdapter(
         }
 
         private fun updateLikeButton(isLiked: Boolean) {
-            if (isLiked) {
-                binding.likesBtn.setImageResource(R.drawable.heart_filled) // 채워진 하트 이미지로 변경
-            } else {
-                binding.likesBtn.setImageResource(R.drawable.heart_empty) // 빈 하트 이미지로 변경
-            }
+            binding.likesBtn.setImageResource(
+                if (isLiked) R.drawable.heart_filled else R.drawable.heart_empty
+            )
         }
     }
     // 특정 ID의 즐겨찾기 상태를 업데이트

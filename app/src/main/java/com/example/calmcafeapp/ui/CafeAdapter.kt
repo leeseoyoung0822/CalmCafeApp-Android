@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.data.CafeData
+//import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.ItemCafeBinding
 
 // 어댑터 클래스
