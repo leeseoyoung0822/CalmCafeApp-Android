@@ -1,7 +1,6 @@
 package com.example.calmcafeapp
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,8 +15,6 @@ import com.example.calmcafeapp.databinding.ActivityLoginBinding
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.user.UserApiClient
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,9 +24,9 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Base64
+import androidx.core.content.ContextCompat.startActivity
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -145,7 +142,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-}
+
 
 
     fun handleLoginResponse(accessToken: String, role: String) {

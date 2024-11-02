@@ -14,12 +14,12 @@ class CouponFragment : BaseFragment<FragmentCouponBinding>(R.layout.fragment_cou
 
         // 샘플 데이터 추가
         val couponList: ArrayList<CafeCouponData> = arrayListOf(
-            CafeCouponData(1, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            CafeCouponData(2, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            CafeCouponData(3, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            CafeCouponData(4, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            CafeCouponData(5, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22"),
-            CafeCouponData(6, "take-out 10% 할인쿠폰", "24.10.20", "24.10.22")
+            CafeCouponData(1, "take-out 10% 할인쿠폰", "", "2024-10-22"),
+            CafeCouponData(2, "take-out 10% 할인쿠폰", "", "2024-10-22"),
+            CafeCouponData(3, "take-out 10% 할인쿠폰", "", "2024-10-22"),
+            CafeCouponData(4, "take-out 10% 할인쿠폰", "", "2024-10-22"),
+            CafeCouponData(5, "take-out 10% 할인쿠폰", "", "202-10-22"),
+            CafeCouponData(6, "take-out 10% 할인쿠폰", "", "2024-10-22")
         )
 
         val couponAdapter = CouponCafeAdapter(couponList)

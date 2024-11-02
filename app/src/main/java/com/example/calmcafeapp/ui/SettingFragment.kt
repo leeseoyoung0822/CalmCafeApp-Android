@@ -30,7 +30,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         binding.favoritesSection.setOnClickListener {
             val favoriteFragment = FavoriteFragment()
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, favoriteFragment)
+                .replace(R.id.container_main, favoriteFragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -39,7 +39,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         binding.mycoupon.setOnClickListener {
             val couponFragment = CouponFragment()
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, couponFragment)
+                .replace(R.id.container_main, couponFragment)
                 .addToBackStack(null)
                 .commit()
         }

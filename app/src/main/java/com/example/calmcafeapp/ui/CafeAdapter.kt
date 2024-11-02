@@ -27,8 +27,9 @@ class CafeAdapter(private val cafeList: List<CafeData>) : RecyclerView.Adapter<C
         fun bind(cafe: CafeData) {
             binding.cafeName.text = cafe.cafe_name
             binding.cafeImage.setImageResource(
-                binding.root.context.resources.getIdentifier(cafe.cafe_img, "drawable", binding.root.context.packageName)
+                binding.root.context.resources.getIdentifier(cafe.cafe_img.toString(), "drawable", binding.root.context.packageName)
             )
         }
     }
+
 }
