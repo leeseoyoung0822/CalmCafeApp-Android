@@ -5,16 +5,16 @@
     <item
         android:id="@+id/navigation_rank"
         android:icon="@drawable/rank_selector"
-        android:title="" />
+        android:title="랭킹" />
 
     <item
         android:id="@+id/navigation_map"
         android:icon="@drawable/mappin_selector"
-        android:title="" />
+        android:title="홈" />
 
     <item
         android:id="@+id/navigation_setting"
         android:icon="@drawable/setting_selector"
-        android:title="" />
+        android:title="설정" />
 
 </menu>

@@ -5,21 +5,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.calmcafeapp.BuildConfig
+import com.example.calmcafeapp.api.CafeDetailService
+import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.apiManager.ApiManager
+import com.example.calmcafeapp.data.CafeDetailResponse
+import com.example.calmcafeapp.data.CafeDetailResult
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.LocalItem
+import com.example.calmcafeapp.data.MapResponse
+import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.data.Path
 import com.example.calmcafeapp.data.PedestrianRouteRequest
+import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.data.PubTransPathResponse
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
 import com.example.calmcafeapp.data.SearchMapResponse
+import com.example.calmcafeapp.data.StorePosDto
 import com.example.calmcafeapp.data.TmapRouteResponse
 import com.naver.maps.geometry.LatLng
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class HomeViewModel : ViewModel() {
 
@@ -27,6 +37,14 @@ class HomeViewModel : ViewModel() {
     private val reverseGeocodingService = ApiManager.naverReverseGeocodingService
     private val odsayService = ApiManager.odsayService
     private val tmapService = ApiManager.tmapService
+    private val cafeDetailService = ApiManager.cafeDetailService
+
+
+    private val _pointMenuList = MutableLiveData<List<PointMenuDetailResDto>>()
+    val pointMenuList: LiveData<List<PointMenuDetailResDto>> get() = _pointMenuList
+
+    private val _cafeMenuList = MutableLiveData<List<MenuDetailResDto>>()
+    val cafeMenuList: LiveData<List<MenuDetailResDto>> get() = _cafeMenuList
 
     private val _pubTransPaths = MutableLiveData<List<Path>?>()
     val pubTransPaths: MutableLiveData<List<Path>?> get() = _pubTransPaths
@@ -46,8 +64,22 @@ class HomeViewModel : ViewModel() {
 
 
     // 카페 목록을 담을 LiveData
-    private val _cafes = MutableLiveData<List<LocalItem>>()
-    val cafes: LiveData<List<LocalItem>> get() = _cafes
+    private val _cafes = MutableLiveData<List<StorePosDto>>()
+    val cafes: LiveData<List<StorePosDto>> get() = _cafes
+
+    private val _cafeDetail = MutableLiveData<CafeDetailResult?>()
+    val cafeDetail: LiveData<CafeDetailResult?> get() = _cafeDetail
+
+    // 포맷팅된 거리와 시간 LiveData
+    private val _formattedDistance = MutableLiveData<String>()
+    val formattedDistance: LiveData<String> get() = _formattedDistance
+
+    private val _formattedOpeningTime = MutableLiveData<String>()
+    val formattedOpeningTime: LiveData<String> get() = _formattedOpeningTime
+
+    private val _formattedClosingTime = MutableLiveData<String>()
+    val formattedClosingTime: LiveData<String> get() = _formattedClosingTime
+
 
     // 에러 메시지를 담을 LiveData
     private val _errorMessage = MutableLiveData<String>()
@@ -68,6 +100,22 @@ class HomeViewModel : ViewModel() {
     // 대중교통 내리는 곳에서 카페까지의 경로 데이터
     private val _walkingRouteCoordinatesToDestination = MutableLiveData<List<LatLng>?>()
     val walkingRouteCoordinatesToDestination: MutableLiveData<List<LatLng>?> get() = _walkingRouteCoordinatesToDestination
+
+    private val _startAddress = MutableLiveData<String>()
+    val startAddress: LiveData<String> get() = _startAddress
+
+    private val _destinationCafeName = MutableLiveData<String>()
+    val destinationCafeName: LiveData<String> get() = _destinationCafeName
+
+    // 시작 주소 설정 메서드
+    fun setStartAddress(address: String) {
+        _startAddress.value = address
+    }
+
+    // 도착지 카페 이름 설정 메서드
+    fun setDestinationCafeName(cafeName: String) {
+        _destinationCafeName.value = cafeName
+    }
 
 
     fun resetRouteData() {
@@ -131,11 +179,14 @@ class HomeViewModel : ViewModel() {
                     if (!results.isNullOrEmpty()) {
                         Log.d("add1", "${response.body()}")
                         val region = results[0].region
+                        Log.d("add1", "${region}")
                         val area1 = region.area1.name
                         val area2 = region.area2.name
-                        val area3 = region.area3.name
+//                        val area3 = region.area3.name
+//                        val area4 = region.area4.name
 
-                        val address = "$area1 $area2 $area3"
+                        val address = "$area1 $area2"
+                        Log.d("add1", "${address}")
                         _address.value = address
                     } else {
                         Log.d("add", "${response.body()}")
@@ -161,6 +212,7 @@ class HomeViewModel : ViewModel() {
         val part2 = parts.getOrNull(2) ?: ""
         val part3 = parts.getOrNull(3) ?: ""
 
+
         return when {
             part0.isNotEmpty() && part1.isNotEmpty() && part3.isNotEmpty() -> "$part0 $part1 $part3"
             part0.isNotEmpty() && part1.isNotEmpty() && part2.isNotEmpty() -> "$part0 $part1 $part2"
@@ -169,49 +221,77 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-
-    fun searchCafesInArea(area: String) {
-        val query = "$area 카페"
-        Log.d("query11", query)
+    // 카페 정보 호출
+    fun fetchCafeDetailInfo(storeId: Int, userLatitude: Double, userLongitude: Double){
         _isLoading.value = true
-        val call = naverApiService.searchLocal(
-            query = query,
-            display = 50,
-            start = 1,
-            sort = "sim"
+        val call = cafeDetailService.getCafeInfo(
+            storeId = storeId,
+            userLatitude = userLatitude,
+            userLongitude = userLongitude
         )
-        call.enqueue(object : Callback<SearchMapResponse> {
-            override fun onResponse(call: Call<SearchMapResponse>, response: Response<SearchMapResponse>) {
-                Log.d("search", response.toString())
+        call.enqueue(object : Callback<CafeDetailResponse> {
+            override fun onResponse(call: Call<CafeDetailResponse>, response: Response<CafeDetailResponse>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    val items = response.body()?.items?.map { item ->
-                        item.copy(title = removeHtmlTags(item.title))
-                    } ?: emptyList()
-                    Log.d("item", items.toString())
-                    _cafes.value = items
+                    val cafeDetailResponse = response.body()
+                    Log.d("cafeDetailResponse", "${response.body()}")
+                    if (cafeDetailResponse != null && cafeDetailResponse.isSuccess) {
+                        val result = cafeDetailResponse.result
+                        _cafeDetail.value = result  // LiveData에 설정
+
+                        // 포맷팅된 거리와 시간 설정
+                        _formattedDistance.value = formatDistance(result?.distance)
+                        _formattedOpeningTime.value = formatTime(result?.openingTime)
+                        _formattedClosingTime.value = formatTime(result?.closingTime)
+                        val pointMenuList = cafeDetailResponse.result?.pointMenuDetailResDtoList
+                        _pointMenuList.value = pointMenuList ?: emptyList()
+                        val menuList = cafeDetailResponse.result?.menuDetailResDtoList
+                        _cafeMenuList.value = menuList ?: emptyList() // 메뉴 리스트를 LiveData에 저장
+                    } else {
+                        _errorMessage.value = cafeDetailResponse?.message ?: "응답이 비어 있습니다."
+                        Log.e("fetchCafeDetailInfo", "응답 실패: ${cafeDetailResponse?.message}")
+                    }
                 } else {
-                    _errorMessage.value = "API 호출에 실패했습니다."
+                    _errorMessage.value = "API 호출에 실패했습니다. 코드: ${response.code()}"
+                    Log.e("fetchCafeDetailInfo", "응답 실패: ${response.errorBody()?.string()}")
                 }
             }
 
-            override fun onFailure(call: Call<SearchMapResponse>, t: Throwable) {
+            override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
                 _isLoading.value = false
-                _errorMessage.value = "네트워크 오류가 발생했습니다."
+                _errorMessage.value = "네트워크 오류가 발생했습니다: ${t.message}"
+                Log.e("fetchCafeDetailInfo", "네트워크 오류", t)
             }
         })
     }
 
+    fun formatDistance(distance: Int?): String {
+        return distance?.let {
+            if (it >= 1000) {
+                val km = it / 1000.0
+                String.format(Locale.getDefault(), "%.1f km", km)
+            } else {
+                "$it m"
+            }
+        } ?: "거리 정보 없음"
+    }
 
+
+    fun formatTime(time: String?): String {
+        return try {
+            val sdfInput = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val sdfOutput = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val date = sdfInput.parse(time ?: "")
+            sdfOutput.format(date)
+        } catch (e: Exception) {
+            "정보 없음"
+        }
+    }
 
     fun resetGraphicDataCounters() {
         expectedGraphicDataCount = 0
         receivedGraphicDataCount = 0
         _allGraphPosList.value = emptyList()
-    }
-
-    fun incrementExpectedGraphicDataCount() {
-        expectedGraphicDataCount++
     }
 
     fun getRouteGraphicData(mapObj: String) {
@@ -369,10 +449,77 @@ class HomeViewModel : ViewModel() {
         })
     }
 
+
+
     fun removeHtmlTags(input: String): String {
         return input.replace(Regex("<.*?>"), "")
 
 
     }
 
+    fun fetchCafeLocation(userAddress: String) {
+        val call = cafeDetailService.fetchStore(userAddress)
+        Log.d("userAddress", "${userAddress}")
+        call.enqueue(object : Callback<MapResponse> {
+            override fun onResponse(call: Call<MapResponse>, response: Response<MapResponse>) {
+                if (response.isSuccessful) {
+                    Log.d("responseLocation", "${response.body()}")
+                    val items = response.body()?.result?.storePosDtoList?.map { storePosDto ->
+                        StorePosDto(
+                            id = storePosDto.id,
+                            address = storePosDto.address,
+                            latitude = storePosDto.latitude,
+                            longitude = storePosDto.longitude,
+                            name = storePosDto.name
+                        )
+                    } ?: emptyList()
+                    _cafes.value = items
+
+
+
+                    // mapResponse.result로 작업 수행
+                } else {
+                    _errorMessage.value = "로딩 중.."
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("API_ERROR", "Response error: $errorBody")
+                }
+            }
+
+            override fun onFailure(call: Call<MapResponse>, t: Throwable) {
+                _errorMessage.value = "네트워크 에러: ${t.message}"
+            }
+        })
+    }
+//
+//    fun searchCafesInArea(area: String) {
+//        val query = "$area 카페"
+//        Log.d("query11", query)
+//        _isLoading.value = true
+//        val call = naverApiService.searchLocal(
+//            query = query,
+//            display = 50,
+//            start = 1,
+//            sort = "sim"
+//        )
+//        call.enqueue(object : Callback<SearchMapResponse> {
+//            override fun onResponse(call: Call<SearchMapResponse>, response: Response<SearchMapResponse>) {
+//                Log.d("search", response.toString())
+//                _isLoading.value = false
+//                if (response.isSuccessful) {
+//                    val items = response.body()?.items?.map { item ->
+//                        item.copy(title = removeHtmlTags(item.title))
+//                    } ?: emptyList()
+//                    Log.d("item", items.toString())
+//                    _cafes.value = items
+//                } else {
+//                    _errorMessage.value = "API 호출에 실패했습니다."
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<SearchMapResponse>, t: Throwable) {
+//                _isLoading.value = false
+//                _errorMessage.value = "네트워크 오류가 발생했습니다."
+//            }
+//        })
+//    }
 }

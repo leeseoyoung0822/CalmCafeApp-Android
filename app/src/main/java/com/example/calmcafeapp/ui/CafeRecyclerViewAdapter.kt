@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.RankingItemViewBinding
 import com.example.calmcafeapp.R
@@ -15,7 +16,9 @@ class CafeRecyclerViewAdapter(private var mItem: List<CafeData>) : RecyclerView.
     class CafeViewHolder(private val binding: RankingItemViewBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cafeData:CafeData){
-            //binding.dogPhotoImg.=dogData.dog_img
+            binding.cafePhotoImv.setImageResource(cafeData.cafe_img)
+
+
             binding.cafeNameTv.text=cafeData.cafe_name
             binding.cafeStateTv.text= cafeData.cafe_state
 

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.CafeDetailFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_sheet_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:background="@drawable/bottom_sheet_background">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/title_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="50dp"
+                    android:layout_height="6dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rounded_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <!-- 소요 시간 및 요금 정보 -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="시간"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_cost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="요금" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="15dp"
+                        android:paddingStart="8dp">
+
+                        <!-- 교통 수단 아이콘 및 선 -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:id="@+id/iv_transport_icon"
+                                android:layout_width="match_parent"
+                                android:layout_height="24dp"
+                                android:src="@drawable/cafe_m" />
+
+                            <!-- 점선 (도보의 경우 점선) -->
+                            <View
+                                android:id="@+id/view_dotted_line"
+                                android:layout_width="24dp"
+                                android:layout_height="27dp"
+                                android:background="@drawable/dott_line"
+                                android:rotation="90" />
+
+                            <View
+                                android:id="@+id/view_dotted_line1"
+                                android:layout_width="24dp"
+                                android:layout_height="27dp"
+                                android:background="@drawable/dott_line"
+                                android:rotation="90" />
+                            <View
+                                android:id="@+id/view_dotted_line2"
+                                android:layout_width="24dp"
+                                android:layout_height="27dp"
+                                android:background="@drawable/dott_line"
+                                android:rotation="90" />
+
+                        </LinearLayout>
+
+                        <!-- 도보 정보 텍스트 -->
+                        <TextView
+                            android:id="@+id/tv_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="출발 위치"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+
+                    <!-- 경로 정보: RecyclerView로 동적 처리 -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_route_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:orientation="vertical" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="4dp"
+                        android:paddingStart="8dp">
+
+                        <!-- 교통 수단 아이콘 및 선 -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <!-- 아이콘 -->
+                            <ImageView
+                                android:id="@+id/iv_transport_icon1"
+                                android:layout_width="match_parent"
+                                android:layout_height="24dp"
+                                android:src="@drawable/cafe_m"
+                                android:layout_marginStart="2dp"/>
+
+                            <!-- 점선 (도보의 경우 점선) -->
+
+                        </LinearLayout>
+
+                        <!-- 도보 정보 텍스트 -->
+                        <TextView
+                            android:id="@+id/tv_address2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="도착 위치"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+
+                    <!-- 경로 정보: RecyclerView로 동적 처리 -->
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -3,7 +3,7 @@
     <!-- 버튼이 선택된 상태일 때의 배경 -->
     <item android:state_selected="true">
         <shape>
-            <solid android:color="@color/beige" /> <!-- 선택 시 배경 갈색 -->
+            <solid android:color="@color/green" /> <!-- 선택 시 배경 갈색 -->
             <corners
                 android:bottomLeftRadius="30dp"
                 android:bottomRightRadius="30dp"
@@ -11,14 +11,14 @@
                 android:topRightRadius="30dp" />
             <stroke
                 android:width="1dp"
-                android:color="@color/brown"/> <!-- 선택 시 테두리 갈색 -->
+                android:color="@color/green"/> <!-- 선택 시 테두리 갈색 -->
         </shape>
     </item>
 
     <!-- 버튼이 클릭된 상태일 때의 배경 -->
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/beige" /> <!-- 클릭 시 배경 베이지색 -->
+            <solid android:color="@color/green" /> <!-- 클릭 시 배경 베이지색 -->
             <corners
                 android:bottomLeftRadius="30dp"
                 android:bottomRightRadius="30dp"
@@ -26,14 +26,14 @@
                 android:topRightRadius="30dp" />
             <stroke
                 android:width="1dp"
-                android:color="@color/beige"/> <!-- 클릭 시에도 테두리 유지 -->
+                android:color="@color/green"/> <!-- 클릭 시에도 테두리 유지 -->
         </shape>
     </item>
 
     <!-- 버튼이 기본 상태일 때의 배경 -->
     <item android:state_enabled="true">
         <shape>
-            <solid android:color="@color/white" /> <!-- 기본 배경 흰색 -->
+            <solid android:color="@color/lightgreen" /> <!-- 기본 배경 흰색 -->
             <corners
                 android:bottomLeftRadius="30dp"
                 android:bottomRightRadius="30dp"
@@ -41,7 +41,7 @@
                 android:topRightRadius="30dp" />
             <stroke
                 android:width="1dp"
-                android:color="@color/beige"/> <!-- 기본 상태 테두리 베이지 -->
+                android:color="@color/lightgreen"/> <!-- 기본 상태 테두리 베이지 -->
         </shape>
     </item>
 </selector>

@@ -1,5 +1,6 @@
 package com.example.calmcafeapp.api
 
+import com.example.calmcafeapp.data.MapResponse
 import com.example.calmcafeapp.data.SearchMapResponse
 import retrofit2.http.GET
 import retrofit2.http.Query

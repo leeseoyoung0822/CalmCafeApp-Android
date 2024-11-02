@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 버튼이 선택되었거나 눌렸을 때 텍스트 색상 -->
+    <item android:state_selected="true" android:color="@color/white" />
+    <item android:state_pressed="true" android:color="@color/white" />
+    <!-- 기본 상태 텍스트 색상 -->
+    <item android:color="@color/green" />
+
+</selector>

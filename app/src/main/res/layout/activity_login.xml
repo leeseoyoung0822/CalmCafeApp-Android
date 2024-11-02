@@ -7,44 +7,39 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@color/beige"
+    android:background="@color/green"
     tools:context=".LoginActivity">
 
-    <ImageView
-        android:id="@+id/logo_img"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginTop="192dp"
-        android:src="@drawable/logo"
-        android:layout_gravity="center_horizontal"/>
-
     <TextView
-        android:id="@+id/logo_name"
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Welcome to calmcafe"
-        android:textSize="30sp"
+        android:layout_marginTop="70dp"
+        android:text="한산\n한家"
+        android:textSize="120sp"
+        android:textStyle="bold"
+        android:shadowColor="@color/black"
+        android:shadowRadius="9"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/brown" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/login_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:layout_marginBottom="10dp"
-        android:text="카카오 로그인"
+        android:text="회원 로그인"
         android:textSize="25sp"
         android:layout_gravity="center"
-        android:textColor="@color/brown"/>
+        android:textColor="@color/white"/>
 
     <View
         android:layout_width="300dp"
         android:layout_height="1dp"
         android:layout_marginBottom="10dp"
         android:layout_gravity="center_horizontal"
-        android:background="@color/brown"/>
+        android:background="@color/white"/>
 
     <ImageView
         android:id="@+id/login_btn"
@@ -52,13 +47,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/kakao_login_medium_wide"
         android:layout_gravity="center_horizontal"/>
-
-    <TextView
-        android:id="@+id/nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"/>
 
 
 

@@ -28,8 +28,7 @@
 //        CafeData("", "빽다방", "보통"),
 //        CafeData("", "카페베네", "여유"),
 //        CafeData("", "이디야", "혼잡"),
-//    )
-//
+
 //    private val _searchQuery = MutableLiveData<String>()
 //    val searchQuery: LiveData<String> get() = _searchQuery
 //

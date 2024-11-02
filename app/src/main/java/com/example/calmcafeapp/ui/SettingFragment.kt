@@ -5,6 +5,7 @@ import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.databinding.FragmentSettingBinding
 
+
 class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,3 +50,4 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         // BaseFragment에서는 binding 해제를 처리하지 않아도 됨
     }
 }
+

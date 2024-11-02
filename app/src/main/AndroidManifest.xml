@@ -23,6 +23,13 @@
         <activity
             android:name=".viewmodel.SurveyActivity"
             android:exported="false" />
+        
+        <activity
+            android:name=".OwnerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
