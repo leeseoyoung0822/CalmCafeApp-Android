@@ -20,6 +20,7 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
     private lateinit var couponCafeAdapter: CouponCafeAdapter
     private val viewModel: HomeViewModel by activityViewModels()
 
+
     override fun initStartView() {
         super.initStartView()
 
