@@ -50,7 +50,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     android:backgroundTint="@color/green"
                     android:text="출발하기"
                     android:textColor="@color/white"
@@ -85,34 +84,18 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/likes_btn" />
-                <ImageView
-                    android:id="@+id/clock_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/clock"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/view"/>
 
                 <TextView
                     android:id="@+id/open_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:drawableStart="@drawable/clock"
+                    android:drawablePadding="8dp"
                     android:text="영업중 "
-                    app:layout_constraintStart_toEndOf="@id/clock_img"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/view" />
-
-                <TextView
-                    android:id="@+id/open_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text=""
-                    app:layout_constraintStart_toEndOf="@id/open_state"
-                    app:layout_constraintTop_toTopOf="@id/open_state" />
 
                 <TextView
                     android:id="@+id/distance"
@@ -121,9 +104,9 @@
                     android:layout_marginTop="8dp"
                     android:drawableStart="@drawable/location"
                     android:drawablePadding="8dp"
-                    android:text=""
-                    app:layout_constraintStart_toStartOf="@id/clock_img"
-                    app:layout_constraintTop_toBottomOf="@id/clock_img" />
+                    android:text="내 위치에서 200m"
+                    app:layout_constraintStart_toStartOf="@id/open_state"
+                    app:layout_constraintTop_toBottomOf="@id/open_state" />
 
                 <View
                     android:id="@+id/open_view"

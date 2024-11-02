@@ -28,6 +28,12 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
         val type = binding.couponType
         val date = binding.couponTime
 
+        init {
+            binding.root.setOnClickListener {
+                myItemClickListener?.onItemClick(list[adapterPosition])
+            }
+        }
+
     }
 
 

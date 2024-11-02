@@ -1,0 +1,22 @@
+package com.example.calmcafeapp.api
+
+import com.example.calmcafeapp.data.CafeDetailResponse
+import com.example.calmcafeapp.data.MapResponse
+import com.example.calmcafeapp.data.SearchMapResponse
+import retrofit2.http.GET
+import retrofit2.http.Query
+import retrofit2.Call
+
+interface CafeDetailService {
+    @GET("/store/detail/user")
+    fun getCafeInfo(
+        @Query("storeId") storeId: Int,
+        @Query("userLatitude") userLatitude: Double,
+        @Query("userLongitude") userLongitude: Double,
+    ): Call<CafeDetailResponse>
+
+    @GET("/store/")
+    fun fetchStore(
+        @Query("userAddress") userAddress : String
+    ): Call<MapResponse>
+}

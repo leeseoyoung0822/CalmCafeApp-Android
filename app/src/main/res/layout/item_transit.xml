@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingBottom="4dp">
+
+    <!-- 교통 수단 아이콘 및 선 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- 아이콘 (버스, 지하철 등 교통수단에 맞게 변경) -->
+        <ImageView
+            android:id="@+id/iv_transport_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_tran" />
+
+        <!-- 선 (버스의 경우 파란색 선) -->
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="4dp"
+            android:layout_height="100dp"
+            android:background="@color/blue" />
+    </LinearLayout>
+
+    <!-- 버스/지하철 정보 텍스트 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp">
+
+        <TextView
+            android:id="@+id/tv_transit_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="버스 703번"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_transit_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="16분 후 도착, 11정류장"
+            android:textSize="14sp"/>
+    </LinearLayout>
+</LinearLayout>

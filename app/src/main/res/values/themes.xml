@@ -18,5 +18,29 @@
         <item name="android:paddingBottom">8dp</item> <!-- 텍스트 아래에 패딩 추가 -->
     </style>
 
+    <style name="TransparentBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/TransparentBottomSheetStyle</item>
+    </style>
+
+    <style name="TransparentBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="RoundedDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@drawable/round_greenbackground</item>
+    </style>
+
+    <style name="TransparentDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+
+
+
+
+
+
     <style name="Theme.CalmCafeApp" parent="Base.Theme.CalmCafeApp" />
 </resources>

@@ -5,56 +5,88 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.base.BaseFragment
+import com.example.calmcafeapp.data.CafeMenuData
+import com.example.calmcafeapp.data.MenuDetailResDto
+import com.example.calmcafeapp.data.PointMenuDetailResDto
+import com.example.calmcafeapp.databinding.FragmentStoreBinding
+import com.example.calmcafeapp.databinding.FragmentTaphomeBinding
+import com.example.calmcafeapp.viewmodel.HomeViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class StoreFragment : BaseFragment<FragmentStoreBinding>(R.layout.fragment_store) {
+    private lateinit var menuPointStoreAdapter: MenuPointStoreAdapter
+    private val viewModel: HomeViewModel by activityViewModels()
 
-/**
- * A simple [Fragment] subclass.
- * Use the [StoreFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class StoreFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun initStartView() {
+        super.initStartView()
+        menuPointStoreAdapter = MenuPointStoreAdapter(createDummyData())
+        binding.rvPointmenu.apply {
+            layoutManager = GridLayoutManager(requireContext(), 2) // 수정됨: Context 전달
+            adapter = menuPointStoreAdapter // 수정됨: Adapter 설정
         }
+        viewModel.pointMenuList.observe(viewLifecycleOwner) { pointMenuList ->
+            menuPointStoreAdapter.updateData(pointMenuList.map { PointMenuDetailResDto(it.id, it.name, it.pointPrice, it.pointDiscount,it.image) })
+        }
+
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_store, container, false)
+    override fun initDataBinding() {
+        super.initDataBinding()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StoreFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            StoreFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun initAfterBinding() {
+        super.initAfterBinding()
+    }
+
+    private fun createDummyData(): ArrayList<PointMenuDetailResDto> {
+        return arrayListOf(
+            PointMenuDetailResDto(
+                1,
+                "아이스 아메리카노",
+                4000,
+                10,
+                "R.drawable.coffee"
+            ),
+            PointMenuDetailResDto(
+                2,
+                "카페라떼",
+                4500,
+                10,
+                "R.drawable.coffee"
+            ),
+            PointMenuDetailResDto(
+                3,
+                "바닐라 라떼",
+                5000,
+                10,
+                "R.drawable.coffee"
+            ),
+            PointMenuDetailResDto(
+                4,
+                "콜드브루",
+                5000,
+                5,
+                "R.drawable.coffee"
+            ),
+            PointMenuDetailResDto(
+                5,
+                "플랫 화이트",
+                4500,
+                15,
+                "R.drawable.coffee"
+            ),
+            PointMenuDetailResDto(
+                6,
+                "카라멜 마끼아또",
+                5500,
+                50,
+                "R.drawable.coffee"
+            )
+        )
     }
 }

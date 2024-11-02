@@ -1,72 +1,40 @@
 package com.example.calmcafeapp.apiManager
 
-import android.content.Context
-import android.util.Log
 import com.example.calmcafeapp.BuildConfig
+import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.api.LoginService
 import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.api.NaverReverseGeocodingService
 import com.example.calmcafeapp.api.ODsayService
-import com.example.calmcafeapp.api.RankingService
 import com.example.calmcafeapp.api.TmapService
+import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GeometryDeserializer
+import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 object ApiManager {
     private var BASE_URL = BuildConfig.AUTH_BASE_URL
-    private lateinit var appContext: Context
-
-    fun init(context: Context) {
-        appContext = context.applicationContext
-    }
-    // Access Token을 포함하는 Interceptor 생성
-    private val authInterceptor = Interceptor { chain ->
-        val sharedPreferences =
-            appContext.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        val accessToken = sharedPreferences.getString("ACCESS_TOKEN", null)
-
-        val request = chain.request().newBuilder().apply {
-            accessToken?.let {
-                addHeader("Authorization", "Bearer $it")
-            }
-            addHeader("Accept", "application/json")        // JSON 형식의 응답을 원할 때 추가
-            addHeader("Content-Type", "application/json")   // JSON 형식의 요청을 보낼 때 추가
-        }.build()
-
-        // Access Token 확인용 로그
-        Log.d("ApiManager", "Using Access Token from SharedPreferences: $accessToken")
-
-        chain.proceed(request)
-    }
-
-    // 공통 Retrofit 인스턴스 생성
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
+    //회원 토큰 반환 api
+    val instance: LoginService by lazy {
+        val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(commonClient)
             .build()
-    }
 
-    // 토큰 반환 api
-    val loginService: LoginService by lazy {
         retrofit.create(LoginService::class.java)
     }
-    // 랭킹 탑 100 api
-    val rankingService: RankingService by lazy {
-        retrofit.create(RankingService::class.java)
-    }
-
 
 
     // 네이버 오픈 API Base URL
@@ -89,8 +57,7 @@ object ApiManager {
 
     // 공통 OkHttpClient
     private val commonClient = OkHttpClient.Builder()
-        .addInterceptor(authInterceptor)
-        .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+        .addInterceptor(loggingInterceptor)
         .connectTimeout(100, TimeUnit.SECONDS)
         .readTimeout(100, TimeUnit.SECONDS)
         .writeTimeout(100, TimeUnit.SECONDS)
@@ -189,12 +156,17 @@ object ApiManager {
         .registerTypeAdapter(Geometry::class.java, GeometryDeserializer())
         .create()
 
+    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0Nzg5MzYsImV4cCI6MTczMDU4NjkzNiwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.TuXR_a04cJM6v_L5yHYSUJ0SzFqsLvP6XE3UMzJVwxNNEUtBkZiUNGZ5QG-TqgF7dxAdueK_NZNvskCMCNMzFA"
+    private val serverApiClient = commonClient.newBuilder()
+        .addInterceptor(AuthorizationInterceptor(SERVER_API_TOKEN))
+        .build()
 
+    // 서버 API용 Retrofit 인스턴스 (ServerRetrofit)
     private val ServerRetrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(commonClient)
+            .client(serverApiClient) // 수정된 OkHttpClient 사용
             .build()
     }
 
@@ -205,4 +177,6 @@ object ApiManager {
     val odsayService: ODsayService = odsayApiRetrofit.create(ODsayService::class.java)
     val naverApiService: MapService  = naverOpenApiRetrofit.create(MapService::class.java)
     val naverReverseGeocodingService: NaverReverseGeocodingService = naverCloudPlatformRetrofit.create(NaverReverseGeocodingService::class.java)
+    val cafeDetailService : CafeDetailService = ServerRetrofit.create(CafeDetailService::class.java)
+
 }

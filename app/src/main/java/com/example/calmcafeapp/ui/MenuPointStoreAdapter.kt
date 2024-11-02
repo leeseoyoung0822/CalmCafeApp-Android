@@ -6,14 +6,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.data.CafeMenuData
 import com.example.calmcafeapp.data.MenuDetailResDto
+import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.data.RecommendCafe
 import com.example.calmcafeapp.databinding.ItemMenuCafeBinding
+import com.example.calmcafeapp.databinding.ItemMenuPointstoreBinding
 import com.example.calmcafeapp.databinding.ItemRecommendCafeBinding
 
-class MenuCafeAdapter(private var list: ArrayList<MenuDetailResDto>):RecyclerView.Adapter<MenuCafeAdapter.MenuCafeHolder>() {
+class MenuPointStoreAdapter(private var list: ArrayList<PointMenuDetailResDto>):RecyclerView.Adapter<MenuPointStoreAdapter.MenuCafeHolder>() {
 
     interface MyItemClickListener {
-        fun onItemClick(menu: MenuDetailResDto)
+        fun onItemClick(menu: PointMenuDetailResDto)
     }
     private var myItemClickListener: MyItemClickListener? = null
 
@@ -21,11 +23,12 @@ class MenuCafeAdapter(private var list: ArrayList<MenuDetailResDto>):RecyclerVie
         myItemClickListener = itemClickListener
     }
 
-    inner class MenuCafeHolder(val binding: ItemMenuCafeBinding) :
+    inner class MenuCafeHolder(val binding: ItemMenuPointstoreBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val img = binding.menuImage
         val menu = binding.menuName
         val price = binding.menuPrice
+
 
     }
 
@@ -35,7 +38,7 @@ class MenuCafeAdapter(private var list: ArrayList<MenuDetailResDto>):RecyclerVie
         viewType: Int
     ): MenuCafeHolder {
         return MenuCafeHolder(
-            ItemMenuCafeBinding.inflate(
+            ItemMenuPointstoreBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -48,8 +51,8 @@ class MenuCafeAdapter(private var list: ArrayList<MenuDetailResDto>):RecyclerVie
         Glide.with(holder.itemView.context)
             .load(menu.image)
             .into(holder.img)
-        holder.menu.text = menu.name
-        holder.price.text = "${menu.price.toString()}원"
+        holder.menu.text = "(${menu.pointDiscount}%할인) ${menu.name}"
+        holder.price.text = "${menu.pointPrice.toString()}P"
 
     }
 
@@ -57,7 +60,7 @@ class MenuCafeAdapter(private var list: ArrayList<MenuDetailResDto>):RecyclerVie
         return list.size
     }
 
-    fun updateData(newData: List<MenuDetailResDto>) {
+    fun updateData(newData: List<PointMenuDetailResDto>) {
         list.clear()
         list.addAll(newData)
         notifyDataSetChanged()

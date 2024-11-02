@@ -104,6 +104,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation ("com.google.android.material:material:1.9.0")
+
     implementation ("org.locationtech.proj4j:proj4j:1.1.0")
 
     // Retrofit 라이브러리
