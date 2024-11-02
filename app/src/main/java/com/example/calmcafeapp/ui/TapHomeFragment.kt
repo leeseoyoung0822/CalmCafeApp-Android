@@ -17,38 +17,19 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
     override fun initStartView() {
         super.initStartView()
 
-        /* 어댑터 초기화
-        tapHomeAdapter = TapHomeAdapter(arrayListOf())*/
+        // 어댑터 초기화
+        tapHomeAdapter = TapHomeAdapter(arrayListOf())
         couponCafeAdapter = CouponCafeAdapter(createDummyCouponData())
 
-        // 리사이클러뷰 설정
-        /*binding.menuList.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = tapHomeAdapter
-        }*/
         binding.couponList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = couponCafeAdapter
         }
-
-        /*RecyclerView 스크롤 이벤트 처리
-        binding.menuList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0) {
-                    // 스크롤할 때 BottomSheet가 확장되도록 처리 (옵션)
-                }
-            }
-        })*/
     }
 
     override fun initDataBinding() {
         super.initDataBinding()
 
-        /*
-        rankViewModel.menuList.observe(viewLifecycleOwner) { menuList ->
-            tapHomeAdapter.updateMenuList(menuList)
-        }*/
         rankViewModel.storeCongestionLevel.observe(viewLifecycleOwner) { storeCongestionLevel ->
             storeCongestionLevel?.let {
                 updateCircularProgress(binding.ownerCircularProgressViewBoss, it)

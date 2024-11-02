@@ -31,14 +31,9 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
     private val _favoriteStoreId = MutableLiveData<Int?>()
     val favoriteStoreId: LiveData<Int?> = _favoriteStoreId
 
-    private val _menuList = MutableLiveData<List<MenuDetail>>()
-    val menuList: LiveData<List<MenuDetail>> get() = _menuList
-
     private val _recommendStoreList = MutableLiveData<List<RecommendStore>>()
     val recommendStoreList: LiveData<List<RecommendStore>> get() = _recommendStoreList
 
-    private val _pointMenuDetailList = MutableLiveData<List<PointMenuDetail>>()
-    val pointMenuDetailList: LiveData<List<PointMenuDetail>> get() = _pointMenuDetailList
     private val _storeCongestionLevel = MutableLiveData<String>()
     val storeCongestionLevel: LiveData<String> = _storeCongestionLevel
 
@@ -112,9 +107,7 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
                 if (response.isSuccessful && response.body() != null) {
                     val cafeDetail = response.body()?.result
                     _cafeDetail.value = cafeDetail
-                    _menuList.value = cafeDetail?.menuDetailResDtoList // 메뉴 리스트 업데이트
                     _recommendStoreList.value = cafeDetail?.recommendStoreResDtoList
-                    _pointMenuDetailList.value = cafeDetail?.pointMenuDetailResDtoList // 포인트 메뉴 리스트 업데이트
                     _storeCongestionLevel.value = cafeDetail?.storeCongestionLevel
                     _userCongestionLevel.value = cafeDetail?.userCongestionLevel
                     Log.d("RankViewModel", "Cafe detail fetched: ${response.body()?.result}")
@@ -126,9 +119,7 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
 
             override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
                 Log.e("RankViewModel", "Network error: ${t.message}")
-                _menuList.value = emptyList() // 실패 시 빈 리스트로 초기
                 _recommendStoreList.value = emptyList()
-                _pointMenuDetailList.value = emptyList() // 실패 시 빈 리스트로 초기화
                 _storeCongestionLevel.value = null // 실패 시 null로 설정
                 _userCongestionLevel.value = null // 실패 시 null로 설정
 

@@ -16,8 +16,6 @@ class TapHomeAdapter(
 
         fun bind(menu: MenuDetail) {
             // 바인딩 객체를 통해 아이템 데이터 설정
-            //binding.menuName.text = menu.name
-            //binding.menuPrice.text = "${menu.price}원"
 
 
             // 이미지 로딩 (Glide 사용)
@@ -38,10 +36,4 @@ class TapHomeAdapter(
     }
 
     override fun getItemCount(): Int = menuList.size
-
-    // 데이터 업데이트 함수 추가
-    fun updateMenuList(newMenuList: List<MenuDetail>) {
-        menuList = newMenuList
-        notifyDataSetChanged()
-    }
 }

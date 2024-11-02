@@ -14,16 +14,9 @@ data class CafeDetail(
     val distance: Double,
     val favoriteCount: Int,
     val isFavorite: Boolean,
-    val openingTime: String,
-    val closingTime: String,
-    val lastOrderTime: String,
-    val storeState: String,
     val storeCongestionLevel: String,
     val userCongestionLevel: String,
-    val menuDetailResDtoList: List<MenuDetail>,
     val recommendStoreResDtoList: List<RecommendStore>,
-    val pointMenuDetailResDtoList: List<PointMenuDetail>,
-    //val promotionDetailResDtoList: List<PromotionDetail>
     // 필요한 필드를 추가
 )
 data class MenuDetail(
