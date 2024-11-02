@@ -25,9 +25,9 @@ class CafeAdapter(private val cafeList: List<CafeData>) : RecyclerView.Adapter<C
     // ViewHolder 클래스
     class CafeViewHolder(private val binding: ItemCafeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cafe: CafeData) {
-            binding.cafeName.text = cafe.cafe_name
+            binding.cafeName.text = cafe.cafeName
             binding.cafeImage.setImageResource(
-                binding.root.context.resources.getIdentifier(cafe.cafe_img.toString(), "drawable", binding.root.context.packageName)
+                binding.root.context.resources.getIdentifier(cafe.cafeImage.toString(), "drawable", binding.root.context.packageName)
             )
         }
     }

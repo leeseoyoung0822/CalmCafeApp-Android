@@ -33,6 +33,15 @@ object ApiManager {
 
     private lateinit var appContext: Context
 
+    val instance: LoginService by lazy {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        retrofit.create(LoginService::class.java)
+    }
+
     fun init(context: Context) {
         appContext = context.applicationContext
     }
@@ -195,7 +204,7 @@ object ApiManager {
         .registerTypeAdapter(Geometry::class.java, GeometryDeserializer())
         .create()
 
-    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0Nzg5MzYsImV4cCI6MTczMDU4NjkzNiwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.TuXR_a04cJM6v_L5yHYSUJ0SzFqsLvP6XE3UMzJVwxNNEUtBkZiUNGZ5QG-TqgF7dxAdueK_NZNvskCMCNMzFA"
+    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA1NjIyOTksImV4cCI6MTczMDY3MDI5OSwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.EhrmQ9R9RAoMpICqoaTlx9Z75bXdRMEnjYgT0p3zfz8Jcew6VIZLhNm05WXhvM-zrxE0R1Zkbo15aDJtUCueuA"
     private val serverApiClient = commonClient.newBuilder()
         .addInterceptor(AuthorizationInterceptor(SERVER_API_TOKEN))
         .build()
