@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
-        android:name=".MyApp"
+        android:name=".KakaoApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -24,7 +24,7 @@
         <activity
             android:name=".viewmodel.SurveyActivity"
             android:exported="false" />
-        
+
         <activity
             android:name=".OwnerActivity"
             android:exported="false" />
@@ -36,7 +36,7 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="${NCP_API_KEY_ID}" /> <!-- 로그인 액티비티 -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".JoinActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"

@@ -16,7 +16,7 @@ abstract class BaseFragment<B: ViewDataBinding>(@LayoutRes private val layoutRes
     //val userID: BigInteger = LocalDataSource.getUserId()!!.toBigInteger()
 
     // protected abstract val viewModel: VM
-    protected lateinit var binding: B
+    lateinit var binding: B
     //protected lateinit var navController: NavController
 
     // * 레이아웃을 띄운 직후 호출. * 뷰나 액티비티의 속성 등을 초기화. * ex) 리사이클러뷰, 툴바, 드로어뷰..

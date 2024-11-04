@@ -31,10 +31,22 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     private var _binding: FragmentCafeDetailBinding? = null
     private val binding get() = _binding!!
-    private val rankViewModel: RankViewModel by activityViewModels() // ViewModel 가져오기
+    private val viewModel: HomeViewModel by activityViewModels()
+    private val rankViewModel: RankViewModel by activityViewModels()// ViewModel 가져오기
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var isFavorite = false
     private var listener: OnRouteStartListener? = null
+    private var cafetitle : String = ""
+    private var cafeadress : String = ""
+    private var distance : Double? = 0.0
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = targetFragment as? OnRouteStartListener
+        if (listener == null) {
+            throw ClassCastException("$targetFragment must implement OnRouteStartListener")
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,67 +69,21 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        // 전달받은 storeId 가져오기
-        val storeId = arguments?.getInt("storeId") ?: return
-        Log.d("CafeDetailFragment", "Store ID: $storeId")
+        // View 바인딩 초기화
 
-        // 사용자 위치 가져오기
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                // ViewModel을 통해 API 호출 (위도와 경도를 함께 전달)
-                rankViewModel.fetchCafeDetail(storeId, location.latitude, location.longitude)
-            } else {
-                // 위치를 가져올 수 없는 경우 예외 처리
-                Log.e("CafeDetailFragment", "사용자 위치 정보를 가져올 수 없습니다.")
-            }
-        }
-        /* API 응답 관찰 및 UI 업데이트
-        rankViewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetail ->
-            cafeDetail?.let {
-                //binding.cafeName.text = cafeDetail.name
-                //binding.likesNum.text = "${cafeDetail.favoriteCount}개"
-                //val formattedOpeningTime = formatTime(it.openingTime)
-                //val formattedClosingTime = formatTime(it.closingTime)
-                //val operatingHours = "$formattedOpeningTime - $formattedClosingTime"
-                //binding.openTime.text = operatingHours
-                // 거리 변환 후 TextView에 설정
-                //binding.distance.text = formatDistance(cafeDetail.distance)
-                //binding.openState.text = it.storeState
-                isFavorite = cafeDetail.isFavorite
-                updateLikeButton(isFavorite)
-            }
-        }*/
 
-        // 좋아요 버튼 상태 업데이트 (favoriteStoreId 관찰)
-        rankViewModel.favoriteStoreId.observe(viewLifecycleOwner) { updatedStoreId ->
-            if (updatedStoreId == storeId) {
-                isFavorite = !isFavorite // 현재 상태 반전
-                updateLikeButton(isFavorite)
-            }
-        }
+        // Bundle에서 visibility 값을 가져옵니다.
+        val visibility = arguments?.getString("visibility")
 
-        // 출발하기 버튼 클릭 리스너 설정
-        binding.startBtn.setOnClickListener {
-            // 버튼이 눌리면 인터페이스 메서드 호출
-            // 네비게이션
-            (activity as?UserActivity)?.addFragment(NavigatorFragment())
-            listener?.onRouteStart()
-            dismiss() // 바텀 시트 닫기
-        }
-
-        // 좋아요 버튼 클릭 리스너 설정 (옵션)
-        binding.likesBtn.setOnClickListener {
-            if (isFavorite) {
-                rankViewModel.removeFavorite(storeId)
-            } else {
-                rankViewModel.addFavorite(storeId)
-            }
-            isFavorite = !isFavorite // 로컬 상태 업데이트
-            updateLikeButton(isFavorite)
+        // visibility 값에 따라 startBtn의 visibility를 설정합니다.
+        if (visibility == "gone") {
+            binding.startBtn.visibility = View.GONE
+        } else {
+            binding.startBtn.visibility = View.VISIBLE
         }
 
 
@@ -125,6 +91,91 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         val tabLayout = binding.tabLayout
         val adapter = CafeDetailPagerAdapter(this)
         viewPager.adapter = adapter
+        //listener?.onRouteStart()
+
+        viewModel.distance.observe(viewLifecycleOwner) { distances ->
+            binding.distance.text = "내 위치에서 ${distances}m"
+            distance = distances
+
+        }
+
+//        // 내 위치 계사
+//        viewModel.distance.observe(viewLifecycleOwner) { distance ->
+//            Log.d("paths_navi", "$distance")
+//            if (distance != null) {
+//                val distance1 = distance
+//                binding.distance.text = "내 위치에서 ${distance1}m"
+//                binding.startBtn.tag = distance
+//                Log.d("distance111", "위에꺼${distance1}")
+//
+//            } else {
+//                //Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
+//                binding.startBtn.tag = 0
+//            }
+//        }
+
+
+        binding.startBtn.setOnClickListener {
+
+            Log.d("distance111", "${distance}")
+
+            if (distance!! <= 700.0) {
+                // 700m 이하일 경우 도보 경로만 제공
+                Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공", Toast.LENGTH_SHORT).show()
+                listener?.onRouteStart()
+                dismiss()  // 현재 바텀시트
+
+            } else {
+                val navigatorFragment = NavigatorFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("cafeTitle", cafetitle)
+                    }
+                }
+                navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
+                listener?.onRouteStart()
+                dismiss()  // 현재 바텀시트 닫기
+
+            }
+
+        }
+
+
+
+        viewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetailResult ->
+            if (cafeDetailResult != null) {
+                // 카페 이름 설정
+                binding.cafeName.text = cafeDetailResult.name
+
+                cafetitle = cafeDetailResult.name
+                cafeDetailResult.userCongestionLevel
+                cafeDetailResult.storeCongestionLevel
+
+                binding.likesNum.text = cafeDetailResult.favoriteCount.toString()
+
+//
+//                Glide.with(this)
+//                    .load(cafeDetailResult.image)
+//                    .placeholder(R.drawable.placeholder_image) // 기본 이미지
+//                    .error(R.drawable.error_image) // 오류 시 표시할 이미지
+//                    .into(binding.ivCafeImage)
+            }
+        }
+
+        // 거리 관찰
+        viewModel.formattedDistance.observe(viewLifecycleOwner) { formattedDistance ->
+            binding.distance.text = "내 위치에서 $formattedDistance"
+        }
+
+        // 영업 시간 관찰
+        viewModel.formattedOpeningTime.observe(viewLifecycleOwner) { openingTime ->
+            val closingTime = viewModel.formattedClosingTime.value ?: "정보 없음"
+            binding.openState.text = "영업 시간: $openingTime - $closingTime"
+        }
+
+        viewModel.formattedClosingTime.observe(viewLifecycleOwner) { closingTime ->
+            val openingTime = viewModel.formattedOpeningTime.value ?: "정보 없음"
+            binding.openState.text = "영업 시간: $openingTime - $closingTime"
+        }
 
 
         expandBottomSheet()
@@ -137,27 +188,11 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             }
         }.attach()
 
-        binding.startBtn.setOnClickListener {
-            val distance = binding.startBtn.tag as? Int  // 거리 정보를 가져옴
-
-                if (distance != null && distance <= 700) {
-                    // 700m 이하일 경우 도보 경로만 제공
-                    Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
-                    //listener?.onRouteStart()  // 도보 경로를 시작하도록 알림
-                    dismiss()  // 현재 바텀시트 닫기
-                } else {
-                    // NavigatorFragment를 표시
-                    val navigatorFragment = NavigatorFragment().apply {
-                        arguments = Bundle().apply {
-                            //putString("cafeTitle", cafeTitle)
-                            //putString("cafeAddress", cafeAddress)
-                        }
-                    }
-                    listener?.onRouteStart()
-                    dismiss()  // 현재 바텀시트 닫기
-                    navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
-                }
+        // 좋아요 버튼 클릭 리스너
+        binding.likesBtn.setOnClickListener {
+            toggleLike()
         }
+
     }
 
     override fun expandBottomSheet() {
@@ -170,8 +205,18 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         }
     }
 
-    private fun updateLikeButton(isLiked: Boolean) {
-        binding.likesBtn.setImageResource(if (isLiked) R.drawable.heart_filled else R.drawable.heart_empty)
+    private fun toggleLike() {
+        val isLiked = binding.likesBtn.tag as? Boolean ?: false
+        if (isLiked) {
+            binding.likesBtn.setImageResource(R.drawable.heart_empty)
+            val currentLikes = binding.likesNum.text.toString().replace("개", "").toIntOrNull() ?: 0
+            binding.likesNum.text = "${currentLikes - 1}개"
+        } else {
+            binding.likesBtn.setImageResource(R.drawable.heart_filled)
+            val currentLikes = binding.likesNum.text.toString().replace("개", "").toIntOrNull() ?: 0
+            binding.likesNum.text = "${currentLikes + 1}개"
+        }
+        binding.likesBtn.tag = !isLiked
     }
 
     override fun onDestroyView() {

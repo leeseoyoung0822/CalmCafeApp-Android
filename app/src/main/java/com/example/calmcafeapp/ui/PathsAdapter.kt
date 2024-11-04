@@ -51,7 +51,7 @@ class PathsAdapter(private var subPaths: List<SubPath>) : RecyclerView.Adapter<R
         fun bind(subPath: SubPath) {
             val distance = subPath.distance?.toInt() ?: 0
             val time = subPath.sectionTime ?: 0
-            binding.tvWalkInfo.text = "도보 ${distance}m, ${time}분"
+            binding.tvWalkInfo.text = "${distance}m, ${time}분"
             binding.ivTransportIcon.setImageResource(R.drawable.walking_72672)
             // 추가적인 설정이 필요하면 여기서 처리
         }
@@ -68,8 +68,15 @@ class PathsAdapter(private var subPaths: List<SubPath>) : RecyclerView.Adapter<R
             val transportNumber = lane?.busNo ?: lane?.name ?: ""
             val sectionTime = subPath.sectionTime ?: 0
             val stationCount = subPath.stationCount ?: 0
-            binding.tvTransitType.text = "$transportType $transportNumber"
-            binding.tvTransitDetails.text = "${sectionTime}분, ${stationCount}정류장"
+            val transportType1 = when (subPath.trafficType) {
+                1 -> {  binding.tvTransitType.text = "$transportType\n${transportNumber}"
+                        binding.tvTransitDetails.text = "${sectionTime}분, ${stationCount}정류장"}
+                2 -> {  binding.tvTransitType.text = "$transportType\n${transportNumber}번"
+                        binding.tvTransitDetails.text = "${sectionTime}분, ${stationCount}정거장" }
+                else -> {}
+            }
+
+
 
             // 아이콘 설정
             val iconRes = when (subPath.trafficType) {

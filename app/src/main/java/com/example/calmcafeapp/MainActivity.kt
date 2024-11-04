@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.databinding.ActivityMainBinding
 import com.example.calmcafeapp.ui.HomeFragment
 import com.example.calmcafeapp.ui.RankFragment
-import com.example.calmcafeapp.ui.SettingFragment
 import com.kakao.sdk.user.UserApiClient
 
 
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("login", "${tokenInfo}")
             if (error != null) {
                 // 로그인 정보가 없으면 LoginActivity로 이동
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(this, JoinActivity::class.java)
                 startActivity(intent)
                 finish()
             } else if (tokenInfo != null) {

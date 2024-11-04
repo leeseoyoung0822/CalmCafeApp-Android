@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import com.example.calmcafeapp.databinding.ActivityUserBinding
 import com.example.calmcafeapp.ui.HomeFragment
 import com.example.calmcafeapp.ui.RankFragment
@@ -16,6 +15,14 @@ class UserActivity : AppCompatActivity() {
     lateinit var binding: ActivityUserBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+    // 프래그먼트 변수 선언
+    private lateinit var homeFragment: HomeFragment
+    private lateinit var rankFragment: RankFragment
+    private lateinit var settingFragment: SettingFragment
+
+    // 현재 활성화된 프래그먼트를 저장할 변수
+    private var activeFragment: Fragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserBinding.inflate(layoutInflater)
@@ -24,10 +31,47 @@ class UserActivity : AppCompatActivity() {
         // 로그 추가 - onCreate 호출 확인
         Log.d("UserActivity", "onCreate called")
 
-        // 초기 프래그먼트 설정
+        // 프래그먼트 초기화
         if (savedInstanceState == null) {
-            Log.d("UserActivity", "Setting initial fragment")
-            switchToFragment(HomeFragment())
+            Log.d("UserActivity", "Initializing fragments")
+            homeFragment = HomeFragment()
+            rankFragment = RankFragment()
+            settingFragment = SettingFragment()
+
+            // 프래그먼트 추가 및 숨기기
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container_main, homeFragment, "home")
+                .hide(homeFragment)
+                .commit()
+
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container_main, rankFragment, "rank")
+                .hide(rankFragment)
+                .commit()
+
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container_main, settingFragment, "setting")
+                .hide(settingFragment)
+                .commit()
+
+            // 초기 프래그먼트 설정 및 표시
+            supportFragmentManager.beginTransaction()
+                .show(homeFragment)
+                .commit()
+            activeFragment = homeFragment
+        } else {
+            // 화면 회전 등으로 인해 액티비티가 재생성될 때, 기존 프래그먼트들을 찾아서 할당
+            homeFragment = supportFragmentManager.findFragmentByTag("home") as HomeFragment
+            rankFragment = supportFragmentManager.findFragmentByTag("rank") as RankFragment
+            settingFragment = supportFragmentManager.findFragmentByTag("setting") as SettingFragment
+
+            // 현재 활성화된 프래그먼트를 찾아서 할당
+            activeFragment = when {
+                homeFragment.isVisible -> homeFragment
+                rankFragment.isVisible -> rankFragment
+                settingFragment.isVisible -> settingFragment
+                else -> homeFragment
+            }
         }
 
         // 바텀 네비게이션 초기화
@@ -35,97 +79,55 @@ class UserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.navigationUser.selectedItemId = R.id.navigation_map
 
-        //initBottomSheet()
-
         binding.btnBack.setOnClickListener {
             onBackPressed()
         }
-
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 1) {
-            supportFragmentManager
-                .popBackStack()
-        }
-        else {
+        // 현재 프래그먼트가 HomeFragment가 아닌 경우, HomeFragment로 전환
+        if (activeFragment != homeFragment) {
+            binding.navigationUser.selectedItemId = R.id.navigation_map
+            showFragment(homeFragment)
+        } else {
             super.onBackPressed()
         }
-    }
-
-    private fun showInit() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container_main, HomeFragment()) // HomeFragment를 FragmentContainerView에 교체
-            .commit()
     }
 
     private fun initBottomNav() {
         binding.navigationUser.itemIconTintList = null
 
         binding.navigationUser.setOnItemSelectedListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.navigation_map -> {
-                    addFragment(HomeFragment())
+                    showFragment(homeFragment)
+                    true
                 }
-
                 R.id.navigation_rank -> {
-                    addFragment(RankFragment())
+                    showFragment(rankFragment)
+                    true
                 }
-
                 R.id.navigation_setting -> {
-                    addFragment(SettingFragment())
+                    showFragment(settingFragment)
+                    true
                 }
+                else -> false
             }
-            return@setOnItemSelectedListener true
         }
 
-        binding.navigationUser.setOnItemReselectedListener {  } // 바텀네비 재클릭시 화면 재생성 방지
+        binding.navigationUser.setOnItemReselectedListener {
+            // 바텀 네비게이션 아이템 재선택 시 아무 동작도 하지 않음
+        }
     }
 
-    fun changeFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.container_main, fragment).commit()
-    }
-    fun addFragment(fragment: Fragment) {
-        supportFragmentManager
-            .commit {
-                setCustomAnimations(
-                    R.anim.slide_3,
-                    R.anim.fade_out,
-                    R.anim.slide_1,
-                    R.anim.fade_out
-                )
-                replace(R.id.container_main, fragment)
-
-                addToBackStack(null)
-            }
-    }
-
-//    private fun initBottomSheet() {
-//        val bottomSheetLayout = findViewById<View>(R.id.bottomSheetLayout)
-//        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
-//
-//        // 바텀시트 초기 상태를 숨김으로 설정
-//        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-//    }
-//
-//    // 바텀시트 열기 메서드
-//    fun showNavigatorBottomSheet() {
-//        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-//        binding.bottomSheetLayout.visibility = View.VISIBLE
-//
-//    }
-//
-//    // 바텀시트 숨기기 메서드
-//    fun hideNavigatorBottomSheet() {
-//        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-//    }
-
-    private fun switchToFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container_main, fragment)
-            .commitNow()
-
-        Log.d("UserActivity", "Switched to fragment: ${fragment::class.java.simpleName}")
+    private fun showFragment(fragment: Fragment) {
+        if (fragment != activeFragment) {
+            supportFragmentManager.beginTransaction()
+                .hide(activeFragment!!)
+                .show(fragment)
+                .commit()
+            activeFragment = fragment
+        }
     }
 
 

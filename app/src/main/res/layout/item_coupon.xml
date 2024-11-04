@@ -10,7 +10,7 @@
     android:layout_marginEnd="16dp"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
-    android:background="@drawable/rounded_background"
+    android:background="@drawable/rounded_background2"
     >
 
     <ImageView
@@ -36,24 +36,14 @@
 
         />
 
-    <TextView
-        android:id="@+id/coupon_discount_rate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="10%"
-        android:textSize="15sp"
-        android:layout_marginStart="10dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/coupon_type"
-        app:layout_constraintStart_toEndOf="@+id/coupon_type"
-        app:layout_constraintTop_toTopOf="@+id/coupon_type" />
+
 
     <TextView
         android:id="@+id/coupon_txt2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:text="유효 기간"
+        android:text="사용 가능 시간"
         android:textSize="10sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

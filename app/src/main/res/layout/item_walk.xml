@@ -44,11 +44,28 @@
     </LinearLayout>
 
     <!-- 도보 정보 텍스트 -->
-    <TextView
-        android:id="@+id/tv_walk_info"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="도보 376m, 6분"
-        android:textSize="16sp"
-        android:layout_marginStart="8dp"/>
+        android:orientation="vertical"
+        android:layout_marginStart="8dp">
+
+        <!-- 도보 정보 텍스트 -->
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="도보"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tv_walk_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="도보 376m, 6분"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 </LinearLayout>

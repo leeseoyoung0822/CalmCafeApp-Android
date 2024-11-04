@@ -23,7 +23,7 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
 
     inner class MenuCouponHolder(val binding: ItemCouponBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val sale = binding.couponDiscountRate
+//        val sale = binding.couponDiscountRate
         val type = binding.couponType
         val date = binding.couponTime
 
@@ -51,8 +51,8 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
 
     override fun onBindViewHolder(holder: CouponCafeAdapter.MenuCouponHolder, position: Int) {
         val coupon = list[position]
-        holder.type.text = coupon.coupon_type
-        holder.sale.text = coupon.sale
+        holder.type.text = "${coupon.coupon_type} ${coupon.sale}"
+//        holder.sale.text = coupon.sale
         holder.date.text = coupon.expiry_date
 
     }
