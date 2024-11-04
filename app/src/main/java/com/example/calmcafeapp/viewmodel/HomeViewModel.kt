@@ -1,5 +1,6 @@
 package com.example.calmcafeapp.viewmodel
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +25,7 @@ import com.example.calmcafeapp.data.RouteGraphicResponse
 import com.example.calmcafeapp.data.SearchMapResponse
 import com.example.calmcafeapp.data.StorePosDto
 import com.example.calmcafeapp.data.TmapRouteResponse
+import com.example.calmcafeapp.login.LocalDataSource
 import com.naver.maps.geometry.LatLng
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,6 +58,10 @@ class HomeViewModel : ViewModel() {
     // 에러 메시지를 담을 LiveData
     private val _graphicErrorMessage = MutableLiveData<String>()
     val graphicErrorMessage: LiveData<String> get() = _graphicErrorMessage
+
+
+    private val _distance = MutableLiveData<Double?>()
+    val distance: LiveData<Double?> get() = _distance
 
     private var expectedGraphicDataCount = 0
     private var receivedGraphicDataCount = 0
@@ -107,6 +113,14 @@ class HomeViewModel : ViewModel() {
     private val _destinationCafeName = MutableLiveData<String>()
     val destinationCafeName: LiveData<String> get() = _destinationCafeName
 
+    private val _currentLocation = MutableLiveData<Location?>()
+    val currentLocation: LiveData<Location?> = _currentLocation
+
+    // 현재 위치를 업데이트하는 함수 추가
+    fun setCurrentLocation(location: Location?) {
+        _currentLocation.value = location
+    }
+
     // 시작 주소 설정 메서드
     fun setStartAddress(address: String) {
         _startAddress.value = address
@@ -137,15 +151,16 @@ class HomeViewModel : ViewModel() {
             endX = endX,
             endY = endY
         )
-
-
         call.enqueue(object : Callback<PubTransPathResponse> {
             override fun onResponse(call: Call<PubTransPathResponse>, response: Response<PubTransPathResponse>) {
                 if (response.isSuccessful) {
                     val result = response.body()?.result
                     val paths = result?.path ?: emptyList()
+                    val distance = result?.pointDistance
+                    _distance.value = distance
                     _pubTransPaths.value = paths
-                    Log.d("API_SUCCESS", "경로 검색 성공: $paths")
+
+                    Log.d("API_SUCCESS", "경로 검색 성공: ${result?.path}")
                 } else {
                     _errorMessage.value = "경로 검색에 실패했습니다: ${response.message()}"
                     Log.e("API_ERROR", "Response error: ${response.errorBody()?.string()}")
@@ -158,8 +173,6 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
-
-
 
 
     // 좌표로부터 주소를 가져오는 함수
@@ -182,9 +195,6 @@ class HomeViewModel : ViewModel() {
                         Log.d("add1", "${region}")
                         val area1 = region.area1.name
                         val area2 = region.area2.name
-//                        val area3 = region.area3.name
-//                        val area4 = region.area4.name
-
                         val address = "$area1 $area2"
                         Log.d("add1", "${address}")
                         _address.value = address
@@ -221,22 +231,28 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+
     // 카페 정보 호출
     fun fetchCafeDetailInfo(storeId: Int, userLatitude: Double, userLongitude: Double){
         _isLoading.value = true
-        val call = cafeDetailService.getCafeInfo(
+        val call : Call<CafeDetailResponse> = ApiManager.cafeDetailService.getCafeInfo(
+            "Bearer " + LocalDataSource.getAccessToken()!!,
             storeId = storeId,
             userLatitude = userLatitude,
-            userLongitude = userLongitude
+           userLongitude = userLongitude
         )
+
         call.enqueue(object : Callback<CafeDetailResponse> {
             override fun onResponse(call: Call<CafeDetailResponse>, response: Response<CafeDetailResponse>) {
+
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val cafeDetailResponse = response.body()
                     Log.d("cafeDetailResponse", "${response.body()}")
                     if (cafeDetailResponse != null && cafeDetailResponse.isSuccess) {
+
                         val result = cafeDetailResponse.result
+                        Log.d("cafeDetailResponse", "${result}")
                         _cafeDetail.value = result  // LiveData에 설정
 
                         // 포맷팅된 거리와 시간 설정
@@ -252,7 +268,7 @@ class HomeViewModel : ViewModel() {
                         Log.e("fetchCafeDetailInfo", "응답 실패: ${cafeDetailResponse?.message}")
                     }
                 } else {
-                    _errorMessage.value = "API 호출에 실패했습니다. 코드: ${response.code()}"
+                    //_errorMessage.value = "API 호출에 실패했습니다. 코드: ${response.code()}"
                     Log.e("fetchCafeDetailInfo", "응답 실패: ${response.errorBody()?.string()}")
                 }
             }

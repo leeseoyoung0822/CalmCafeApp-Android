@@ -6,14 +6,15 @@ import com.example.calmcafeapp.data.SearchMapResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.Call
+import retrofit2.http.Header
 
 interface CafeDetailService {
     @GET("/store/detail/user")
     fun getCafeInfo(
+        @Header("Authorization") accessToken: String,
         @Query("storeId") storeId: Int,
         @Query("userLatitude") userLatitude: Double,
-        @Query("userLongitude") userLongitude: Double,
-    ): Call<CafeDetailResponse>
+        @Query("userLongitude") userLongitude: Double): Call<CafeDetailResponse>
 
     @GET("/store/")
     fun fetchStore(

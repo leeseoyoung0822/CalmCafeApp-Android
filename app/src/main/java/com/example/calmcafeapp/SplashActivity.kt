@@ -56,7 +56,7 @@ class SplashActivity : AppCompatActivity() {
     }*/
 
     private fun moveToLoginActivity() {
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, JoinActivity::class.java)
         startActivity(intent)
         finish() // SplashActivity 종료
     }

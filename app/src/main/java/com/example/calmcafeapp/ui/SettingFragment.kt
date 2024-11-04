@@ -1,7 +1,9 @@
 package com.example.calmcafeapp.ui
 
 import android.os.Bundle
+import android.view.View
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.databinding.FragmentSettingBinding
 
@@ -16,6 +18,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
     override fun initStartView() {
         super.initStartView()
         // 시작 뷰 초기화 작업 (ex. 리사이클러뷰 초기화)
+        (activity as UserActivity).binding.navigationUser.visibility = View.VISIBLE
     }
 
     override fun initDataBinding() {

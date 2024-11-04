@@ -26,53 +26,33 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import java.util.concurrent.TimeUnit
-
 object ApiManager {
     private var BASE_URL = BuildConfig.AUTH_BASE_URL
+
+    val loggingInterceptor= HttpLoggingInterceptor().apply {
+        level= HttpLoggingInterceptor.Level.BODY
+    }
     //회원 토큰 반환 api
+    val instance: LoginService by lazy {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    private lateinit var appContext: Context
-
-    fun init(context: Context) {
-        appContext = context.applicationContext
+        retrofit.create(LoginService::class.java)
     }
-    // Access Token을 포함하는 Interceptor 생성
-    private val authInterceptor = Interceptor { chain ->
-        val sharedPreferences =
-            appContext.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE)
-        val accessToken = sharedPreferences.getString("ACCESS_TOKEN", null)
 
-        val request = chain.request().newBuilder().apply {
-            accessToken?.let {
-                addHeader("Authorization", "Bearer $it")
-            }
-            addHeader("Accept", "application/json")        // JSON 형식의 응답을 원할 때 추가
-            addHeader("Content-Type", "application/json")   // JSON 형식의 요청을 보낼 때 추가
-        }.build()
-
-        // Access Token 확인용 로그
-        Log.d("ApiManager", "Using Access Token from SharedPreferences: $accessToken")
-
-        chain.proceed(request)
-    }
 
     // 공통 Retrofit 인스턴스 생성
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(commonClient)
+            .client(okHttpClient)
             .build()
     }
 
-    // 토큰 반환 api
-    val loginService: LoginService by lazy {
-        retrofit.create(LoginService::class.java)
-    }
-    // 랭킹 탑 100 api
-    val rankingService: RankingService by lazy {
-        retrofit.create(RankingService::class.java)
-    }
+
 
 
     // 네이버 오픈 API Base URL
@@ -87,23 +67,20 @@ object ApiManager {
 
     private val gson : Gson = GsonBuilder().setLenient().create()
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
 
 
 
-    // 공통 OkHttpClient
-    private val commonClient = OkHttpClient.Builder()
-        .addInterceptor(authInterceptor)
-        .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
-        .connectTimeout(100, TimeUnit.SECONDS)
-        .readTimeout(100, TimeUnit.SECONDS)
-        .writeTimeout(100, TimeUnit.SECONDS)
+
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(100, TimeUnit.SECONDS) // 연결 타임아웃 설정 (기본값은 10초)
+        .readTimeout(100, TimeUnit.SECONDS)    // 읽기 타임아웃 설정 (기본값은 10초)
+        .writeTimeout(100, TimeUnit.SECONDS)   // 쓰기 타임아웃 설정 (기본값은 10초)
         .build()
 
+
     // 네이버 오픈 API용 OkHttpClient
-    private val naverOpenApiClient = commonClient.newBuilder()
+    private val naverOpenApiClient = okHttpClient.newBuilder()
         .addInterceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("X-Naver-Client-Id", BuildConfig.NAVER_OPEN_API_CLIENT_ID)
@@ -114,7 +91,7 @@ object ApiManager {
         .build()
 
     // 네이버 클라우드 플랫폼 API용 OkHttpClient
-    private val naverCloudPlatformClient = commonClient.newBuilder()
+    private val naverCloudPlatformClient = okHttpClient.newBuilder()
         .addInterceptor { chain ->
             val request = chain.request().newBuilder()
                 .addHeader("X-NCP-APIGW-API-KEY-ID", BuildConfig.NCP_API_KEY_ID)
@@ -125,7 +102,7 @@ object ApiManager {
         .build()
 
     // ODsay API용 OkHttpClient
-    private val odsayApiClient = commonClient.newBuilder()
+    private val odsayApiClient = okHttpClient.newBuilder()
         .addInterceptor { chain ->
             val originalRequest = chain.request()
             val originalUrl = originalRequest.url
@@ -143,7 +120,7 @@ object ApiManager {
         .build()
 
 
-    private val tmapApiClient = commonClient.newBuilder()
+    private val tmapApiClient = okHttpClient.newBuilder()
         .addInterceptor { chain ->
             val originalRequest: Request = chain.request()
             val newRequest: Request = originalRequest.newBuilder()
@@ -195,8 +172,8 @@ object ApiManager {
         .registerTypeAdapter(Geometry::class.java, GeometryDeserializer())
         .create()
 
-    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA0Nzg5MzYsImV4cCI6MTczMDU4NjkzNiwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.TuXR_a04cJM6v_L5yHYSUJ0SzFqsLvP6XE3UMzJVwxNNEUtBkZiUNGZ5QG-TqgF7dxAdueK_NZNvskCMCNMzFA"
-    private val serverApiClient = commonClient.newBuilder()
+    private const val SERVER_API_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MzA1Njc3MjgsImV4cCI6MTczMDY3NTcyOCwiYXV0aG9yaXRpZXMiOiJVU0VSIn0.5vdPg_FkIgRcpVOt9mU86kU99OAakVNk484x4OP6sDbSw3TwbqszV4oOF_EadDbdsQtFEejtYS3AUJqAfNVTkQ"
+    private val serverApiClient = okHttpClient.newBuilder()
         .addInterceptor(AuthorizationInterceptor(SERVER_API_TOKEN))
         .build()
 
@@ -205,17 +182,22 @@ object ApiManager {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(serverApiClient) // 수정된 OkHttpClient 사용
+            .client(okHttpClient)
             .build()
     }
 
 
 
-    //val loginService: LoginService = retrofit.create(LoginService::class.java)
+
+    val loginService: LoginService = ServerRetrofit.create(LoginService::class.java)
     val tmapService: TmapService = tmapApiRetrofit.create(TmapService::class.java)
     val odsayService: ODsayService = odsayApiRetrofit.create(ODsayService::class.java)
     val naverApiService: MapService  = naverOpenApiRetrofit.create(MapService::class.java)
     val naverReverseGeocodingService: NaverReverseGeocodingService = naverCloudPlatformRetrofit.create(NaverReverseGeocodingService::class.java)
     val cafeDetailService : CafeDetailService = ServerRetrofit.create(CafeDetailService::class.java)
 
+//    // 토큰 반환 api
+//    val loginService: LoginService by lazy { ServerRetrofit.create(LoginService::class.java) }
+    // 랭킹 탑 100 api
+    val rankingService: RankingService by lazy { ServerRetrofit.create(RankingService::class.java) }
 }

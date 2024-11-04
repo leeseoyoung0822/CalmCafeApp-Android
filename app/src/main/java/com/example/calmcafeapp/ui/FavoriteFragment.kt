@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentFavoriteBinding
@@ -12,7 +13,9 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
 
     override fun initStartView() {
         // RecyclerView 초기화
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        (activity as UserActivity).binding.navigationUser.visibility = View.GONE
 
         // RecyclerView 어댑터 설정 (임시 데이터 설정)
         val initialCafeList = mutableListOf(

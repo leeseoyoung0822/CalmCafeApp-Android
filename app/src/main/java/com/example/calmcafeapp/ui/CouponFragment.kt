@@ -1,7 +1,9 @@
 package com.example.calmcafeapp.ui
 
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeCouponData
 import com.example.calmcafeapp.databinding.FragmentCouponBinding
@@ -11,6 +13,7 @@ class CouponFragment : BaseFragment<FragmentCouponBinding>(R.layout.fragment_cou
     override fun initStartView() {
         // RecyclerView의 layoutManager 설정
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        (activity as UserActivity).binding.navigationUser.visibility = View.GONE
 
         // 샘플 데이터 추가
         val couponList: ArrayList<CafeCouponData> = arrayListOf(

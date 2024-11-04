@@ -15,6 +15,7 @@
             android:padding="8dp"
             android:background="@drawable/bottom_sheet_background">
 
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/title_box"
                 android:layout_width="0dp"
@@ -40,15 +41,62 @@
                     android:layout_marginBottom="16dp"
                     android:orientation="vertical"
                     android:padding="16dp"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
+
+<!--                    <LinearLayout-->
+<!--                        android:background="@drawable/rounded_background"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="horizontal">-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/tv_mylocation"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="현 위치"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="24sp"-->
+<!--                            android:textStyle="bold" />-->
+
+
+
+
+
+<!--                    </LinearLayout>-->
+
+<!--                    <LinearLayout-->
+<!--                        android:background="@drawable/rounded_background"-->
+
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="horizontal">-->
+
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/tv_destination"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:text="블루팟"-->
+<!--                            android:textSize="24sp"-->
+<!--                            android:textStyle="bold" />-->
+
+
+
+<!--                    </LinearLayout>-->
+
 
                     <!-- 소요 시간 및 요금 정보 -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
+                        android:layout_marginTop="10dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -64,6 +112,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
                             android:text="요금" />
                     </LinearLayout>
 
@@ -96,19 +146,6 @@
                                 android:background="@drawable/dott_line"
                                 android:rotation="90" />
 
-                            <View
-                                android:id="@+id/view_dotted_line1"
-                                android:layout_width="24dp"
-                                android:layout_height="27dp"
-                                android:background="@drawable/dott_line"
-                                android:rotation="90" />
-                            <View
-                                android:id="@+id/view_dotted_line2"
-                                android:layout_width="24dp"
-                                android:layout_height="27dp"
-                                android:background="@drawable/dott_line"
-                                android:rotation="90" />
-
                         </LinearLayout>
 
                         <!-- 도보 정보 텍스트 -->
@@ -121,7 +158,7 @@
                             android:layout_marginStart="8dp"/>
                     </LinearLayout>
 
-                    <!-- 경로 정보: RecyclerView로 동적 처리 -->
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_route_info"
                         android:layout_width="match_parent"

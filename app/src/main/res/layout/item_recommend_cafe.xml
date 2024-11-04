@@ -12,13 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
-        <ImageView
-            android:id="@+id/cafe_image"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sample_cafe_img" />
+        android:padding="8dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cafeImageCard"
+            android:layout_width="160dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/cafe_image"
+                android:layout_width="160dp"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sample_cafe_img" />
+        </androidx.cardview.widget.CardView>
 
 
         <TextView
@@ -29,6 +41,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="4dp"
+            android:layout_gravity="center"
 
             android:textColor="#000000" />
 
@@ -36,6 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp">
 
             <ImageView
@@ -59,6 +74,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="4dp">
 
             <ImageView

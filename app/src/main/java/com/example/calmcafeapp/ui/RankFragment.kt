@@ -1,12 +1,15 @@
 package com.example.calmcafeapp.ui
 
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -16,15 +19,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.calmcafeapp.databinding.FragmentRankBinding
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
+import com.example.calmcafeapp.data.OnRouteStartListener
+import com.example.calmcafeapp.data.StorePosDto
+import com.example.calmcafeapp.viewmodel.HomeViewModel
 import com.example.calmcafeapp.viewmodel.RankViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class RankFragment : Fragment() {
+class RankFragment : Fragment(), OnRouteStartListener {
 
     private lateinit var binding: FragmentRankBinding
     private lateinit var adapter: CafeRecyclerViewAdapter // 어댑터 객체 선언
     private val rankViewModel: RankViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var userLatitude: Double = 37.650579
+    private var userLongitude: Double= 126.867010
+    private var currentLocation: Location? = null
+
     private val regions = listOf(
         "전국", "서울", "경기",
         "인천", "제주", "부산",
@@ -43,7 +58,23 @@ class RankFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as UserActivity).binding.navigationUser.visibility = View.VISIBLE
 
+        // ViewModel의 현재 위치 LiveData 관찰
+        homeViewModel.currentLocation.observe(viewLifecycleOwner) { location ->
+            if (location != null) {
+                userLatitude = location.latitude
+                userLongitude = location.longitude
+
+            } else {
+                // 위치 정보를 가져올 수 없는 경우 처리
+                userLatitude = 37.650579
+                userLongitude = 126.867010
+            }
+        }
+
+        // fusedLocationClient 초기화
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         initCafeRecyclerView()
 
         // 기본으로 '전국' 지역과 '실시간 방문자 수' 데이터를 로드
@@ -86,7 +117,6 @@ class RankFragment : Fragment() {
             setButtonSelected(binding.btn3) // 버튼3을 선택 상태로
             binding.categoryTitle.text = "즐겨찾기 TOP 랭킹"
         }
-
         binding.updateBtn.setOnClickListener {
             val selectedRegion = getCurrentRegion() // 현재 선택된 지역
             val selectedButton = getSelectedButton() // 현재 선택된 버튼
@@ -118,13 +148,8 @@ class RankFragment : Fragment() {
         // RankFragment에서 어댑터를 초기화할 때 클릭 리스너를 설정하여, 클릭 시 CafeDetailFragment로 이동하게 만듦
         adapter = CafeRecyclerViewAdapter(
             mItem = mutableListOf(),
-            onItemClick = { storeId ->
-                val bundle = Bundle().apply {
-                    putInt("storeId", storeId)
-                }
-                val detailFragment = CafeDetailFragment()
-                detailFragment.arguments = bundle
-                detailFragment.show(parentFragmentManager, "CafeDetailFragment")  // BottomSheetDialogFragment로 열기
+            onItemClick = { storeId, _, _ ->
+                showCafeDetailFragment(storeId,userLatitude,userLongitude)
             },
             onFavoriteClick = { storeId, isFavorite ->
                 if (isFavorite) {
@@ -134,6 +159,7 @@ class RankFragment : Fragment() {
                 }
             }
         )
+
         // 어댑터에 즐겨찾기 상태 업데이트 관찰 설정
         binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
         binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
@@ -193,4 +219,29 @@ class RankFragment : Fragment() {
     private fun getCurrentRegion(): String {
         return binding.tabLayout.getTabAt(binding.tabLayout.selectedTabPosition)?.text.toString()
     }
+
+    private fun showCafeDetailFragment(storeId: Int, userLatitude: Double, userLongitude: Double) {
+        if (userLatitude != null && userLongitude != null) {
+            homeViewModel.fetchCafeDetailInfo(storeId, userLatitude, userLongitude)
+            Log.d("showCafeDetailFragment", "$storeId, $userLatitude, $userLongitude")
+            val cafeDetailFragment = CafeDetailFragment()
+            cafeDetailFragment.setTargetFragment(this, 0)
+
+            val bundle = Bundle().apply {
+                putString("visibility", "gone")
+           }
+            cafeDetailFragment.arguments = bundle
+            cafeDetailFragment.show(parentFragmentManager, "CafeDetailFragment")
+        } else {
+            Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRouteStart() {
+
+        Toast.makeText(requireContext(), "랭킹에서는 길 찾기 불가", Toast.LENGTH_SHORT).show()
+    }
+
+
 }
+

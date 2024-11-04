@@ -32,6 +32,7 @@ import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.OnRouteStartListener
 import com.example.calmcafeapp.data.StorePosDto
 import com.naver.maps.map.overlay.OverlayImage
+
 import com.naver.maps.map.util.FusedLocationSource
 
 
@@ -58,9 +59,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private var currentSearchEndY: Double? = null
 
 
+
     override fun initStartView() {
         super.initStartView()
         // mapView 초기화
+        (activity as UserActivity).binding.navigationUser.visibility = View.VISIBLE
         mapView = binding.mapView ?: throw IllegalStateException("mapView가 null")
         locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         (activity as UserActivity).binding.btnBack.setOnClickListener {
@@ -108,6 +111,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             naverMap.locationTrackingMode = LocationTrackingMode.Follow
             naverMap.addOnLocationChangeListener { location ->
                 currentLocation = location
+                viewModel.setCurrentLocation(location)
                 if (!hasFetchedAddress) {
                     hasFetchedAddress = true
                     val latitude = location.latitude
@@ -216,7 +220,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // 경로가 비어 있을 때 메시지 표시
                 Handler().postDelayed({
                     if (isRouteSearching && polylineList.isEmpty()) {
-                        Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
                     }
                 }, 1000)  // 1초 정도 기다린 후 다시 확인
             }
@@ -325,14 +329,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 height = 100
                 map = naverMap
             }
+
             marker.setOnClickListener {
                 showCafeInfo(cafe)
-                viewModel.fetchCafeDetailInfo(cafe.id, cafe.latitude, cafe.longitude)  // cafe의 위도와 경도를 사용
+
+                // 현재 위치의 위경도가 null이 아닌지 확인하고 사용
+                val currentLatitude = currentLocation?.latitude
+                val currentLongitude = currentLocation?.longitude
+
+                if (currentLatitude != null && currentLongitude != null) {
+                    viewModel.fetchCafeDetailInfo(cafe.id, currentLatitude, currentLongitude)
+                } else {
+                    Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+
                 true
             }
             markerList.add(marker)
         }
     }
+
 
     private fun displayAllRouteGraphics(allGraphPosList: List<GraphPos>) {
         val coords = allGraphPosList.map { graphPos ->
@@ -377,6 +393,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         val bundle = Bundle().apply {
             putString("cafeTitle", cafe.name ?: "Unknown")
             putString("cafeAddress", cafe.address)
+            putString("visibility", "visibility" +
+                    "")
             // 필요한 다른 정보도 여기에 추가
         }
         cafeDetailFragment.arguments = bundle
@@ -499,7 +517,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // TMAP 도보 경로 요청
                 viewModel.getWalkingStartRoute(startX, startY, endX, endY, "현재 위치", cafe.name?: "Unknown")
                 Log.d("Request", "TMAP 도보 경로 요청: Start($startX, $startY) -> End($endX, $endY)")
-                Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
                 binding.btnShowNavigator.visibility = View.GONE
             } else {
                 // ODSAY 대중교통 경로 요청

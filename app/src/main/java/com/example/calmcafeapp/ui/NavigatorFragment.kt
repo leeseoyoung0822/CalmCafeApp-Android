@@ -47,21 +47,27 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                 pathsAdapter.setSubPaths(subPaths)
                 // totalTime 포맷팅하여 설정
                 val totalTime = paths.first().info.totalTime
-                binding.tvDuration.text = formatTotalTime(totalTime)
+                binding.tvDuration.text = "예상시간 ${formatTotalTime(totalTime)}"
+
 
                 // payment 설정
                 val payment = paths.first().info.payment
-                binding.tvCost.text = "${payment}원"
+                binding.tvCost.text = "금액 ${payment}원"
             } else {
                 // 경로 데이터가 없는 경우 처리
-                //Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
+                dismissBottomSheet()
+                //Toast.makeText(requireContext(), "도보 경로입니다.", Toast.LENGTH_SHORT).show()
             }
         }
         viewModel.startAddress.observe(viewLifecycleOwner) { address ->
-            binding.tvAddress.text = "$address"
+            binding.tvAddress.text = "출발\n${address}"
+//            binding.tvMylocation.text = "${address}..."
+
+
         }
         viewModel.destinationCafeName.observe(viewLifecycleOwner) { cafeName ->
-            binding.tvAddress2.text = "$cafeName"
+            binding.tvAddress2.text = "도착\n${cafeName}"
+//            binding.tvDestination.text = "$cafeName"
         }
     }
 
@@ -118,6 +124,16 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             }
         } else {
             "${totalTime}분"
+        }
+    }
+
+    private fun dismissBottomSheet() {
+        dialog?.let { dialog ->
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let { sheet ->
+                val behavior = BottomSheetBehavior.from(sheet)
+                behavior.state = BottomSheetBehavior.STATE_HIDDEN  // 바텀 시트를 숨김 상태로 변경
+            }
         }
     }
 }

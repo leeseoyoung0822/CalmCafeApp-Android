@@ -13,13 +13,13 @@ import retrofit2.http.Query
 
 interface RankingService {
     @GET("/ranking/congestion")
-    fun getRealTimeRanking(@Query("location") location: String): Call<RankingResponse>
+    fun getRealTimeRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>
 
     @GET("/ranking/total")
-    fun getTotalRanking(@Query("location") location: String): Call<RankingResponse>
+    fun getTotalRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>
 
     @GET("/ranking/favorite")
-    fun getFavoriteRanking(@Query("location") location: String): Call<RankingResponse>
+    fun getFavoriteRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>
 
     @GET("/store/detail/user")
     fun getCafeDetail(
@@ -30,11 +30,13 @@ interface RankingService {
 
     @POST("/store/favorite/create/{store-id}")
     fun addFavorite(
+        @Header("Authorization") accessToken: String,
         @Path("store-id") storeId: Int,
     ): Call<FavoriteResponse>
 
     @DELETE("/store/favorite/delete/{store-id}")
     fun removeFavorite(
+        @Header("Authorization") accessToken: String,
         @Path("store-id") storeId: Int
     ): Call<FavoriteResponse>
 
