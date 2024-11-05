@@ -9,6 +9,7 @@ import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.api.NaverReverseGeocodingService
 import com.example.calmcafeapp.api.ODsayService
 import com.example.calmcafeapp.api.RankingService
+import com.example.calmcafeapp.api.SurveyService
 import com.example.calmcafeapp.api.TmapService
 import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.Geometry
@@ -32,27 +33,6 @@ object ApiManager {
     val loggingInterceptor= HttpLoggingInterceptor().apply {
         level= HttpLoggingInterceptor.Level.BODY
     }
-    //회원 토큰 반환 api
-    val instance: LoginService by lazy {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        retrofit.create(LoginService::class.java)
-    }
-
-
-    // 공통 Retrofit 인스턴스 생성
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-    }
-
-
 
 
     // 네이버 오픈 API Base URL
@@ -187,8 +167,6 @@ object ApiManager {
     }
 
 
-
-
     val loginService: LoginService = ServerRetrofit.create(LoginService::class.java)
     val tmapService: TmapService = tmapApiRetrofit.create(TmapService::class.java)
     val odsayService: ODsayService = odsayApiRetrofit.create(ODsayService::class.java)
@@ -196,8 +174,7 @@ object ApiManager {
     val naverReverseGeocodingService: NaverReverseGeocodingService = naverCloudPlatformRetrofit.create(NaverReverseGeocodingService::class.java)
     val cafeDetailService : CafeDetailService = ServerRetrofit.create(CafeDetailService::class.java)
 
-//    // 토큰 반환 api
-//    val loginService: LoginService by lazy { ServerRetrofit.create(LoginService::class.java) }
     // 랭킹 탑 100 api
     val rankingService: RankingService by lazy { ServerRetrofit.create(RankingService::class.java) }
+    val surveyService: SurveyService by lazy { ServerRetrofit.create(SurveyService::class.java) }
 }

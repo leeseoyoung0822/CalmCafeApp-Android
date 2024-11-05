@@ -9,7 +9,6 @@ import com.example.calmcafeapp.databinding.FragmentSettingBinding
 
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_setting) {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 필요한 초기화 코드가 있다면 여기에 작성
@@ -30,8 +29,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         super.initAfterBinding()
 
         // 즐겨찾기 섹션 클릭 시 FavoriteFragment로 이동
-        binding.favoritesSection.setOnClickListener {
-            val favoriteFragment = FavoriteFragment()
+        binding.favoriteMenu.setOnClickListener {
+            val favoriteFragment = Setting_FavoriteFragment()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container_main, favoriteFragment)
                 .addToBackStack(null)
@@ -39,13 +38,24 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         }
 
         // 쿠폰 섹션 클릭 시 CouponFragment로 이동
-        binding.mycoupon.setOnClickListener {
-            val couponFragment = CouponFragment()
+        binding.couponMenu.setOnClickListener {
+            val couponFragment = Setting_CouponFragment()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container_main, couponFragment)
                 .addToBackStack(null)
                 .commit()
         }
+
+        // 쿠폰 섹션 클릭 시 CouponFragment로 이동
+        binding.surveyMenu.setOnClickListener {
+            val surveyFragment = SurveyFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container_main, surveyFragment)
+                .addToBackStack(null)
+                .commit()
+
+        }
+
     }
 
     override fun onDestroyView() {
@@ -53,4 +63,3 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         // BaseFragment에서는 binding 해제를 처리하지 않아도 됨
     }
 }
-

@@ -1,6 +1,5 @@
 package com.example.calmcafeapp.ui
 
-import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.R
@@ -9,7 +8,7 @@ import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentFavoriteBinding
 
-class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
+class Setting_FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
 
     override fun initStartView() {
         // RecyclerView 초기화
@@ -28,7 +27,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
             CafeData(R.drawable.cafe_img1, "아말룬 커피", "혼잡도: 보통")
         )
 
-        val adapter = CafeAdapter(initialCafeList)
+        val adapter = Setting_favoriteCafeAdapter(initialCafeList)
         binding.recyclerView.adapter = adapter
     }
 

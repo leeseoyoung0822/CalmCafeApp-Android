@@ -8,7 +8,7 @@ import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeCouponData
 import com.example.calmcafeapp.databinding.FragmentCouponBinding
 
-class CouponFragment : BaseFragment<FragmentCouponBinding>(R.layout.fragment_coupon) {
+class Setting_CouponFragment : BaseFragment<FragmentCouponBinding>(R.layout.fragment_coupon) {
 
     override fun initStartView() {
         // RecyclerView의 layoutManager 설정

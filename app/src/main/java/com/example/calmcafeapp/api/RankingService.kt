@@ -13,7 +13,8 @@ import retrofit2.http.Query
 
 interface RankingService {
     @GET("/ranking/congestion")
-    fun getRealTimeRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>
+    fun getRealTimeRanking(@Header("Authorization") accessToken: String,
+                           @Query("location") location: String): Call<RankingResponse>
 
     @GET("/ranking/total")
     fun getTotalRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>

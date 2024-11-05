@@ -4,15 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.data.CafeData
-//import com.example.calmcafeapp.data.CafeData
-import com.example.calmcafeapp.databinding.ItemCafeBinding
+import com.example.calmcafeapp.databinding.ItemFavoriteCafeBinding
 
 // 어댑터 클래스
-class CafeAdapter(private val cafeList: List<CafeData>) : RecyclerView.Adapter<CafeAdapter.CafeViewHolder>() {
+class Setting_favoriteCafeAdapter(private val cafeList: List<CafeData>) : RecyclerView.Adapter<Setting_favoriteCafeAdapter.CafeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeViewHolder {
         // View Binding 객체 생성
-        val binding = ItemCafeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemFavoriteCafeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CafeViewHolder(binding)
     }
 
@@ -24,7 +23,7 @@ class CafeAdapter(private val cafeList: List<CafeData>) : RecyclerView.Adapter<C
     override fun getItemCount(): Int = cafeList.size
 
     // ViewHolder 클래스
-    class CafeViewHolder(private val binding: ItemCafeBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CafeViewHolder(private val binding: ItemFavoriteCafeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cafe: CafeData) {
             binding.cafeName.text = cafe.cafe_name
             binding.cafeImage.setImageResource(

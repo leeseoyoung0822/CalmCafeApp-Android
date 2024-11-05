@@ -74,9 +74,6 @@ android {
     }
 
 
-
-
-
     //자바 버전 설정
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -107,6 +104,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
 
     implementation ("org.locationtech.proj4j:proj4j:1.1.0")
+
 
     // Retrofit 라이브러리
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
