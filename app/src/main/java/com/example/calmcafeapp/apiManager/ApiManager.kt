@@ -1,7 +1,5 @@
 package com.example.calmcafeapp.apiManager
 
-import android.content.Context
-import android.util.Log
 import com.example.calmcafeapp.BuildConfig
 import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.api.LoginService
@@ -9,23 +7,18 @@ import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.api.NaverReverseGeocodingService
 import com.example.calmcafeapp.api.ODsayService
 import com.example.calmcafeapp.api.RankingService
-import com.example.calmcafeapp.api.SurveyService
+import com.example.calmcafeapp.api.SettingService
 import com.example.calmcafeapp.api.TmapService
-import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GeometryDeserializer
-import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import java.util.concurrent.TimeUnit
 object ApiManager {
     private var BASE_URL = BuildConfig.AUTH_BASE_URL
@@ -176,5 +169,5 @@ object ApiManager {
 
     // 랭킹 탑 100 api
     val rankingService: RankingService by lazy { ServerRetrofit.create(RankingService::class.java) }
-    val surveyService: SurveyService by lazy { ServerRetrofit.create(SurveyService::class.java) }
+    val settingService: SettingService by lazy { ServerRetrofit.create(SettingService::class.java) }
 }

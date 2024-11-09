@@ -30,7 +30,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
 
         // 즐겨찾기 섹션 클릭 시 FavoriteFragment로 이동
         binding.favoriteMenu.setOnClickListener {
-            val favoriteFragment = Setting_FavoriteFragment()
+            val favoriteFragment = FavoriteFragment()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container_main, favoriteFragment)
                 .addToBackStack(null)

@@ -176,7 +176,7 @@
                     android:id="@+id/survey_extra_text"
                     android:layout_width="wrap_content"
                     android:layout_height="34dp"
-                    android:text="설문조사하면 커피쿠폰 증정!"
+                    android:text="설문조사하면 4700p 지급!"
                     android:padding="6dp"
                     android:textSize="14sp"
                     android:layout_marginStart="8dp"

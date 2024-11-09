@@ -7,29 +7,36 @@ import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.ItemFavoriteCafeBinding
 
 // 어댑터 클래스
-class Setting_favoriteCafeAdapter(private val cafeList: List<CafeData>) : RecyclerView.Adapter<Setting_favoriteCafeAdapter.CafeViewHolder>() {
+class Setting_favoriteCafeAdapter(private var cafeList: MutableList<CafeData>) :
+    RecyclerView.Adapter<Setting_favoriteCafeAdapter.ViewHolder>()  {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeViewHolder {
-        // View Binding 객체 생성
-        val binding = ItemFavoriteCafeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CafeViewHolder(binding)
+    inner class ViewHolder(private val binding: ItemFavoriteCafeBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(cafeData: CafeData) {
+            binding.cafeImage.setImageResource(cafeData.cafe_img)
+            binding.cafeName.text = cafeData.cafe_name
+            binding.storeCongestion.text = cafeData.congestionLevel
+        }
     }
 
-    override fun onBindViewHolder(holder: CafeViewHolder, position: Int) {
-        val cafe = cafeList[position]
-        holder.bind(cafe) // 뷰 홀더에 데이터 바인딩
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        // View Binding 객체 생성
+        val binding = ItemFavoriteCafeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(cafeList[position])
     }
 
     override fun getItemCount(): Int = cafeList.size
 
-    // ViewHolder 클래스
-    class CafeViewHolder(private val binding: ItemFavoriteCafeBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(cafe: CafeData) {
-            binding.cafeName.text = cafe.cafe_name
-            binding.cafeImage.setImageResource(
-                binding.root.context.resources.getIdentifier(cafe.cafe_img.toString(), "drawable", binding.root.context.packageName)
-            )
-        }
+    // 새로운 데이터를 추가하는 메서드
+    fun updateData(newData: List<CafeData>) {
+        cafeList.clear()
+        cafeList.addAll(newData)
+        notifyDataSetChanged()
     }
+
+
 
 }

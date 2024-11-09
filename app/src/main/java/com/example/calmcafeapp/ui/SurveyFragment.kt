@@ -25,7 +25,7 @@ import retrofit2.Response
 
 
 class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_survey) {
-    private val surveyService = ApiManager.surveyService
+    private val surveyService = ApiManager.settingService
     private val settingViewModel: SettingViewModel by activityViewModels()
 
 
