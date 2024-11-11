@@ -5,13 +5,13 @@ data class SurveyRequest(
     @SerializedName("age")
     val age: Int?,
     @SerializedName("sex")
-    val sex: String?,
+    val sex: String,
     @SerializedName("job")
-    val job: String?,
+    val job: String,
     @SerializedName("residence")
-    val residence: String?,
+    val residence: String="",
     @SerializedName("marriage")
-    val marriage: String?
+    val marriage: String=""
 )
 data class SurveyResponse(
     @SerializedName("isSuccess")

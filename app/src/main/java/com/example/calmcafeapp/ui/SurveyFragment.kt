@@ -1,12 +1,15 @@
 package com.example.calmcafeapp.ui
 
 
+import android.app.Dialog
 import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -17,6 +20,7 @@ import com.example.calmcafeapp.apiManager.ApiManager
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.SurveyRequest
 import com.example.calmcafeapp.data.SurveyResponse
+import com.example.calmcafeapp.databinding.DialogSurveyCompleteBinding
 import com.example.calmcafeapp.databinding.FragmentSurveyBinding
 import com.example.calmcafeapp.viewmodel.SettingViewModel
 import retrofit2.Call
@@ -25,7 +29,7 @@ import retrofit2.Response
 
 
 class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_survey) {
-    private val surveyService = ApiManager.settingService
+    private val settingService = ApiManager.settingService
     private val settingViewModel: SettingViewModel by activityViewModels()
 
 
@@ -59,6 +63,38 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
         }
     }
 
+    private fun showSurveyCompleteDialog() {
+        // Dialog 초기화 및 바인딩 설정
+        val dialogBinding = DialogSurveyCompleteBinding.inflate(layoutInflater)
+        val dialog = Dialog(requireContext(), R.style.CustomDialogStyle) // 스타일 적용
+        dialog.setContentView(dialogBinding.root)
+        dialog.setCancelable(false) // 다이얼로그 외부 클릭 방지
+
+        // 다이얼로그의 크기를 조정
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(), // 화면 너비의 90% 설정
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+
+        // 다이얼로그 메시지 설정 (필요 시 동적 설정 가능)
+        dialogBinding.dialogMessage.text = "감사합니다.\n4700p가 지급되었습니다!"
+
+        // 닫기 버튼 클릭 이벤트
+        dialogBinding.btncheck.setOnClickListener {
+            dialog.dismiss()
+            navigateToSettingFragment() // 이전 화면으로 돌아가기
+        }
+
+        dialog.show()
+    }
+
+    private fun navigateToSettingFragment() {
+        parentFragmentManager.popBackStack() // 이전 스택으로 돌아가기
+    }
+
+
+
     override fun initDataBinding() {
         super.initDataBinding()
         // 데이터 바인딩 설정을 여기에 구현
@@ -66,8 +102,9 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
         // ViewModel의 LiveData 관찰
         settingViewModel.isSurveySubmitted.observe(viewLifecycleOwner) { isSubmitted ->
             if (isSubmitted) {
+                showSurveyCompleteDialog()
                 Toast.makeText(context, "설문조사가 제출되었습니다.", Toast.LENGTH_SHORT).show()
-                parentFragmentManager.popBackStack() // 이전 화면으로 돌아가기
+                //parentFragmentManager.popBackStack() // 이전 화면으로 돌아가기
             }
         }
 
@@ -105,7 +142,13 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
                 return@setOnClickListener
             }
 
-            val surveyRequest = SurveyRequest(age, sex, job, residence, marriage)
+            val surveyRequest = SurveyRequest(
+                age = age ?: 0, // 기본값 설정
+                sex = sex ?: "",
+                job = job ?: "",
+                residence = residence?:"",
+                marriage = marriage?:""
+            )
             settingViewModel.submitSurvey(surveyRequest)
         }
     }

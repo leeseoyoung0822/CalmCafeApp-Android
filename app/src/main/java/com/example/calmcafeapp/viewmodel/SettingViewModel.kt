@@ -13,6 +13,8 @@ import com.example.calmcafeapp.data.PointCoupon
 import com.example.calmcafeapp.data.PointCouponResponse
 import com.example.calmcafeapp.data.SurveyRequest
 import com.example.calmcafeapp.data.SurveyResponse
+import com.example.calmcafeapp.data.UserProfile
+import com.example.calmcafeapp.data.UserProfileResponse
 import com.example.calmcafeapp.login.LocalDataSource
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,6 +38,9 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
 
     private val _pointCoupons = MutableLiveData<List<PointCoupon>>()
     val pointCoupons: LiveData<List<PointCoupon>> get() = _pointCoupons
+
+    private val _userProfile = MutableLiveData<UserProfile>()
+    val userProfile: LiveData<UserProfile> get() = _userProfile
 
     // 설문조사 데이터 제출 함수
     fun submitSurvey(surveyRequest: SurveyRequest) {
@@ -133,6 +138,36 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                 override fun onFailure(call: Call<PointCouponResponse>, t: Throwable) {
                     _isLoading.value = false
                     _errorMessage.value = "Network error: ${t.message}"
+                }
+            })
+    }
+    fun fetchUserProfile() {
+        _isLoading.value = true
+        val accessToken = LocalDataSource.getAccessToken()
+        if (accessToken == null) {
+            _isLoading.value = false
+            _errorMessage.value = "Access token is null."
+            Log.e("SettingViewModel", "Access token is null.")
+            return
+        }
+
+        settingService.getUserProfile("Bearer $accessToken")
+            .enqueue(object : Callback<UserProfileResponse> {
+                override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                    _isLoading.value = false
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        _userProfile.value = response.body()?.result
+                        Log.d("SettingViewModel", "User profile fetched: ${response.body()?.result}")
+                    } else {
+                        _errorMessage.value = response.body()?.message ?: "Failed to fetch user profile."
+                        Log.e("SettingViewModel", "API response error: ${response.message()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                    _isLoading.value = false
+                    _errorMessage.value = "Network error: ${t.message}"
+                    Log.e("SettingViewModel", "Network error occurred", t)
                 }
             })
     }

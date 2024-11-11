@@ -32,4 +32,7 @@ object LocalDataSource {
     fun getUserId() : String? {
         return sharedPreferences.getString("user_id","11")
     }
+    fun clear() {
+        sharedPreferences.edit().clear().apply() // 모든 데이터 삭제
+    }
 }

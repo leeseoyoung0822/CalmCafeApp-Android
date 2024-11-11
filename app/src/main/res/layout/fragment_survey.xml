@@ -127,7 +127,7 @@
                     android:id="@+id/marry_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5. 결혼 여부 (미혼 : n, 기혼 : y)"
+                    android:text="5. 결혼 여부 (미혼 : 아니오, 기혼 : 네)"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_marginTop="16dp"
@@ -138,6 +138,126 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="결혼 여부를 입력하세요" />
+
+                <!-- 취미 -->
+                <TextView
+                    android:id="@+id/hobby_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="6. 취미"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/hobby_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="취미를 입력하세요" />
+
+                <!-- 좋아하는 카페 메뉴 -->
+                <TextView
+                    android:id="@+id/favorite_menu_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7. 가장 좋아하는 카페 메뉴(ex. 아메리카노, 딸기 라떼, 녹차 등)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/favorite_menu_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="가장 좋아하는 카페 메뉴를 입력하세요" />
+
+                <!-- 카페 이용 목적 -->
+                <TextView
+                    android:id="@+id/cafe_purpose_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8. 카페 이용 목적(ex. 공부, 업무, 휴식, 친구 모임 등)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/cafe_purpose_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="카페 이용 목적을 입력하세요" />
+
+                <!-- 카페 선택 시 중요한 요인 -->
+                <TextView
+                    android:id="@+id/important_factors_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="9. 카페 선택 시 중요한 요인(가격, 품질, 분위기, 위치, 서비스 등)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/important_factors_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="중요한 요인을 입력하세요" />
+
+                <!-- 방문 빈도 -->
+                <TextView
+                    android:id="@+id/visit_frequency_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10. 방문 빈도(주간 또는 월간 기준)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/visit_frequency_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="방문 빈도를 입력하세요" />
+
+                <!-- SNS 사용 여부 -->
+                <TextView
+                    android:id="@+id/sns_usage_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="11. SNS 사용 여부(마케팅 채널 활용을 위한 정보)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/sns_usage_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="SNS 사용 여부를 입력하세요" />
+
+                <!-- 환경 및 편의시설 선호도 -->
+                <TextView
+                    android:id="@+id/facilities_preference_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12. 환경 및 편의시설 선호도(Wi-Fi, 좌석 편의성, 음악, 조명 등)"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/facilities_preference_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="환경 및 편의시설 선호도를 입력하세요" />
+
 
                 <Button
                     android:id="@+id/submit_button"

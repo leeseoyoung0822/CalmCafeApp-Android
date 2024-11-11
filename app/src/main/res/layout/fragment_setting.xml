@@ -59,6 +59,7 @@
             android:text="내 프로필"
             android:textSize="18sp"
             android:padding="10dp"
+            android:textStyle="bold"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="보유 포인트 : 1500 P"
+                android:text="보유 포인트 :  P"
                 android:textColor="@color/green"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -179,6 +180,7 @@
                     android:text="설문조사하면 4700p 지급!"
                     android:padding="6dp"
                     android:textSize="14sp"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/button"/>
 
@@ -187,7 +189,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/baseline_navigate_next_24"
-                    android:layout_marginStart="70dp"/>
+                    android:layout_marginStart="83dp"/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
