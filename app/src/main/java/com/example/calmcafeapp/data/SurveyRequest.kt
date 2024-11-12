@@ -9,9 +9,25 @@ data class SurveyRequest(
     @SerializedName("job")
     val job: String,
     @SerializedName("residence")
-    val residence: String="",
+    val residence: String,
     @SerializedName("marriage")
-    val marriage: String=""
+    val marriage: String,
+    @SerializedName("hobby")
+    val hobby: String,
+    @SerializedName("favoriteMenu")
+    val favoriteMenu: String,
+    @SerializedName("cafeUsingPurpose")
+    val cafeUsingPurpose: String,
+    @SerializedName("cafeChooseCause")
+    val cafeChooseCause: String,
+    @SerializedName("cafeVisitedFrequency")
+    val cafeVisitedFrequency: String,
+    @SerializedName("isUsingSNS")
+    val isUsingSNS: String,
+    @SerializedName("convenienceFacilityPrefer")
+    val convenienceFacilityPrefer: String,
+
+
 )
 data class SurveyResponse(
     @SerializedName("isSuccess")

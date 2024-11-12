@@ -13,7 +13,7 @@ data class FavoriteResult(
 
 data class FavoriteStore(
     val id: Int,
-    val address: String,
+    val name: String,
     val storeCongestionLevel: String,
     val userCongestionLevel: String
 )

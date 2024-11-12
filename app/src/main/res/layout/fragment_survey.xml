@@ -192,7 +192,7 @@
 
                 <!-- 카페 선택 시 중요한 요인 -->
                 <TextView
-                    android:id="@+id/important_factors_tv"
+                    android:id="@+id/cafe_cause"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="9. 카페 선택 시 중요한 요인(가격, 품질, 분위기, 위치, 서비스 등)"
@@ -202,7 +202,7 @@
                     android:layout_marginBottom="8dp" />
 
                 <EditText
-                    android:id="@+id/important_factors_input"
+                    android:id="@+id/cafe_cause_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="중요한 요인을 입력하세요" />

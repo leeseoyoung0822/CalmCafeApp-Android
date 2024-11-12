@@ -127,8 +127,18 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
             val age = binding.ageInput.text.toString().toIntOrNull()
             val sex = binding.sexInput.text.toString().takeIf { it.isNotBlank() }
             val job = binding.jobInput.text.toString().takeIf { it.isNotBlank() }
-            val residence = binding.locationInput.text.toString().takeIf { it.isNotBlank() }
-            val marriage = binding.marryInput.text.toString().takeIf { it.isNotBlank() }
+
+
+            val residence = binding.locationInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val marriage = binding.marryInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val hobby = binding.hobbyInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val favoriteMenu = binding.favoriteMenuInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val cafeUsingPurpose = binding.cafePurposeInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val cafeChooseCause = binding.cafeCauseInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val cafeVisitedFrequency = binding.visitFrequencyInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val isUsingSNS = binding.snsUsageInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val convenienceFacilityPrefer = binding.facilitiesPreferenceInput.text.toString().takeIf { it.isNotBlank() }?:""
+
 
             // 필수 질문 체크 및 특정 입력 오류 메시지 설정
             val missingFields = mutableListOf<String>()
@@ -146,8 +156,15 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
                 age = age ?: 0, // 기본값 설정
                 sex = sex ?: "",
                 job = job ?: "",
-                residence = residence?:"",
-                marriage = marriage?:""
+                residence = residence,
+                marriage = marriage,
+                hobby = hobby,
+                favoriteMenu = favoriteMenu,
+                cafeUsingPurpose = cafeUsingPurpose,
+                cafeChooseCause = cafeChooseCause,
+                cafeVisitedFrequency = cafeVisitedFrequency,
+                isUsingSNS = isUsingSNS,
+                convenienceFacilityPrefer = convenienceFacilityPrefer
             )
             settingViewModel.submitSurvey(surveyRequest)
         }

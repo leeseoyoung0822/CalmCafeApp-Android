@@ -30,7 +30,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
                 adapter.updateData(stores.map { store ->
                     CafeData(
                         R.drawable.coupon_img, // 임의 이미지, 필요시 API 응답에 맞게 수정
-                        store.address,
+                        store.name,
                         "혼잡도: ${store.storeCongestionLevel}" // 혼잡도 정보 표시
                     )
                 })
