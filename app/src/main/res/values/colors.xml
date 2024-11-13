@@ -10,7 +10,8 @@
     <color name="darkgray">@color/material_dynamic_neutral40</color>
     <color name="lightgray">@color/material_dynamic_neutral70</color>
     <color name="whitegray">@color/material_dynamic_neutral80</color>
-    <color name="morewhitegray">#E2E2E2</color>
+    <color name="morewhitegray">#E4E4E4</color>
+
     <color name="blue">#0000FF</color>
 
 
