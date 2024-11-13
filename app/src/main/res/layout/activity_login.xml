@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:background="@color/green"
-    tools:context=".LoginActivity">
+    tools:context=".JoinActivity">
 
     <TextView
         android:id="@+id/logo"
