@@ -1,4 +1,3 @@
-// HomeFragment.kt
 package com.example.calmcafeapp.ui
 
 import android.os.Handler
