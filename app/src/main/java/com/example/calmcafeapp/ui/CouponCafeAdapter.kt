@@ -3,10 +3,7 @@ package com.example.calmcafeapp.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.calmcafeapp.data.CafeCouponData
-import com.example.calmcafeapp.data.CafeMenuData
-import com.example.calmcafeapp.data.RecommendCafe
 import com.example.calmcafeapp.databinding.ItemCouponBinding
 
 
@@ -23,7 +20,7 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
 
     inner class MenuCouponHolder(val binding: ItemCouponBinding) :
         RecyclerView.ViewHolder(binding.root) {
-//        val sale = binding.couponDiscountRate
+        //        val sale = binding.couponDiscountRate
         val type = binding.couponType
         val date = binding.couponTime
 

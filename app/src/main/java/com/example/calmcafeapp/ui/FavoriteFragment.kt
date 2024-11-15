@@ -1,15 +1,19 @@
 package com.example.calmcafeapp.ui
 
-import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeData
 import com.example.calmcafeapp.databinding.FragmentFavoriteBinding
+import com.example.calmcafeapp.viewmodel.SettingViewModel
 
 class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
+
+    private val settingViewModel: SettingViewModel by activityViewModels()
 
     override fun initStartView() {
         // RecyclerView 초기화
@@ -17,19 +21,24 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         (activity as UserActivity).binding.navigationUser.visibility = View.GONE
 
-        // RecyclerView 어댑터 설정 (임시 데이터 설정)
-        val initialCafeList = mutableListOf(
-            CafeData(R.drawable.coupon_img, "스타벅스 연남점", "혼잡도: 보통"),
-            CafeData(R.drawable.cafe_img2, "투썸플레이스 홍대점", "혼잡도: 혼잡"),
-            CafeData(R.drawable.cafe_img5, "커피 빈 용산점역", "혼잡도: 혼잡"),
-            CafeData(R.drawable.cafe_img4, "블루팟", "혼잡도: 한산"),
-            CafeData(R.drawable.cafe_img6, "라플란드 카페", "혼잡도: 혼잡"),
-            CafeData(R.drawable.sample_cafe_img, "빽다방 행신역점", "혼잡도: 보통"),
-            CafeData(R.drawable.cafe_img1, "아말룬 커피", "혼잡도: 보통")
-        )
-
-        val adapter = CafeAdapter(initialCafeList)
+        val adapter = Setting_favoriteCafeAdapter(mutableListOf())
         binding.recyclerView.adapter = adapter
+
+        // ViewModel로부터 즐겨찾기 데이터 관찰
+        settingViewModel.favoriteStores.observe(viewLifecycleOwner) { stores ->
+            if (stores != null) {
+                adapter.updateData(stores.map { store ->
+                    CafeData(
+                        R.drawable.coupon_img, // 임의 이미지, 필요시 API 응답에 맞게 수정
+                        store.name,
+                        "혼잡도: ${store.storeCongestionLevel}" // 혼잡도 정보 표시
+                    )
+                })
+            }
+        }
+        // API 호출
+        settingViewModel.fetchFavoriteStores()
+
     }
 
     override fun initAfterBinding() {

@@ -1,20 +1,15 @@
 package com.example.calmcafeapp.ui
 
 import android.app.Dialog
-import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.R
-import com.example.calmcafeapp.R.id.img_coupon
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeCouponData
-import com.example.calmcafeapp.data.CafeMenuData
 import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.databinding.FragmentTaphomeBinding
 import com.example.calmcafeapp.viewmodel.HomeViewModel

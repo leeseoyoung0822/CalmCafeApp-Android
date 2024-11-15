@@ -44,10 +44,20 @@ class JoinActivity : AppCompatActivity() {
     }
 
     private fun checkKakaoLoginStatus() {
+        val accessToken = LocalDataSource.getAccessToken()
+
+        if (accessToken.isNullOrEmpty()) {
+            // 저장된 토큰이 없으면 로그인 필요
+            Log.d("자동 로그인", "저장된 토큰 없음, 로그인 필요")
+            return // 자동 로그인 방지
+        }
+
+        // 저장된 토큰이 있을 경우, 카카오 SDK를 통해 유효성 확인
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
-                // 로그인 필요
-                Log.d("자동 로그인", "로그인 필요: ${error.localizedMessage}")
+                // 토큰이 만료되었거나 유효하지 않은 경우
+                Log.d("자동 로그인", "토큰 만료 또는 오류: ${error.localizedMessage}")
+                LocalDataSource.clear() // 만료된 토큰 삭제
             } else if (tokenInfo != null) {
                 // 토큰이 유효한 경우 사용자 정보 요청
                 Log.d("자동 로그인", "이미 로그인되어 있음, 사용자 정보 요청")
@@ -55,6 +65,8 @@ class JoinActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     fun requestUserInfoAndLogin() {
         UserApiClient.instance.me { user, meError ->
