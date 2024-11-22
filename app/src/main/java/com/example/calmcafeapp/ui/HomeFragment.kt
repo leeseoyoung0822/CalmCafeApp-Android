@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Bundle
 import android.util.Log
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.core.app.ActivityCompat
@@ -56,6 +57,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private var currentSearchStartY: Double? = null
     private var currentSearchEndX: Double? = null
     private var currentSearchEndY: Double? = null
+    private var hasArrivedAtCafe: Boolean = false
 
 
 
@@ -116,6 +118,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                     val latitude = location.latitude
                     val longitude = location.longitude
                     viewModel.getAddressFromCoordinates(latitude, longitude)
+                }
+                // 카페 도착 여부 체크
+                if (isRouteSearching && !hasArrivedAtCafe && selectedCafe != null) {
+                    val cafeLatitude = selectedCafe!!.latitude
+                    val cafeLongitude = selectedCafe!!.longitude
+
+                    val distance = FloatArray(1)
+                    Location.distanceBetween(
+                        location.latitude, location.longitude,
+                        cafeLatitude, cafeLongitude,
+                        distance
+                    )
+                    val distanceInMeters = distance[0]
+
+                    if (distanceInMeters <= 1000) {
+                        hasArrivedAtCafe = true  // 알림이 한 번만 표시되도록 설정
+                        showArrivalAlertAndPopup()  // 알림 및 혼잡도 선택 팝업 표시
+                    }
                 }
             }
         } else {
@@ -581,6 +601,54 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         val navigatorFragment = NavigatorFragment()
         navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
     }
+
+    // 카페 도착 표시
+    private fun showArrivalAlertAndPopup() {
+        // 알림 메시지 표시
+        Toast.makeText(requireContext(), "카페에 도착했습니다!", Toast.LENGTH_SHORT).show()
+
+        // 혼잡도 선택 팝업 표시
+        showCongestionLevelDialog()
+    }
+
+
+    // 도착 팝업 다이얼로그
+    private fun showCongestionLevelDialog() {
+        val congestionLevels = arrayOf("한산", "보통", "혼잡")
+        AlertDialog.Builder(requireContext())
+            .setTitle("혼잡도를 선택해주세요")
+            .setItems(congestionLevels) { dialog, which ->
+                val selectedLevel = congestionLevels[which]
+                // 선택한 혼잡도 처리 로직
+                handleSelectedCongestionLevel(selectedLevel)
+            }
+            .setCancelable(false)  // 다이얼로그 밖을 터치해도 닫히지 않도록 설정
+            .show()
+    }
+
+    private fun handleSelectedCongestionLevel(selectedLevel: String) {
+        val congestionLevelInt = when (selectedLevel) {
+            "한산" -> 33
+            "보통" -> 66
+            "혼잡" -> 99
+            else -> 0
+        }
+
+        // 선택한 혼잡도 확인
+        Toast.makeText(requireContext(), "선택한 혼잡도: $selectedLevel ($congestionLevelInt)", Toast.LENGTH_SHORT).show()
+
+
+        // 서버에 혼잡도 전송
+        selectedCafe?.let { store ->
+            Log.d("CongestionLevelResponse", "${store.id}")
+            viewModel.sendCongestionLevel(store.id, congestionLevelInt)
+        }
+
+        // 길찾기 종료 및 초기화
+        cancelRouteSearch()
+    }
+
+
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
