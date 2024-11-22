@@ -9,16 +9,35 @@ import com.example.calmcafeapp.ui.HomeFragment
 import com.example.calmcafeapp.ui.M_HomeFragment
 import com.example.calmcafeapp.ui.M_SettingFragment
 import com.example.calmcafeapp.ui.M_StoreFragment
-
+import com.example.calmcafeapp.ui.RankFragment
+import com.example.calmcafeapp.ui.SettingFragment
 
 
 class OwnerActivity : AppCompatActivity() {
     lateinit var binding: ActivityOwnerBinding
 
+    // 프래그먼트 변수 선언
+    private lateinit var M_homeFragment: M_HomeFragment
+    private lateinit var M_storeFragment: M_StoreFragment
+    private lateinit var M_settingFragment: M_SettingFragment
+
+    // 현재 활성화된 프래그먼트를 저장할 변수
+    private var activeFragment: Fragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOwnerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        // 바텀 네비게이션 초기화
+        initBottomNav()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // 기본 화면 설정 (M_HomeFragment)
+        if (savedInstanceState == null) {
+            addFragment(M_HomeFragment())
+        }
 
         // 바텀 네비게이션 초기화
         initBottomNav()

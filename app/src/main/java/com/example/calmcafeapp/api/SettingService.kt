@@ -6,15 +6,14 @@ import com.example.calmcafeapp.data.SurveyRequest
 import com.example.calmcafeapp.data.SurveyResponse
 import com.example.calmcafeapp.data.UserProfileResponse
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.PATCH
+import retrofit2.http.POST
 
 interface SettingService {
-    @PATCH("/user/survey")
+    @POST("/user/survey")
     fun submitSurvey(
         @Header("Authorization") accessToken: String,
         @Body request: SurveyRequest

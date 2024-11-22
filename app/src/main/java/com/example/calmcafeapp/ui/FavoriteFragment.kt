@@ -19,7 +19,6 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         // RecyclerView 초기화
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        (activity as UserActivity).binding.navigationUser.visibility = View.GONE
 
         val adapter = Setting_favoriteCafeAdapter(mutableListOf())
         binding.recyclerView.adapter = adapter

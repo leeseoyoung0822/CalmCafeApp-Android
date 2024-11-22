@@ -16,6 +16,7 @@ import com.example.calmcafeapp.data.SurveyResponse
 import com.example.calmcafeapp.data.UserProfile
 import com.example.calmcafeapp.data.UserProfileResponse
 import com.example.calmcafeapp.login.LocalDataSource
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,6 +52,8 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             _errorMessage.value = "Access token is null."
             return
         }
+        // 요청 데이터 로그로 출력
+        Log.d("SurveyRequest", "Request Data: ${Gson().toJson(surveyRequest)}")
 
         settingService.submitSurvey("Bearer $accessToken", surveyRequest)
             .enqueue(object : Callback<SurveyResponse> {

@@ -124,26 +124,26 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
         }
 
         binding.submitButton.setOnClickListener {
-            val age = binding.ageInput.text.toString().toIntOrNull()
-            val sex = binding.sexInput.text.toString().takeIf { it.isNotBlank() }
+            val age = binding.ageInput.text.toString().takeIf { it.isNotBlank() }
+            val gender = binding.sexInput.text.toString().takeIf { it.isNotBlank() }
             val job = binding.jobInput.text.toString().takeIf { it.isNotBlank() }
 
 
-            val residence = binding.locationInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val marriage = binding.marryInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val hobby = binding.hobbyInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val favoriteMenu = binding.favoriteMenuInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val cafeUsingPurpose = binding.cafePurposeInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val cafeChooseCause = binding.cafeCauseInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val cafeVisitedFrequency = binding.visitFrequencyInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val isUsingSNS = binding.snsUsageInput.text.toString().takeIf { it.isNotBlank() }?:""
-            val convenienceFacilityPrefer = binding.facilitiesPreferenceInput.text.toString().takeIf { it.isNotBlank() }?:""
+            val location = binding.locationInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val marriage = binding.marryInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val hobby = binding.hobbyInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val favoriteMenu = binding.favoriteMenuInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val cafeUsingPurpose = binding.cafePurposeInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val cafeChooseCause = binding.cafeCauseInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val cafeVisitedFrequency = binding.visitFrequencyInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val isUsingSNS = binding.snsUsageInput.text.toString().takeIf { it.isNotBlank() } ?:""
+            val convenienceFacilityPrefer = binding.facilitiesPreferenceInput.text.toString().takeIf { it.isNotBlank() } ?:""
 
 
             // 필수 질문 체크 및 특정 입력 오류 메시지 설정
             val missingFields = mutableListOf<String>()
-            if (age == null) missingFields.add("나이를 정확히 입력해 주세요")
-            if (sex.isNullOrEmpty()) missingFields.add("성별을 정확히 입력해 주세요")
+            if (age.isNullOrEmpty()) missingFields.add("나이를 정확히 입력해 주세요")
+            if (gender.isNullOrEmpty()) missingFields.add("성별을 정확히 입력해 주세요")
             if (job.isNullOrEmpty()) missingFields.add("직업을 정확히 입력해 주세요")
 
             // 오류 메시지가 있을 경우 해당 메시지 표시
@@ -153,10 +153,10 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
             }
 
             val surveyRequest = SurveyRequest(
-                age = age ?: 0, // 기본값 설정
-                sex = sex ?: "",
+                gender = gender ?: "",
+                age = age ?: "",
                 job = job ?: "",
-                residence = residence,
+                location = location,
                 marriage = marriage,
                 hobby = hobby,
                 favoriteMenu = favoriteMenu,
