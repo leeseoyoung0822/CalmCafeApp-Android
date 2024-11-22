@@ -3,13 +3,13 @@ import com.google.gson.annotations.SerializedName
 
 data class SurveyRequest(
     @SerializedName("age")
-    val age: Int?,
-    @SerializedName("sex")
-    val sex: String,
+    val age: String,
+    @SerializedName("gender")
+    val gender: String,
     @SerializedName("job")
     val job: String,
-    @SerializedName("residence")
-    val residence: String,
+    @SerializedName("location")
+    val location: String,
     @SerializedName("marriage")
     val marriage: String,
     @SerializedName("hobby")

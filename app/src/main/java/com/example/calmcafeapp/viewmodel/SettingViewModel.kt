@@ -16,6 +16,7 @@ import com.example.calmcafeapp.data.SurveyResponse
 import com.example.calmcafeapp.data.UserProfile
 import com.example.calmcafeapp.data.UserProfileResponse
 import com.example.calmcafeapp.login.LocalDataSource
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,6 +52,8 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             _errorMessage.value = "Access token is null."
             return
         }
+        // 요청 데이터 로그로 출력
+        Log.d("SurveyRequest", "Request Data: ${Gson().toJson(surveyRequest)}")
 
         settingService.submitSurvey("Bearer $accessToken", surveyRequest)
             .enqueue(object : Callback<SurveyResponse> {
@@ -61,8 +64,17 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                         Log.d("SettingViewModel", "Survey submitted successfully.")
                     } else {
                         _isSurveySubmitted.value = false
-                        _errorMessage.value = response.errorBody()?.string() ?: "Submission failed."
-                        Log.e("SettingViewModel", "Failed to submit survey: ${response.message()}")
+                        val errorBody = response.errorBody()?.string()
+                        val errorMessage = response.body()?.message ?: errorBody ?: "Submission failed."
+
+                        // 서버에서 USER_4002 코드를 반환한 경우 처리
+                        if (response.code() == 400 && errorBody?.contains("USER_4002") == true) {
+                            _errorMessage.value = "설문 조사에 이미 참여하셨습니다."
+                            Log.e("SettingViewModel", "Survey already completed: $errorMessage")
+                        } else {
+                            _errorMessage.value = errorMessage
+                            Log.e("SettingViewModel", "Failed to submit survey: ${response.message()}")
+                        }
                     }
                 }
 
