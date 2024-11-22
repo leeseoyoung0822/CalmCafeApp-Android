@@ -64,8 +64,17 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                         Log.d("SettingViewModel", "Survey submitted successfully.")
                     } else {
                         _isSurveySubmitted.value = false
-                        _errorMessage.value = response.errorBody()?.string() ?: "Submission failed."
-                        Log.e("SettingViewModel", "Failed to submit survey: ${response.message()}")
+                        val errorBody = response.errorBody()?.string()
+                        val errorMessage = response.body()?.message ?: errorBody ?: "Submission failed."
+
+                        // 서버에서 USER_4002 코드를 반환한 경우 처리
+                        if (response.code() == 400 && errorBody?.contains("USER_4002") == true) {
+                            _errorMessage.value = "설문 조사에 이미 참여하셨습니다."
+                            Log.e("SettingViewModel", "Survey already completed: $errorMessage")
+                        } else {
+                            _errorMessage.value = errorMessage
+                            Log.e("SettingViewModel", "Failed to submit survey: ${response.message()}")
+                        }
                     }
                 }
 
