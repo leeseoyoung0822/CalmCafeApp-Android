@@ -41,40 +41,100 @@ class M_Home_UpdateFragment : BaseFragment<FragmentMHomeUpdateBinding>(R.layout.
     }
 
     private fun setupNumberPickers() {
-        // NumberPicker 설정
         with(binding) {
-            npOpenHour.minValue = 0
-            npOpenHour.maxValue = 23
-            npOpenMinute.minValue = 0
-            npOpenMinute.maxValue = 59
+            // 영업 시작 시간
+            npOpenHour.apply {
+                minValue = 0
+                maxValue = 23
+                setFormatter { it.toTwoDigitString() }
+            }
+            npOpenMinute.apply {
+                minValue = 0
+                maxValue = 59
+                setFormatter { it.toTwoDigitString() }
+            }
 
-            npCloseHour.minValue = 0
-            npCloseHour.maxValue = 23
-            npCloseMinute.minValue = 0
-            npCloseMinute.maxValue = 59
+            // 영업 종료 시간
+            npCloseHour.apply {
+                minValue = 0
+                maxValue = 23
+                setFormatter { it.toTwoDigitString() }
+            }
+            npCloseMinute.apply {
+                minValue = 0
+                maxValue = 59
+                setFormatter { it.toTwoDigitString() }
+            }
 
-            npSeatNum.minValue = 1
-            npSeatNum.maxValue = 100
+            // 라스트 오더 시간
+            npLastOrderHour.apply {
+                minValue = 0
+                maxValue = 23
+                setFormatter { it.toTwoDigitString() }
+            }
+            npLastOrderMinute.apply {
+                minValue = 0
+                maxValue = 59
+                setFormatter { it.toTwoDigitString() }
+            }
+
+            // 최대 좌석 수
+            npSeatNum.apply {
+                minValue = 1
+                maxValue = 100
+            }
+
+            // HomeFragment에서 전달받은 값을 초기값으로 설정
+            val cafeDetail = mHomeViewModel.cafeDetail.value?.result
+            if (cafeDetail != null) {
+                val (openHour, openMinute) = cafeDetail.openingTime.split(":").map { it.toInt() }
+                val (closeHour, closeMinute) = cafeDetail.closingTime.split(":").map { it.toInt() }
+                val (lastOrderHour, lastOrderMinute) = cafeDetail.lastOrderTime.split(":").map { it.toInt() }
+
+                npOpenHour.value = openHour
+                npOpenMinute.value = openMinute
+                npCloseHour.value = closeHour
+                npCloseMinute.value = closeMinute
+                npLastOrderHour.value = lastOrderHour
+                npLastOrderMinute.value = lastOrderMinute
+                npSeatNum.value = cafeDetail.maxCustomerCount
+            } else {
+                // 초기값 없을 때 기본값 설정
+                npOpenHour.value = 9
+                npOpenMinute.value = 0
+                npCloseHour.value = 18
+                npCloseMinute.value = 0
+                npLastOrderHour.value = 17
+                npLastOrderMinute.value = 30
+                npSeatNum.value = 10
+            }
+
 
             // 운영 시간 수정 버튼 클릭
             btnUpdateOpenHours.setOnClickListener {
-                val openingTime = "${npOpenHour.value}:${String.format("%02d", npOpenMinute.value)}"
-                val closingTime = "${npCloseHour.value}:${String.format("%02d", npCloseMinute.value)}"
+                val openingTime = "${npOpenHour.value.toTwoDigitString()}:${npOpenMinute.value.toTwoDigitString()}:00"
+                val closingTime = "${npCloseHour.value.toTwoDigitString()}:${npCloseMinute.value.toTwoDigitString()}:00"
                 mHomeViewModel.modifyStoreHours(openingTime, closingTime)
             }
 
             // 라스트 오더 시간 수정 버튼 클릭
             btnUpdateLastOrder.setOnClickListener {
-                val lastOrderTime = "${npCloseHour.value}:${String.format("%02d", npCloseMinute.value)}"
+                val lastOrderTime = "${npLastOrderHour.value.toTwoDigitString()}:${npLastOrderMinute.value.toTwoDigitString()}:00"
                 mHomeViewModel.modifyLastOrderTime(lastOrderTime)
             }
 
             // 최대 수용 인원 수정 버튼 클릭
             btnSeatNum.setOnClickListener {
                 val maxCapacity = npSeatNum.value
+                Log.d("API Request", "Max Capacity: $maxCapacity")
                 mHomeViewModel.modifyMaxCapacity(maxCapacity)
             }
         }
+    }
+
+    // 확장 함수
+    fun Int.toTwoDigitString(): String {
+        return String.format("%02d", this)
     }
 
     private fun observeViewModel() {
