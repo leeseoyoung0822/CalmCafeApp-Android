@@ -17,10 +17,16 @@ interface RankingService {
                            @Query("location") location: String): Call<RankingResponse>
 
     @GET("/ranking/total")
-    fun getTotalRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>
+    fun getTotalRanking(
+        @Header("Authorization") accessToken: String,
+        @Query("location") location: String
+    ): Call<RankingResponse>
 
     @GET("/ranking/favorite")
-    fun getFavoriteRanking(@Header("Authorization") accessToken: String,@Query("location") location: String): Call<RankingResponse>
+    fun getFavoriteRanking(
+        @Header("Authorization") accessToken: String,
+        @Query("location") location: String)
+    : Call<RankingResponse>
 
     @GET("/store/detail/user")
     fun getCafeDetail(

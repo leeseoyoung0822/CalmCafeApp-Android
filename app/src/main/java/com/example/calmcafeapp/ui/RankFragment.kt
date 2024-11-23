@@ -59,6 +59,8 @@ class RankFragment : Fragment(), OnRouteStartListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as UserActivity).binding.navigationUser.visibility = View.VISIBLE
+        initCafeRecyclerView()
+        setupTableLayout()
 
         // ViewModel의 현재 위치 LiveData 관찰
         homeViewModel.currentLocation.observe(viewLifecycleOwner) { location ->
@@ -75,7 +77,6 @@ class RankFragment : Fragment(), OnRouteStartListener {
 
         // fusedLocationClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        initCafeRecyclerView()
 
         // 기본으로 '전국' 지역과 '실시간 방문자 수' 데이터를 로드
         rankViewModel.fetchRealTimeRanking("전국")  // 초기 지역은 '전국', 카테고리는 '실시간 방문자 수'
@@ -90,13 +91,8 @@ class RankFragment : Fragment(), OnRouteStartListener {
 
         // 즐겨찾기 상태 변경을 감지하여 어댑터 업데이트
         rankViewModel.favoriteStoreId.observe(viewLifecycleOwner) { updatedStoreId ->
-            if (updatedStoreId != null) {
-                adapter.updateLikeStatus(updatedStoreId) // 해당 아이템만 업데이트
-                rankViewModel.resetFavoriteStoreId() // 초기화하여 중복 반영 방지
-            }
+            adapter.updateLikeStatus(updatedStoreId)
         }
-
-        setupTableLayout()
 
         binding.btn1.setOnClickListener{
             val selectedRegion = getCurrentRegion()
@@ -132,38 +128,35 @@ class RankFragment : Fragment(), OnRouteStartListener {
             binding.cafeRecyclerView.scrollToPosition(0)
         }
 
-        /*
-        binding.searchBtn.setOnClickListener {
-            // SearchFragment로 이동
-            val searchFragment = SearchFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.container_main, searchFragment)
-                .addToBackStack(null)  // 뒤로 가기 버튼으로 돌아올 수 있게 백스택에 추가
-                .commit()
 
-        }*/
     }
     // RecyclerView 초기화 함수
     private fun initCafeRecyclerView() {
-        // RankFragment에서 어댑터를 초기화할 때 클릭 리스너를 설정하여, 클릭 시 CafeDetailFragment로 이동하게 만듦
         adapter = CafeRecyclerViewAdapter(
             mItem = mutableListOf(),
             onItemClick = { storeId, _, _ ->
-                showCafeDetailFragment(storeId,userLatitude,userLongitude)
+                showCafeDetailFragment(storeId, userLatitude, userLongitude)
             },
+            // 좋아요 버튼 클릭 처리
             onFavoriteClick = { storeId, isFavorite ->
                 if (isFavorite) {
-                    rankViewModel.removeFavorite(storeId)
+                    // 즐겨찾기 삭제 요청
+                    rankViewModel.removeFavorite(storeId).also {
+                        Toast.makeText(requireContext(), "즐겨찾기 취소", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    rankViewModel.addFavorite(storeId)
+                    // 즐겨찾기 추가 요청
+                    rankViewModel.addFavorite(storeId).also {
+                        Toast.makeText(requireContext(), "즐겨찾기 추가", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         )
-
-        // 어댑터에 즐겨찾기 상태 업데이트 관찰 설정
-        binding.cafeRecyclerView.adapter = adapter // 리사이클러뷰에 어댑터 연결
-        binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 연결
+        binding.cafeRecyclerView.adapter = adapter
+        binding.cafeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
+
+
 
     // TabLayout 설정 및 지역 선택 시 데이터를 로드하는 함수
     private fun setupTableLayout() {
