@@ -48,72 +48,13 @@
             app:layout_constraintTop_toBottomOf="@id/top_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="15dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="20dp">
-
-                <androidx.cardview.widget.CardView
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:id="@+id/update_img"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="사진 수정"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:id="@+id/content"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/update_img"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <View
-                                android:id="@+id/imagePlaceholder"
-                                android:layout_width="200dp"
-                                android:layout_height="100dp"
-                                android:background="@color/whitegray"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"/>
-
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/choose_img"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/content"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:backgroundTint="@color/lightgreen"
-                            android:text="이미지 불러오기"
-                            android:textColor="@color/green" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.cardview.widget.CardView>
+                android:orientation="vertical">
 
                 <!-- 운영 시간 카드 -->
                 <androidx.cardview.widget.CardView
@@ -136,24 +77,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="운영 시간"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
 
                         <LinearLayout
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tv_open_hours_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
                             android:gravity="center"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.529"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_open_hours_title">
 
                             <NumberPicker
                                 android:id="@+id/np_open_hour"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=":"
+                                android:textSize="18sp" />
 
                             <NumberPicker
                                 android:id="@+id/np_open_minute"
@@ -172,7 +119,13 @@
                                 android:id="@+id/np_close_hour"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="4dp"/>
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=":"
+                                android:textSize="18sp" />
 
                             <NumberPicker
                                 android:id="@+id/np_close_minute"
@@ -190,6 +143,8 @@
                             android:layout_marginTop="16dp"
                             android:backgroundTint="@color/lightgreen"
                             android:text="수정"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="@color/green" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
@@ -215,7 +170,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="라스트 오더"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -224,7 +179,6 @@
                             app:layout_constraintTop_toBottomOf="@id/tv_last_order_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
                             android:gravity="center"
                             android:orientation="horizontal">
 
@@ -233,11 +187,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="4dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=":"
+                                android:textSize="18sp" />
 
                             <NumberPicker
                                 android:id="@+id/np_last_order_minute"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"/>
+
                         </LinearLayout>
 
                         <Button
@@ -250,6 +210,8 @@
                             android:layout_marginTop="16dp"
                             android:backgroundTint="@color/lightgreen"
                             android:text="수정"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="@color/green" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
@@ -259,7 +221,6 @@
                     app:cardElevation="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:backgroundTint="@color/white">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -272,7 +233,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="좌석 수"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -280,7 +241,6 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
                             android:gravity="center"
                             android:orientation="horizontal"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -291,6 +251,13 @@
                                 android:id="@+id/np_seatNum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:text="석"
+                                android:textSize="18sp" />
                         </LinearLayout>
 
                         <Button
@@ -300,7 +267,8 @@
                             android:layout_marginTop="16dp"
                             android:backgroundTint="@color/lightgreen"
                             android:text="수정"
-                            android:layout_marginBottom="16dp"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="@color/green"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"

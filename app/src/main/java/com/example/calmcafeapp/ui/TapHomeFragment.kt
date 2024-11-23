@@ -18,7 +18,6 @@ import com.example.calmcafeapp.viewmodel.RankViewModel
 class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_taphome) {
     private lateinit var menuCafeAdapter: MenuCafeAdapter
     private lateinit var couponCafeAdapter: CouponCafeAdapter
-    private val rankViewModel: RankViewModel by activityViewModels()
     private val viewModel: HomeViewModel by activityViewModels()
     private var cafeImg : String? = null
 

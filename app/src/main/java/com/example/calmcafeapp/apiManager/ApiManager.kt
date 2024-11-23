@@ -3,7 +3,7 @@ package com.example.calmcafeapp.apiManager
 import com.example.calmcafeapp.BuildConfig
 import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.api.LoginService
-import com.example.calmcafeapp.api.M_UpdateService
+import com.example.calmcafeapp.api.M_HomeService
 import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.api.NaverReverseGeocodingService
 import com.example.calmcafeapp.api.ODsayService
@@ -171,6 +171,6 @@ object ApiManager {
     // 랭킹 탑 100 api
     val rankingService: RankingService by lazy { ServerRetrofit.create(RankingService::class.java) }
     val settingService: SettingService by lazy { ServerRetrofit.create(SettingService::class.java) }
-    val m_UpdateService: M_UpdateService by lazy { ServerRetrofit.create(M_UpdateService::class.java) }
+    val m_HomeService: M_HomeService by lazy { ServerRetrofit.create(M_HomeService::class.java) }
 
 }
