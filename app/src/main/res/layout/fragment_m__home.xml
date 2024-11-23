@@ -124,7 +124,7 @@
                 app:layout_constraintTop_toBottomOf="@id/storeAddress"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="운영시간"
-                android:drawableStart="@drawable/clock"
+                android:drawableStart="@drawable/clock_green"
                 android:layout_margin="8dp"
                 android:drawablePadding="8dp"/>
 
@@ -135,7 +135,7 @@
                 app:layout_constraintTop_toBottomOf="@id/time"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="라스트오더"
-                android:drawableStart="@drawable/clock"
+                android:drawableStart="@drawable/coffee_green"
                 android:layout_margin="8dp"
                 android:drawablePadding="8dp"/>
 
@@ -146,7 +146,7 @@
                 app:layout_constraintTop_toBottomOf="@id/lastOrder"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="좌석수"
-                android:drawableStart="@drawable/clock"
+                android:drawableStart="@drawable/chair_green"
                 android:layout_margin="8dp"
                 android:drawablePadding="8dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

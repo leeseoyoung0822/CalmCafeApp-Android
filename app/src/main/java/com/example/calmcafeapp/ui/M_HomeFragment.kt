@@ -81,14 +81,14 @@ class M_HomeFragment : BaseFragment<FragmentMHomeBinding>(R.layout.fragment_m__h
             // 운영 시간 (분 단위까지만 표시)
             val formattedOpeningTime = data.openingTime.substringBeforeLast(":")
             val formattedClosingTime = data.closingTime.substringBeforeLast(":")
-            time.text = "운영 시간: $formattedOpeningTime ~ $formattedClosingTime"
+            time.text = "운영 시간 : $formattedOpeningTime ~ $formattedClosingTime"
 
             // 라스트 오더 (분 단위까지만 표시)
             val formattedLastOrderTime = data.lastOrderTime.substringBeforeLast(":")
-            lastOrder.text = "라스트 오더: $formattedLastOrderTime 까지"
+            lastOrder.text = "라스트 오더 : $formattedLastOrderTime 까지"
 
             // 좌석 정보 (최대 수용 인원)
-            seatNum.text = "최대 수용 인원: ${data.maxCustomerCount}명"
+            seatNum.text = "최대 수용 인원 : ${data.maxCustomerCount}명"
         }
     }
 
