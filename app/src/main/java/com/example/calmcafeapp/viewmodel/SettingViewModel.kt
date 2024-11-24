@@ -43,6 +43,9 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile> get() = _userProfile
 
+    private val _favoriteStoreId = MutableLiveData<Int?>()
+    val favoriteStoreId: LiveData<Int?> = _favoriteStoreId
+
     // 설문조사 데이터 제출 함수
     fun submitSurvey(surveyRequest: SurveyRequest) {
         _isLoading.value = true
@@ -87,7 +90,6 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
             })
     }
 
-    // 즐겨찾기 리스트 가져오기 함수
     fun fetchFavoriteStores() {
         _isLoading.value = true
         val accessToken = LocalDataSource.getAccessToken()
@@ -103,21 +105,17 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                     _isLoading.value = false
                     if (response.isSuccessful && response.body()?.isSuccess == true) {
                         _favoriteStores.value = response.body()?.result?.favoriteStoreDetailResDtoList
-                        Log.d("SettingViewModel", "Favorite stores fetched successfully.")
                     } else {
                         _errorMessage.value = response.errorBody()?.string() ?: "Failed to fetch favorite stores."
-                        Log.e("SettingViewModel", "Failed to fetch favorite stores: ${response.message()}")
                     }
                 }
 
                 override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
                     _isLoading.value = false
                     _errorMessage.value = "Network error: ${t.message}"
-                    Log.e("SettingViewModel", "Network error", t)
                 }
             })
     }
-
     fun fetchPointCoupons() {
         _isLoading.value = true
         Log.d("SettingViewModel", "fetchPointCoupons called") // 호출 확인 로그
@@ -183,4 +181,31 @@ class SettingViewModel(application: Application) : AndroidViewModel(application)
                 }
             })
     }
+
+    fun removeFavorite(storeId: Int) {
+        val accessToken = LocalDataSource.getAccessToken() ?: return
+        _isLoading.value = true
+
+        settingService.removeFavorite("Bearer $accessToken", storeId)
+            .enqueue(object : Callback<FavoriteResponse> {
+                override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
+                    _isLoading.value = false
+                    if (response.isSuccessful && response.body()?.isSuccess == true) {
+                        Log.d("SettingViewModel", "즐겨찾기 취소 성공: ${response.body()?.message}")
+                        _favoriteStoreId.value = storeId // 성공적으로 삭제된 매장의 ID를 전달
+                    } else {
+                        Log.e("SettingViewModel", "즐겨찾기 취소 실패: ${response.errorBody()?.string()}")
+                        _errorMessage.value = response.body()?.message ?: "즐겨찾기 취소 실패"
+                    }
+                }
+
+                override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
+                    _isLoading.value = false
+                    Log.e("SettingViewModel", "네트워크 오류: ${t.message}")
+                    //_errorMessage.value = "네트워크 오류가 발생했습니다."
+                }
+            })
+    }
+
+
 }
