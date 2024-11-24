@@ -17,7 +17,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cafeImageCard"
             android:layout_width="160dp"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
             app:cardCornerRadius="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -82,7 +82,7 @@
                 android:id="@+id/cafe_outlet_icon"
                 android:layout_width="22dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_crowd" />
+                android:src="@drawable/people" />
 
             <TextView
                 android:id="@+id/cafe_Congestion"

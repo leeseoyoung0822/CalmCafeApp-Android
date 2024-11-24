@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/clock"
+                    android:background="@drawable/clock_green"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/view"/>
 
@@ -111,7 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:drawableStart="@drawable/location"
+                    android:drawableStart="@drawable/location_green"
                     android:drawablePadding="8dp"
                     android:text=""
                     app:layout_constraintStart_toStartOf="@id/clock_img"

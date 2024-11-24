@@ -28,6 +28,12 @@ data class FavoriteStore(
     @SerializedName("name")
     val name: String,
 
+    @SerializedName("isFavorite")
+    val isFavorite: Boolean,
+
+    @SerializedName("image")
+    val image: String,
+
     @SerializedName("storeCongestionLevel")
     val storeCongestionLevel: String,
 
