@@ -24,8 +24,10 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PolylineOverlay
 import android.location.Location
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.MainActivity
 import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.data.GraphPos
@@ -58,6 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private var currentSearchEndX: Double? = null
     private var currentSearchEndY: Double? = null
     private var hasArrivedAtCafe: Boolean = false
+    private lateinit var searchResultsAdapter: SearchResultsAdapter
 
 
 
@@ -75,6 +78,29 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             showNavigatorBottomSheet()
         }
         mapView.getMapAsync(this)
+        initSearch()
+
+        binding.rvSearchResults.layoutManager = LinearLayoutManager(requireContext())
+        searchResultsAdapter = SearchResultsAdapter(emptyList()) { item ->
+
+
+        }
+        binding.rvSearchResults.adapter = searchResultsAdapter
+
+        // 검색 결과 관찰
+        viewModel.searchResults.observe(viewLifecycleOwner) { results ->
+            if (results.isEmpty()) {
+                binding.tvNoResults.visibility = View.VISIBLE
+                binding.rvSearchResults.visibility = View.GONE
+            } else {
+                binding.tvNoResults.visibility = View.GONE
+                binding.rvSearchResults.visibility = View.VISIBLE
+                searchResultsAdapter = SearchResultsAdapter(results) { item ->
+                    //navigateToStoreDetail(item)
+                }
+                binding.rvSearchResults.adapter = searchResultsAdapter
+            }
+        }
     }
     override fun initDataBinding() {
         super.initDataBinding()
@@ -646,6 +672,36 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         // 길찾기 종료 및 초기화
         cancelRouteSearch()
+    }
+
+    private fun initSearch() {
+        binding.searchBar.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
+                val query = binding.searchBar.text.toString()
+                if (query.isNotEmpty()) {
+                    performSearch(query)
+                } else {
+                    Toast.makeText(requireContext(), "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+    }
+
+    private fun performSearch(query: String) {
+        // 사용자 위치 가져오기
+        val userLatitude = currentLocation?.latitude
+        val userLongitude = currentLocation?.longitude
+
+        if (userLatitude != null && userLongitude != null) {
+            // ViewModel을 통해 검색 수행
+            viewModel.searchHome(userLatitude, userLongitude, query)
+        } else {
+            Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

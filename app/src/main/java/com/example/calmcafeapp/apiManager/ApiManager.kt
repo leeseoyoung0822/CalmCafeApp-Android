@@ -164,7 +164,7 @@ object ApiManager {
     val loginService: LoginService = ServerRetrofit.create(LoginService::class.java)
     val tmapService: TmapService = tmapApiRetrofit.create(TmapService::class.java)
     val odsayService: ODsayService = odsayApiRetrofit.create(ODsayService::class.java)
-    val naverApiService: MapService  = naverOpenApiRetrofit.create(MapService::class.java)
+    val naverApiService: MapService  = ServerRetrofit.create(MapService::class.java)
     val naverReverseGeocodingService: NaverReverseGeocodingService = naverCloudPlatformRetrofit.create(NaverReverseGeocodingService::class.java)
     val cafeDetailService : CafeDetailService = ServerRetrofit.create(CafeDetailService::class.java)
     val locationService : LocationService = ServerRetrofit.create(LocationService::class.java)

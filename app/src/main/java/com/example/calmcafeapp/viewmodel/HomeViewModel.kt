@@ -24,7 +24,9 @@ import com.example.calmcafeapp.data.PubTransPathResponse
 import com.example.calmcafeapp.data.PurchaseResponse
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
+import com.example.calmcafeapp.data.SearchHomeResponse
 import com.example.calmcafeapp.data.SearchMapResponse
+import com.example.calmcafeapp.data.SearchStoreResDto
 import com.example.calmcafeapp.data.StorePosDto
 import com.example.calmcafeapp.data.TmapRouteResponse
 import com.example.calmcafeapp.login.LocalDataSource
@@ -42,6 +44,9 @@ class HomeViewModel : ViewModel() {
     private val odsayService = ApiManager.odsayService
     private val tmapService = ApiManager.tmapService
     private val cafeDetailService = ApiManager.cafeDetailService
+
+    private val _searchResults = MutableLiveData<List<SearchStoreResDto>>()
+    val searchResults: LiveData<List<SearchStoreResDto>> get() = _searchResults
 
     private val _userPointsLiveData = MutableLiveData<Int>()
     val userPointsLiveData: LiveData<Int> get() = _userPointsLiveData
@@ -574,6 +579,28 @@ class HomeViewModel : ViewModel() {
                 // 네트워크 에러 처리
                 _purchaseResultLiveData.postValue(false)
                 _errorMessage.postValue("구매에 실패하였습니다. (네트워크 에러)")
+            }
+        })
+    }
+
+    fun searchHome(userLatitude: Double, userLongitude: Double, query: String) {
+        val call = ApiManager.naverApiService.searchHome(userLatitude, userLongitude, query)
+        call.enqueue(object : Callback<SearchHomeResponse> {
+            override fun onResponse(call: Call<SearchHomeResponse>, response: Response<SearchHomeResponse>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        _searchResults.postValue(body.result?.searchStoreResDtoList ?: emptyList())
+                    } else {
+                        _errorMessage.postValue(body?.message ?: "검색 결과를 가져오지 못했습니다.")
+                    }
+                } else {
+                    _errorMessage.postValue("검색 결과를 가져오지 못했습니다. 서버 에러.")
+                }
+            }
+
+            override fun onFailure(call: Call<SearchHomeResponse>, t: Throwable) {
+                _errorMessage.postValue("네트워크 오류가 발생했습니다.")
             }
         })
     }

@@ -1,6 +1,7 @@
 package com.example.calmcafeapp.api
 
 import com.example.calmcafeapp.data.MapResponse
+import com.example.calmcafeapp.data.SearchHomeResponse
 import com.example.calmcafeapp.data.SearchMapResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,4 +15,11 @@ interface MapService {
         @Query("start") start: Int,
         @Query("sort") sort: String
     ): Call<SearchMapResponse>
+
+    @GET("/search/home")
+    fun searchHome(
+        @Query("userLatitude") userLatitude: Double,
+        @Query("userLongitude") userLongitude: Double,
+        @Query("query") query: String
+    ): Call<SearchHomeResponse>
 }
