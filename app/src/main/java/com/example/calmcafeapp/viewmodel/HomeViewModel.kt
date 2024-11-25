@@ -11,6 +11,7 @@ import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.apiManager.ApiManager
 import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.CafeDetailResult
+import com.example.calmcafeapp.data.CongestionLevelResponse
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.LocalItem
@@ -20,9 +21,12 @@ import com.example.calmcafeapp.data.Path
 import com.example.calmcafeapp.data.PedestrianRouteRequest
 import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.data.PubTransPathResponse
+import com.example.calmcafeapp.data.PurchaseResponse
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
+import com.example.calmcafeapp.data.SearchHomeResponse
 import com.example.calmcafeapp.data.SearchMapResponse
+import com.example.calmcafeapp.data.SearchStoreResDto
 import com.example.calmcafeapp.data.StorePosDto
 import com.example.calmcafeapp.data.TmapRouteResponse
 import com.example.calmcafeapp.login.LocalDataSource
@@ -40,6 +44,16 @@ class HomeViewModel : ViewModel() {
     private val odsayService = ApiManager.odsayService
     private val tmapService = ApiManager.tmapService
     private val cafeDetailService = ApiManager.cafeDetailService
+
+    private val _searchResults = MutableLiveData<List<SearchStoreResDto>>()
+    val searchResults: LiveData<List<SearchStoreResDto>> get() = _searchResults
+
+    private val _userPointsLiveData = MutableLiveData<Int>()
+    val userPointsLiveData: LiveData<Int> get() = _userPointsLiveData
+
+
+    private val _purchaseResultLiveData = MutableLiveData<Boolean>()
+    val purchaseResultLiveData: LiveData<Boolean> get() = _purchaseResultLiveData
 
 
     private val _pointMenuList = MutableLiveData<List<PointMenuDetailResDto>>()
@@ -465,14 +479,6 @@ class HomeViewModel : ViewModel() {
         })
     }
 
-
-
-    fun removeHtmlTags(input: String): String {
-        return input.replace(Regex("<.*?>"), "")
-
-
-    }
-
     fun fetchCafeLocation(userAddress: String) {
         val call = cafeDetailService.fetchStore(userAddress)
         Log.d("userAddress", "${userAddress}")
@@ -506,36 +512,105 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
-//
-//    fun searchCafesInArea(area: String) {
-//        val query = "$area 카페"
-//        Log.d("query11", query)
-//        _isLoading.value = true
-//        val call = naverApiService.searchLocal(
-//            query = query,
-//            display = 50,
-//            start = 1,
-//            sort = "sim"
-//        )
-//        call.enqueue(object : Callback<SearchMapResponse> {
-//            override fun onResponse(call: Call<SearchMapResponse>, response: Response<SearchMapResponse>) {
-//                Log.d("search", response.toString())
-//                _isLoading.value = false
-//                if (response.isSuccessful) {
-//                    val items = response.body()?.items?.map { item ->
-//                        item.copy(title = removeHtmlTags(item.title))
-//                    } ?: emptyList()
-//                    Log.d("item", items.toString())
-//                    _cafes.value = items
-//                } else {
-//                    _errorMessage.value = "API 호출에 실패했습니다."
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<SearchMapResponse>, t: Throwable) {
-//                _isLoading.value = false
-//                _errorMessage.value = "네트워크 오류가 발생했습니다."
-//            }
-//        })
-//    }
+
+    fun sendCongestionLevel(storeId: Int, congestionValue: Int) {
+        _isLoading.value = true
+        Log.d("CongestionLevelResponse", "storeId: ${storeId}, ${congestionValue}")
+        val call : Call<CongestionLevelResponse> = ApiManager.locationService.createCongestion(
+            "Bearer " + LocalDataSource.getAccessToken()!!,
+            storeId = storeId,
+            congestionValue  = congestionValue)
+        call.enqueue(object : Callback<CongestionLevelResponse> {
+            override fun onResponse(call: Call<CongestionLevelResponse>, response: Response<CongestionLevelResponse>
+            ) {
+                Log.d("CongestionLevelResponse", "Response body: ${response.body()}")
+                Log.d("CongestionLevelResponse", "Response code: ${response.code()}")
+                Log.d("CongestionLevelResponse", "Response message: ${response.message()}")
+                Log.d("CongestionLevelResponse", "Error body: ${response.errorBody()?.string()}")
+                if (response.isSuccessful) {
+                    // 성공 처리
+                    Log.d("ViewModel", "혼잡도 전송 성공")
+                } else {
+                    // 실패 처리
+                    Log.e("ViewModel", "혼잡도 전송 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<CongestionLevelResponse>, t: Throwable) {
+                // 에러 처리
+                Log.e("ViewModel", "혼잡도 전송 에러: ${t.message}")
+            }
+        })
+    }
+
+    fun purchaseItem(menuId: Int) {
+        _isLoading.value = true
+
+        val call: Call<PurchaseResponse> = ApiManager.cafeDetailService.purchaseItem(
+            authorization = "Bearer " + LocalDataSource.getAccessToken()!!,
+            menuId = menuId
+        )
+
+        call.enqueue(object : Callback<PurchaseResponse> {
+            override fun onResponse(call: Call<PurchaseResponse>, response: Response<PurchaseResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+
+                        _purchaseResultLiveData.postValue(true)
+                        // 잔여 포인트 업뎃
+                        val newPoints = body.result
+                        _userPointsLiveData.postValue(newPoints)
+                    } else {
+                        // 구매 실패 처리
+                        _purchaseResultLiveData.postValue(false)
+                        _errorMessage.postValue(body?.message ?: "구매에 실패하였습니다.")
+                    }
+                } else {
+                    // 서버 에러 처리
+                    _purchaseResultLiveData.postValue(false)
+                    _errorMessage.postValue("구매에 실패하였습니다. (서버 에러)")
+                }
+            }
+
+            override fun onFailure(call: Call<PurchaseResponse>, t: Throwable) {
+                _isLoading.value = false
+                // 네트워크 에러 처리
+                _purchaseResultLiveData.postValue(false)
+                _errorMessage.postValue("구매에 실패하였습니다. (네트워크 에러)")
+            }
+        })
+    }
+
+    fun searchHome(userLatitude: Double, userLongitude: Double, query: String) {
+        val call : Call<SearchHomeResponse> = ApiManager.naverApiService.searchHome(
+            "Bearer " + LocalDataSource.getAccessToken()!!,
+            userLatitude=userLatitude,
+            userLongitude=userLongitude,
+            query=query
+            )
+
+
+        Log.d("call11", "${query}")
+        call.enqueue(object : Callback<SearchHomeResponse> {
+            override fun onResponse(call: Call<SearchHomeResponse>, response: Response<SearchHomeResponse>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        _searchResults.postValue(body.result?.searchStoreResDtoList ?: emptyList())
+                    } else {
+                        _errorMessage.postValue(body?.message ?: "검색 결과를 가져오지 못했습니다.")
+                    }
+                } else {
+                    _errorMessage.postValue("검색 결과를 가져오지 못했습니다. 서버 에러.")
+                }
+            }
+
+            override fun onFailure(call: Call<SearchHomeResponse>, t: Throwable) {
+                _errorMessage.postValue("네트워크 오류가 발생했습니다.")
+            }
+        })
+    }
+
 }

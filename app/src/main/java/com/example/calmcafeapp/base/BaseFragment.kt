@@ -15,7 +15,7 @@ abstract class BaseFragment<B: ViewDataBinding>(@LayoutRes private val layoutRes
     val PERMISSIONS_REQUEST: Int = 101
     //val userID: BigInteger = LocalDataSource.getUserId()!!.toBigInteger()
 
-    // protected abstract val viewModel: VM
+    // protected abstract val viewModel: VaM
     lateinit var binding: B
     //protected lateinit var navController: NavController
 

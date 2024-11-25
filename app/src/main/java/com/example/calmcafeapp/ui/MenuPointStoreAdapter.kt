@@ -54,6 +54,9 @@ class MenuPointStoreAdapter(private var list: ArrayList<PointMenuDetailResDto>):
         holder.menu.text = "(${menu.pointDiscount}%할인) ${menu.name}"
         holder.price.text = "${menu.pointPrice.toString()}P"
 
+        holder.itemView.setOnClickListener {
+            myItemClickListener?.onItemClick(menu)
+        }
     }
 
     override fun getItemCount(): Int {

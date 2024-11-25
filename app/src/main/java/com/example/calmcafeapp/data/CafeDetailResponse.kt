@@ -30,6 +30,9 @@ data class CafeDetailResult(
     @SerializedName("distance")
     val distance: Int? = null,
 
+    @SerializedName("point")
+    val point: Int? = null,
+
     @SerializedName("favoriteCount")
     val favoriteCount: Int? = null,
 
