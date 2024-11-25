@@ -584,7 +584,15 @@ class HomeViewModel : ViewModel() {
     }
 
     fun searchHome(userLatitude: Double, userLongitude: Double, query: String) {
-        val call = ApiManager.naverApiService.searchHome(userLatitude, userLongitude, query)
+        val call : Call<SearchHomeResponse> = ApiManager.naverApiService.searchHome(
+            "Bearer " + LocalDataSource.getAccessToken()!!,
+            userLatitude=userLatitude,
+            userLongitude=userLongitude,
+            query=query
+            )
+
+
+        Log.d("call11", "${query}")
         call.enqueue(object : Callback<SearchHomeResponse> {
             override fun onResponse(call: Call<SearchHomeResponse>, response: Response<SearchHomeResponse>) {
                 if (response.isSuccessful) {

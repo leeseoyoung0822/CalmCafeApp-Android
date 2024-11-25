@@ -8,7 +8,7 @@ import com.example.calmcafeapp.data.SearchStoreResDto
 import com.example.calmcafeapp.databinding.ItemSearchResultBinding
 
 class SearchResultsAdapter(
-    private val searchResults: List<SearchStoreResDto>,
+    private var searchResults: List<SearchStoreResDto>,
     private val itemClickListener: (SearchStoreResDto) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.SearchResultViewHolder>() {
 
@@ -37,4 +37,9 @@ class SearchResultsAdapter(
     }
 
     override fun getItemCount(): Int = searchResults.size
+
+    fun updateData(newData: List<SearchStoreResDto>) {
+        searchResults = newData
+        notifyDataSetChanged()
+    }
 }

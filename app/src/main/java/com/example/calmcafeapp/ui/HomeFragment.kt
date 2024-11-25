@@ -4,7 +4,10 @@ import android.os.Handler
 import android.os.Bundle
 import android.util.Log
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.core.app.ActivityCompat
@@ -24,7 +27,11 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.PolylineOverlay
 import android.location.Location
+import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -86,6 +93,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         }
         binding.rvSearchResults.adapter = searchResultsAdapter
+        binding.rvSearchResults.visibility = View.GONE
+
 
         // 검색 결과 관찰
         viewModel.searchResults.observe(viewLifecycleOwner) { results ->
@@ -634,7 +643,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         Toast.makeText(requireContext(), "카페에 도착했습니다!", Toast.LENGTH_SHORT).show()
 
         // 혼잡도 선택 팝업 표시
-        showCongestionLevelDialog()
+        showArrivalPopup()
     }
 
 
@@ -674,22 +683,64 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         cancelRouteSearch()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initSearch() {
+        // 기존의 검색 액션 처리
         binding.searchBar.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 val query = binding.searchBar.text.toString()
                 if (query.isNotEmpty()) {
                     performSearch(query)
+                    binding.rvSearchResults.visibility = View.VISIBLE
+                    // 아이콘을 clear 아이콘으로 변경
+                    binding.searchBar.setCompoundDrawablesWithIntrinsicBounds(
+                        null, null, ContextCompat.getDrawable(requireContext(), R.drawable.clear), null
+                    )
+                    // 키보드 숨기기
+                    hideKeyboard()
                 } else {
                     Toast.makeText(requireContext(), "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                    binding.rvSearchResults.visibility = View.GONE
                 }
                 true
             } else {
                 false
             }
         }
-
+        binding.searchBar.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val drawableEnd = binding.searchBar.compoundDrawables[2] // 오른쪽 Drawable
+                if (drawableEnd != null) {
+                    val bounds = drawableEnd.bounds
+                    val x = event.x.toInt()
+                    val width = binding.searchBar.width
+                    val paddingEnd = binding.searchBar.paddingEnd
+                    if (x >= width - paddingEnd - bounds.width()) {
+                        // drawableEnd 클릭됨
+                        // RecyclerView 숨기기
+                        binding.rvSearchResults.visibility = View.GONE
+                        // 아이콘을 검색 아이콘으로 변경
+                        binding.searchBar.setCompoundDrawablesWithIntrinsicBounds(
+                            null, null, ContextCompat.getDrawable(requireContext(), R.drawable.ic_search), null
+                        )
+                        // 검색어 지우기
+                        binding.searchBar.text?.clear()
+                        // 키보드 숨기기
+                        hideKeyboard()
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            false
+        }
     }
+
+    private fun hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchBar.windowToken, 0)
+    }
+
+
 
     private fun performSearch(query: String) {
         // 사용자 위치 가져오기
@@ -703,6 +754,53 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun showArrivalPopup() {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.popup_arrival)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnLessCrowded = dialog.findViewById<Button>(R.id.btnLessCrowded)
+        val btnNormal = dialog.findViewById<Button>(R.id.btnNormal)
+        val btnCrowded = dialog.findViewById<Button>(R.id.btnCrowded)
+        val btnClosePopup = dialog.findViewById<ImageView>(R.id.btnClosePopup)
+
+        btnLessCrowded.setOnClickListener {
+            handleCongestionSelection("한산")
+            dialog.dismiss()
+        }
+        btnNormal.setOnClickListener {
+            handleCongestionSelection("보통")
+            dialog.dismiss()
+        }
+        btnCrowded.setOnClickListener {
+            handleCongestionSelection("혼잡")
+            dialog.dismiss()
+        }
+
+        btnClosePopup.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showPointPopup() {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.popup_point_grant)
+
+        val btnClosePopup = dialog.findViewById<ImageView>(R.id.btnClosePointPopup)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        btnClosePopup.setOnClickListener { dialog.dismiss() }
+
+        dialog.show()
+    }
+
+    private fun handleCongestionSelection(selectedLevel: String) {
+        Toast.makeText(requireContext(), "$selectedLevel 선택됨", Toast.LENGTH_SHORT).show()
+        showPointPopup() // 혼잡도 선택 후 포인트 팝업 표시
+    }
+
 
 
 

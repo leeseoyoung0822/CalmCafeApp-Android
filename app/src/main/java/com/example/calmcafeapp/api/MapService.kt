@@ -6,6 +6,7 @@ import com.example.calmcafeapp.data.SearchMapResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.Call
+import retrofit2.http.Header
 
 interface MapService {
     @GET("v1/search/local.json")
@@ -18,6 +19,7 @@ interface MapService {
 
     @GET("/search/home")
     fun searchHome(
+        @Header("Authorization") accessToken: String,
         @Query("userLatitude") userLatitude: Double,
         @Query("userLongitude") userLongitude: Double,
         @Query("query") query: String

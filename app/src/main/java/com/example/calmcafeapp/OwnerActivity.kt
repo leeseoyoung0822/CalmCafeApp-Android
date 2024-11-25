@@ -69,6 +69,16 @@ class OwnerActivity : AppCompatActivity() {
             }
         }
 
+
+        // 바텀 네비게이션 초기화
+        initBottomNav()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        // 기본 화면 설정 (M_HomeFragment)
+        if (savedInstanceState == null) {
+            addFragment(M_HomeFragment())
+        }
+
         // 바텀 네비게이션 초기화
         initBottomNav()
         supportActionBar?.setDisplayShowTitleEnabled(false)

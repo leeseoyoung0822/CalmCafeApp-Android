@@ -2,7 +2,7 @@ package com.example.calmcafeapp.data
 
 import com.google.gson.annotations.SerializedName
 
-data class FavoriteResponse(
+data class StoreResponse(
     @SerializedName("isSuccess")
     val isSuccess: Boolean,
 
@@ -13,26 +13,15 @@ data class FavoriteResponse(
     val message: String,
 
     @SerializedName("result")
-    val result: FavoriteResult
+    val result: StoreResult?
 )
 
-data class FavoriteResult(
-    @SerializedName("favoriteStoreDetailResDtoList")
-    val favoriteStoreDetailResDtoList: List<FavoriteStore>
-)
+data class StoreResult(
+    @SerializedName("storeId")
+    val storeId: Int,
 
-data class FavoriteStore(
-    @SerializedName("id")
-    val id: Int,
-
-    @SerializedName("name")
-    val name: String,
-
-    @SerializedName("isFavorite")
-    val isFavorite: Boolean,
-
-    @SerializedName("image")
-    val image: String,
+    @SerializedName("storeName")
+    val storeName: String,
 
     @SerializedName("storeCongestionLevel")
     val storeCongestionLevel: String,

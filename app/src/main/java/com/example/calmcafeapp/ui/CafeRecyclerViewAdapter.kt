@@ -38,11 +38,14 @@ class CafeRecyclerViewAdapter(
             }
             // 좋아요 버튼 클릭 이벤트
             binding.likesBtn.setOnClickListener {
-                // 현재 즐겨찾기 상태 확인
-                val currentFavoriteStatus = storeRanking.isFavorite
-                updateLikeButton(storeRanking.isFavorite) // 버튼 이미지 업데이트 // 수정
-                onFavoriteClick(storeRanking.id, storeRanking.isFavorite) // API 호출
+                val isFavorite = storeRanking.isFavorite
+                onFavoriteClick(storeRanking.id, isFavorite) // API 호출
+                updateLikeButton(!isFavorite) // UI 업데이트
+                storeRanking.isFavorite = !isFavorite // 데이터 상태 변경
             }
+
+            // 초기 좋아요 버튼 이미지 설정
+            updateLikeButton(storeRanking.isFavorite) // 좋아요 버튼 이미지 업데이트
 
             // 상위 3개의 아이템에만 순위 배지를 표시
             if (position < 3) {
@@ -51,9 +54,6 @@ class CafeRecyclerViewAdapter(
             } else {
                 binding.rankingBadge.visibility = View.GONE
             }
-
-            // 초기 좋아요 버튼 이미지 설정
-            updateLikeButton(storeRanking.isFavorite) // 좋아요 버튼 이미지 업데이트
         }
 
         private fun updateLikeButton(isLiked: Boolean) {
@@ -62,20 +62,9 @@ class CafeRecyclerViewAdapter(
             )
         }
     }
-    // 특정 ID의 즐겨찾기 상태를 업데이트
-    fun updateLikeStatus(storeId: Int?) {
-        storeId?.let { id ->
-            val index = mItem.indexOfFirst { it.id == id }
-            if (index != -1) {
-                mItem[index].isFavorite = !mItem[index].isFavorite // 상태 반전
-                notifyItemChanged(index)
-            }
-        }
-    }
-    //만들어진 뷰홀더 없을때 뷰홀더(레이아웃) 생성하는 함수
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            CafeRecyclerViewAdapter.CafeViewHolder {
-        val binding = RankingItemViewBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CafeViewHolder {
+        val binding = RankingItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CafeViewHolder(binding)
     }
 
@@ -84,6 +73,18 @@ class CafeRecyclerViewAdapter(
     override fun onBindViewHolder(holder: CafeViewHolder, position: Int) {
         holder.bind(mItem[position], position, onItemClick, onFavoriteClick)
     }
+
+    // 특정 ID의 즐겨찾기 상태를 업데이트
+    fun updateLikeStatus(storeId: Int?) {
+        storeId?.let { id ->
+            val index = mItem.indexOfFirst { it.id == id }
+            if (index != -1) {
+                mItem[index].isFavorite = !mItem[index].isFavorite
+                notifyItemChanged(index)
+            }
+        }
+    }
+
     fun updateData(newCafeList: List<StoreRanking>) {
         mItem.clear()
         mItem.addAll(newCafeList)

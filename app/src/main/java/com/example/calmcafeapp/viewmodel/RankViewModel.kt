@@ -183,92 +183,54 @@ class RankViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    // 즐겨찾기 추가 함수
     fun addFavorite(storeId: Int) {
-        _isLoading.value = true  // 로딩 상태 시작
-        val accessToken = LocalDataSource.getAccessToken()
-        Log.d("RankViewModel", "Access Token: $accessToken")
-        if (accessToken == null) {
-            _isLoading.value = false
-            _errorMessage.value = "Access token is null."
-            Log.e("RankViewModel", "Access token is null.")
-            return
-        }
+        val accessToken = LocalDataSource.getAccessToken() ?: return
+        _isLoading.value = true
 
-        val call: Call<FavoriteResponse> = apiService.addFavorite(
-            "Bearer $accessToken",
-            storeId = storeId
-        )
-
+        val call = apiService.addFavorite("Bearer $accessToken", storeId)
         call.enqueue(object : Callback<FavoriteResponse> {
             override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                _isLoading.value = false  // 로딩 상태 종료
+                _isLoading.value = false
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
-                    Log.d("RankViewModel", "즐겨찾기 성공: ${response.body()?.message}")
-                    _favoriteStoreId.value = storeId  // 즐겨찾기 상태 업데이트
-
+                    Log.d("RankViewModel", "즐겨찾기 추가 성공: ${response.body()?.message}")
+                    _favoriteStoreId.value = storeId
                 } else {
-                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    _errorMessage.value = errorMessage
-                    Log.e(
-                        "RankViewModel",
-                        "즐겨찾기 실패 - 코드: ${response.code()}, 오류: $errorMessage"
-                    )
+                    Log.e("RankViewModel", "즐겨찾기 추가 실패: ${response.errorBody()?.string()}")
+                    _errorMessage.value = response.body()?.message ?: "즐겨찾기 추가 실패"
                 }
             }
 
             override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                _isLoading.value = false  // 로딩 상태 종료
-                _errorMessage.value = "네트워크 오류가 발생했습니다: ${t.message}"
-                Log.e("RankViewModel", "Network error", t)
+                _isLoading.value = false
+                Log.e("RankViewModel", "네트워크 오류: ${t.message}")
+                _errorMessage.value = "네트워크 오류가 발생했습니다."
             }
         })
     }
 
-    // 즐겨찾기 취소 함수
     fun removeFavorite(storeId: Int) {
-        _isLoading.value = true  // 로딩 상태 시작
-        val accessToken = LocalDataSource.getAccessToken()
-        Log.d("RankViewModel", "Access Token: $accessToken")
-        if (accessToken == null) {
-            _isLoading.value = false
-            _errorMessage.value = "Access token is null."
-            Log.e("RankViewModel", "Access token is null.")
-            return
-        }
+        val accessToken = LocalDataSource.getAccessToken() ?: return
+        _isLoading.value = true
 
-        val call: Call<FavoriteResponse> = apiService.removeFavorite(
-            "Bearer $accessToken",
-            storeId = storeId
-        )
-
+        val call = apiService.removeFavorite("Bearer $accessToken", storeId)
         call.enqueue(object : Callback<FavoriteResponse> {
             override fun onResponse(call: Call<FavoriteResponse>, response: Response<FavoriteResponse>) {
-                _isLoading.value = false  // 로딩 상태 종료
+                _isLoading.value = false
                 if (response.isSuccessful && response.body()?.isSuccess == true) {
+                    Log.d("RankViewModel", "즐겨찾기 삭제 성공: ${response.body()?.message}")
                     _favoriteStoreId.value = null
-                    Log.d("RankViewModel", "즐겨찾기 취소 성공: ${response.body()?.message}")
                 } else {
-                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
-                    _errorMessage.value = errorMessage
-                    Log.e(
-                        "RankViewModel",
-                        "즐겨찾기 취소 실패 - 코드: ${response.code()}, 오류: $errorMessage"
-                    )
+                    Log.e("RankViewModel", "즐겨찾기 삭제 실패: ${response.errorBody()?.string()}")
+                    _errorMessage.value = response.body()?.message ?: "즐겨찾기 삭제 실패"
                 }
             }
 
             override fun onFailure(call: Call<FavoriteResponse>, t: Throwable) {
-                _isLoading.value = false  // 로딩 상태 종료
-                _errorMessage.value = "네트워크 오류가 발생했습니다: ${t.message}"
-                Log.e("RankViewModel", "Network error", t)
+                _isLoading.value = false
+                Log.e("RankViewModel", "네트워크 오류: ${t.message}")
+                _errorMessage.value = "네트워크 오류가 발생했습니다."
             }
         })
-    }
-
-    // 즐겨찾기 ID 초기화 함수
-    fun resetFavoriteStoreId() {
-        _favoriteStoreId.value = null
     }
 
     // SharedPreferences에서 Access Token을 가져오는 함수 (사용하지 않음)
