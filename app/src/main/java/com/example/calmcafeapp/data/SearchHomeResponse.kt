@@ -4,7 +4,7 @@ data class SearchHomeResponse(
     val isSuccess: Boolean,
     val code: String,
     val message: String,
-    val result: SearchResult?
+    val result: SearchResult
 )
 
 data class SearchResult(
@@ -17,5 +17,8 @@ data class SearchStoreResDto(
     val name: String,
     val id: Int,
     val image: String,
-    val address: String
+    val address: String,
+    val congestionLevel : String,
+    val latitude : Double,
+    val longitude : Double,
 )

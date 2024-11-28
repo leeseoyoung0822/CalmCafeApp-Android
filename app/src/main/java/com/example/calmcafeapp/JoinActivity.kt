@@ -57,6 +57,7 @@ class JoinActivity : AppCompatActivity() {
             if (error != null) {
                 // 토큰이 만료되었거나 유효하지 않은 경우
                 Log.d("자동 로그인", "토큰 만료 또는 오류: ${error.localizedMessage}")
+                Log.d("자동 로그인", "토큰: ${tokenInfo}")
                 LocalDataSource.clear() // 만료된 토큰 삭제
             } else if (tokenInfo != null) {
                 // 토큰이 유효한 경우 사용자 정보 요청

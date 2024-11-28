@@ -26,6 +26,7 @@ import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
 import com.example.calmcafeapp.data.SearchHomeResponse
 import com.example.calmcafeapp.data.SearchMapResponse
+import com.example.calmcafeapp.data.SearchResult
 import com.example.calmcafeapp.data.SearchStoreResDto
 import com.example.calmcafeapp.data.StorePosDto
 import com.example.calmcafeapp.data.TmapRouteResponse
@@ -45,8 +46,15 @@ class HomeViewModel : ViewModel() {
     private val tmapService = ApiManager.tmapService
     private val cafeDetailService = ApiManager.cafeDetailService
 
-    private val _searchResults = MutableLiveData<List<SearchStoreResDto>>()
-    val searchResults: LiveData<List<SearchStoreResDto>> get() = _searchResults
+    private val _searchResults = MutableLiveData<List<SearchResult>?>()
+    val searchResults: MutableLiveData<List<SearchResult>?> get() = _searchResults
+
+    private val _searchStoreResDto = MutableLiveData<List<SearchStoreResDto>>()
+    val searchStoreResDto: LiveData<List<SearchStoreResDto>> get() = _searchStoreResDto
+
+    private val _firstCafeLocation = MutableLiveData<LatLng>()
+    val firstCafeLocation: LiveData<LatLng> get() = _firstCafeLocation
+
 
     private val _userPointsLiveData = MutableLiveData<Int>()
     val userPointsLiveData: LiveData<Int> get() = _userPointsLiveData
@@ -489,6 +497,7 @@ class HomeViewModel : ViewModel() {
                     val items = response.body()?.result?.storePosDtoList?.map { storePosDto ->
                         StorePosDto(
                             id = storePosDto.id,
+                            congestionLevel = storePosDto.congestionLevel,
                             address = storePosDto.address,
                             latitude = storePosDto.latitude,
                             longitude = storePosDto.longitude,
@@ -584,33 +593,57 @@ class HomeViewModel : ViewModel() {
     }
 
     fun searchHome(userLatitude: Double, userLongitude: Double, query: String) {
-        val call : Call<SearchHomeResponse> = ApiManager.naverApiService.searchHome(
+        val call: Call<SearchHomeResponse> = ApiManager.naverApiService.searchHome(
             "Bearer " + LocalDataSource.getAccessToken()!!,
-            userLatitude=userLatitude,
-            userLongitude=userLongitude,
-            query=query
-            )
+            userLatitude = userLatitude,
+            userLongitude = userLongitude,
+            query = query
+        )
 
-
-        Log.d("call11", "${query}")
         call.enqueue(object : Callback<SearchHomeResponse> {
-            override fun onResponse(call: Call<SearchHomeResponse>, response: Response<SearchHomeResponse>) {
+            override fun onResponse(
+                call: Call<SearchHomeResponse>,
+                response: Response<SearchHomeResponse>
+            ) {
+                Log.d("HTTP Response", "Code: ${response.code()}, Message: ${response.message()}")
                 if (response.isSuccessful) {
                     val body = response.body()
+                    Log.d("Response Body", "${body}")
+
                     if (body != null && body.isSuccess) {
-                        _searchResults.postValue(body.result?.searchStoreResDtoList ?: emptyList())
+                        val searchStoreResDtoList =
+                            body.result?.searchStoreResDtoList ?: emptyList()
+                        val searchResults = body.result
+                        _searchStoreResDto.postValue(searchStoreResDtoList)
+                        _searchResults.postValue(listOf(searchResults))
+                        if (searchStoreResDtoList.isNotEmpty()) {
+                            val firstCafe = searchStoreResDtoList[0]
+                            _firstCafeLocation.postValue(
+                                LatLng(
+                                    body.result?.latitude ?: 0.0,
+                                    body.result?.longitude ?: 0.0
+                                )
+                            )
+                        }
                     } else {
+                        Log.e(
+                            "Response Error",
+                            "isSuccess: ${body?.isSuccess}, Message: ${body?.message}"
+                        )
                         _errorMessage.postValue(body?.message ?: "검색 결과를 가져오지 못했습니다.")
                     }
                 } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Server Error", "Code: ${response.code()}, Error Body: $errorBody")
                     _errorMessage.postValue("검색 결과를 가져오지 못했습니다. 서버 에러.")
                 }
             }
 
             override fun onFailure(call: Call<SearchHomeResponse>, t: Throwable) {
+                Log.e("Network Error", "Error: ${t.message}")
                 _errorMessage.postValue("네트워크 오류가 발생했습니다.")
             }
         })
-    }
 
+    }
 }

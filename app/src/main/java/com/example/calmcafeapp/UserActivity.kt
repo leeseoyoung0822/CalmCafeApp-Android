@@ -3,7 +3,9 @@ package com.example.calmcafeapp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.example.calmcafeapp.databinding.ActivityUserBinding
 import com.example.calmcafeapp.ui.HomeFragment
@@ -14,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 class UserActivity : AppCompatActivity() {
     lateinit var binding: ActivityUserBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private var backPressedTime: Long = 0
 
     // 프래그먼트 변수 선언
     private lateinit var homeFragment: HomeFragment
@@ -91,6 +94,14 @@ class UserActivity : AppCompatActivity() {
             showFragment(homeFragment)
         } else {
             super.onBackPressed()
+        }
+        val currentTime = System.currentTimeMillis()
+
+        if (currentTime - backPressedTime < 2000) { // 2초 이내에 다시 누르면 앱 종료
+            super.onBackPressed() // 앱 종료
+        } else {
+            backPressedTime = currentTime
+            //Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

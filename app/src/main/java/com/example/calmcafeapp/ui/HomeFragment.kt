@@ -39,6 +39,7 @@ import com.example.calmcafeapp.MainActivity
 import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.OnRouteStartListener
+import com.example.calmcafeapp.data.SearchStoreResDto
 import com.example.calmcafeapp.data.StorePosDto
 import com.naver.maps.map.overlay.OverlayImage
 
@@ -52,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private lateinit var naverMap: NaverMap
     private val markerList = mutableListOf<Marker>()
     private val viewModel: HomeViewModel by activityViewModels()
-
+    private var backPressedTime: Long = 0
     private var hasFetchedAddress = false
     private var polylineList: MutableList<PolylineOverlay> = mutableListOf()
     private var publicTransportPolylineList: MutableList<PolylineOverlay> = mutableListOf()  // 대중교통 경로
@@ -87,29 +88,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         mapView.getMapAsync(this)
         initSearch()
 
-        binding.rvSearchResults.layoutManager = LinearLayoutManager(requireContext())
-        searchResultsAdapter = SearchResultsAdapter(emptyList()) { item ->
+        initRecyclerView()
+        observeSearchResults()
+        onBackPressed()
 
 
-        }
-        binding.rvSearchResults.adapter = searchResultsAdapter
-        binding.rvSearchResults.visibility = View.GONE
 
-
-        // 검색 결과 관찰
-        viewModel.searchResults.observe(viewLifecycleOwner) { results ->
-            if (results.isEmpty()) {
-                binding.tvNoResults.visibility = View.VISIBLE
-                binding.rvSearchResults.visibility = View.GONE
-            } else {
-                binding.tvNoResults.visibility = View.GONE
-                binding.rvSearchResults.visibility = View.VISIBLE
-                searchResultsAdapter = SearchResultsAdapter(results) { item ->
-                    //navigateToStoreDetail(item)
-                }
-                binding.rvSearchResults.adapter = searchResultsAdapter
-            }
-        }
     }
     override fun initDataBinding() {
         super.initDataBinding()
@@ -127,6 +111,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             }
         }
     }
+
 
 
 
@@ -350,7 +335,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 val coords = graphPosList.map { LatLng(it.y, it.x) }
                 val publicTransportPolyline = PolylineOverlay().apply {
                     this.coords = coords
-                    this.color = Color.BLUE
+                    this.color = Color.parseColor("#2E8465")
                     this.width = 30
                     this.map = naverMap
                 }
@@ -376,13 +361,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
             val latLng = LatLng(cafe.latitude, cafe.longitude)  // latLng 객체 생성
 
+            // congestionLevel 값에 따라 마커 아이콘 변경
+            val markerIcon = when (cafe.congestionLevel) {
+                "CALM" -> R.drawable.marker_calm  // 한산일 때 마커 아이콘
+                "NORMAL" -> R.drawable.marker_normal  // 보통일 때 마커 아이콘
+                "BUSY" -> R.drawable.marker_busy  // 혼잡일 때 마커 아이콘
+                else -> R.drawable.marker_busy  // 기본 마커 아이콘
+            }
+
             val marker = Marker().apply {
                 position = latLng  // 위에서 생성한 latLng를 사용
-                icon = OverlayImage.fromResource(R.drawable.cafe_m)
+                icon = OverlayImage.fromResource(markerIcon)
                 width = 100
                 height = 100
                 map = naverMap
             }
+
 
             marker.setOnClickListener {
                 showCafeInfo(cafe)
@@ -404,6 +398,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
 
+
+
     private fun displayAllRouteGraphics(allGraphPosList: List<GraphPos>) {
         val coords = allGraphPosList.map { graphPos ->
             LatLng(graphPos.y, graphPos.x)
@@ -418,7 +414,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 안쪽 파란색 폴리라인
         val innerPolyline = PolylineOverlay().apply {
             this.coords = coords
-            this.color = Color.BLUE
+            this.color = Color.parseColor("#2E8465")
             this.width = 20  // 안쪽 경로의 너비
             this.map = naverMap
         }
@@ -438,7 +434,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     // 카페 정보 표시
     private fun showCafeInfo(cafe: StorePosDto) {
         selectedCafe = cafe  // 선택된 카페 정보 저장
-        Log.d("Information", "${cafe}")
+        val currentLatitude = currentLocation?.latitude
+        val currentLongitude = currentLocation?.longitude
+
+        if (currentLatitude != null && currentLongitude != null) {
+            viewModel.fetchCafeDetailInfo(cafe.id, currentLatitude, currentLongitude)
+        }
+        Log.d("selectedCafe", "${cafe}")
         viewModel.setDestinationCafeName(cafe.name ?: "Unknown")
 
         val cafeDetailFragment = CafeDetailFragment()
@@ -447,13 +449,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         val bundle = Bundle().apply {
             putString("cafeTitle", cafe.name ?: "Unknown")
             putString("cafeAddress", cafe.address)
-            putString("visibility", "visibility" +
-                    "")
+            putString("visibility", "visibility" + "")
             // 필요한 다른 정보도 여기에 추가
         }
         cafeDetailFragment.arguments = bundle
         cafeDetailFragment.show(parentFragmentManager, "CafeDetailFragment")
     }
+
+
     override fun onRouteStart() {
         Log.d("touch start", "실행")
         selectedCafe?.let { cafe ->
@@ -492,13 +495,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             val outerPolyline = PolylineOverlay().apply {
                 this.coords = coordinates
                 this.color = Color.WHITE
-                this.width = 35  // 바깥쪽 경로의 너비
+                this.width = 30  // 바깥쪽 경로의 너비
                 this.map = naverMap
             }
             val innerPolyline = PolylineOverlay().apply {
                 this.coords = coordinates
-                this.color = Color.GREEN
-                this.width = 20  // 안쪽 경로의 너비
+                this.color = Color.parseColor("#C4C4C4")
+                this.width = 18  // 안쪽 경로의 너비
                 this.map = naverMap
             }
             walkingFromStartPolylineList.add(outerPolyline)
@@ -511,13 +514,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             val outerPolyline = PolylineOverlay().apply {
                 this.coords = coordinates
                 this.color = Color.WHITE
-                this.width = 35
+                this.width = 30
                 this.map = naverMap
             }
             val innerPolyline = PolylineOverlay().apply {
                 this.coords = coordinates
-                this.color = Color.GREEN
-                this.width = 20
+                this.color = Color.parseColor("#C4C4C4")
+                this.width = 18
                 this.map = naverMap
             }
             walkingToDestinationPolylineList.add(outerPolyline)
@@ -552,6 +555,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 현재 위치와 선택한 카페에 마커 표시
         showSelectedMarkers(cafe)
         selectedCafe = cafe  // 선택된 카페 저장
+        toggleSearchBarVisibility(false)
         (activity as UserActivity).binding.btnBack.visibility = View.VISIBLE
         if (currentLocation != null) {
             val startX = currentLocation!!.longitude
@@ -589,7 +593,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         selectedCafeMarker = Marker().apply {
             position = latLng
-            icon = OverlayImage.fromResource(R.drawable.cafe_m)  // 커스텀 아이콘 사용
+            icon = OverlayImage.fromResource(R.drawable.marker_busy)  // 커스텀 아이콘 사용
             width = 100
             height = 120
             captionText = cafe.name ?: "Unknown"// 마커 아래에 카페 타이틀 표시
@@ -610,6 +614,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
         selectedCafeMarker = null  // 마커 객체 초기화
         selectedCafe = null  // 선택된 카페 정보도 초기화
+        toggleSearchBarVisibility(true)
 
         // 취소 버튼 숨기기
         (activity as UserActivity).binding.btnBack.visibility = View.GONE
@@ -753,7 +758,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         } else {
             Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
+        viewModel.firstCafeLocation.observe(viewLifecycleOwner) { location ->
+            location?.let {
+                moveToLocation(it.latitude, it.longitude)
+            }
+        }
+
     }
+
+    private fun moveToLocation(latitude: Double, longitude: Double) {
+        if (::naverMap.isInitialized) {
+            val cameraUpdate = CameraUpdate.scrollTo(LatLng(latitude, longitude))
+                .animate(CameraAnimation.Fly, 1000) // 부드러운 이동 애니메이션 설정
+            naverMap.moveCamera(cameraUpdate)
+        }
+    }
+
+
 
     private fun showArrivalPopup() {
         val dialog = Dialog(requireContext())
@@ -801,7 +822,64 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         showPointPopup() // 혼잡도 선택 후 포인트 팝업 표시
     }
 
+    private fun initRecyclerView() {
+        binding.rvSearchResults.layoutManager = LinearLayoutManager(requireContext())
+        searchResultsAdapter = SearchResultsAdapter(
+            searchResults = emptyList(),
+            onItemClick = { name, storeId, address, congestionLevel,latitude, longitude ->
+                val selectedCafe = StorePosDto(
+                    id = storeId,
+                    name = name,
+                    address =address,
+                    latitude = latitude,
+                    longitude = longitude,
+                    congestionLevel = congestionLevel
+                )
+                Log.d("selectedCafe", "${storeId}, ${address}, ${congestionLevel}, ${latitude}, ${longitude}")
+                showCafeInfo(selectedCafe)
+                displayMarkers(listOf(selectedCafe))
 
+            }
+        )
+        binding.rvSearchResults.adapter = searchResultsAdapter
+    }
+
+    private fun observeSearchResults() {
+        viewModel.searchResults.observe(viewLifecycleOwner) { results ->
+            if (results.isNullOrEmpty()) {
+                // 검색 결과가 없을 때 처리
+                binding.tvNoResults.visibility = View.VISIBLE
+                binding.rvSearchResults.visibility = View.GONE
+            } else {
+                // 검색 결과가 있을 때 처리
+                binding.tvNoResults.visibility = View.GONE
+                binding.rvSearchResults.visibility = View.VISIBLE
+
+                val firstResult = results[0]
+                Log.d("firstResult", "${firstResult}")
+                searchResultsAdapter.updateData(
+                    firstResult.searchStoreResDtoList,
+                )
+            }
+        }
+    }
+
+    private fun toggleSearchBarVisibility(isVisible: Boolean) {
+        val visibility = if (isVisible) View.VISIBLE else View.GONE
+        binding.searchBar.visibility = visibility
+        binding.rvSearchResults.visibility = View.GONE
+    }
+
+    fun onBackPressed() {
+        val currentTime = System.currentTimeMillis()
+
+        if (currentTime - backPressedTime < 2000) { // 2초 이내에 다시 누르면 앱 종료
+            activity?.finish() // 또는 requireActivity().finish()
+        } else {
+            backPressedTime = currentTime
+            Toast.makeText(requireContext(), "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     companion object {
