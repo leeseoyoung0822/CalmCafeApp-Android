@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.data.CafeCouponData
+import com.example.calmcafeapp.databinding.ItemCoupon1Binding
 import com.example.calmcafeapp.databinding.ItemCouponBinding
 
 
@@ -18,7 +19,7 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
         myItemClickListener = itemClickListener
     }
 
-    inner class MenuCouponHolder(val binding: ItemCouponBinding) :
+    inner class MenuCouponHolder(val binding: ItemCoupon1Binding) :
         RecyclerView.ViewHolder(binding.root) {
         //        val sale = binding.couponDiscountRate
         val type = binding.couponType
@@ -38,7 +39,7 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
         viewType: Int
     ): MenuCouponHolder {
         return MenuCouponHolder(
-            ItemCouponBinding.inflate(
+            ItemCoupon1Binding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

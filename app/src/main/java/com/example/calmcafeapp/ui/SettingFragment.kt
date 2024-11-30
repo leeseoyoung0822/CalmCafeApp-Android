@@ -36,6 +36,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         super.initStartView()
         // 시작 뷰 초기화 작업 (ex. 리사이클러뷰 초기화)
         (activity as UserActivity).binding.navigationUser.visibility = View.VISIBLE
+        (activity as UserActivity).binding.btnBack.visibility = View.GONE
 
         // ViewModel에서 사용자 프로필 데이터를 가져옴
         settingViewModel.fetchUserProfile()

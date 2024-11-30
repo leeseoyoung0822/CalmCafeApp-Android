@@ -46,53 +46,9 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
 
-<!--                    <LinearLayout-->
-<!--                        android:background="@drawable/rounded_background"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-<!--                        <TextView-->
-<!--                            android:id="@+id/tv_mylocation"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="현 위치"-->
-<!--                            android:textColor="@color/white"-->
-<!--                            android:textSize="24sp"-->
-<!--                            android:textStyle="bold" />-->
-
-
-
-
-
-<!--                    </LinearLayout>-->
-
-<!--                    <LinearLayout-->
-<!--                        android:background="@drawable/rounded_background"-->
-
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:gravity="center"-->
-<!--                        android:orientation="horizontal">-->
-
-
-<!--                        <TextView-->
-<!--                            android:id="@+id/tv_destination"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:textColor="@color/white"-->
-<!--                            android:text="블루팟"-->
-<!--                            android:textSize="24sp"-->
-<!--                            android:textStyle="bold" />-->
-
-
-
-<!--                    </LinearLayout>-->
-
 
                     <!-- 소요 시간 및 요금 정보 -->
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -100,28 +56,115 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:text="최적"
+                            android:textColor="#3498EF"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+                        <!-- 시간 -->
+                        <TextView
                             android:id="@+id/tv_duration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textColor="@color/black"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_text" />
+
+                        <TextView
+                            android:id="@+id/tv_duration_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginBottom="5dp"
                             android:text="시간"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/lightgray"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_duration"
+                            app:layout_constraintStart_toEndOf="@+id/tv_duration" />
+
+                        <!-- 분 -->
+                        <TextView
+                            android:id="@+id/tv_minutes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:text="30"
+                            android:textColor="@color/black"
+                            android:textSize="28sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/tv_duration_text"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_text" />
+
+                        <TextView
+                            android:id="@+id/tv_minutes_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginBottom="5dp"
+                            android:text="분"
+                            android:textColor="@color/lightgray"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_minutes"
+                            app:layout_constraintStart_toEndOf="@+id/tv_minutes" />
+
+                        <TextView
+                            android:id="@+id/tv_ex_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="80dp"
+                            android:text="도착 예상 시각"
+                            android:textColor="@color/lightgray"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="1.0" />
 
                         <TextView
                             android:id="@+id/tv_cost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:textColor="@color/black"
+                            android:layout_marginStart="10dp"
+                            android:text="요금"
+                            android:textColor="@color/lightgray"
+                            android:textSize="13sp"
                             android:textStyle="bold"
-                            android:text="요금" />
-                    </LinearLayout>
+
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/tv_ex_duration" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/view3"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/rounded_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="3dp"
                         android:paddingStart="8dp">
 
                         <!-- 교통 수단 아이콘 및 선 -->
@@ -136,14 +179,33 @@
                                 android:id="@+id/iv_transport_icon"
                                 android:layout_width="match_parent"
                                 android:layout_height="24dp"
-                                android:src="@drawable/cafe_m" />
+                                android:src="@drawable/cafe_mm" />
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/round_time_box"
+                                android:layout_marginTop="3dp"
+                                >
+                            <TextView
+                                android:id="@+id/current_time"
+                                android:layout_width="30dp"
+                                android:layout_height="15dp"
+                                android:text="14:02"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textSize="10sp"
+                                />
+                            </LinearLayout>
 
                             <!-- 점선 (도보의 경우 점선) -->
                             <View
+                                android:layout_marginTop="2dp"
                                 android:id="@+id/view_dotted_line"
                                 android:layout_width="24dp"
                                 android:layout_height="27dp"
-                                android:background="@drawable/dott_line"
+                                android:background="@drawable/dot_line"
                                 android:rotation="90" />
 
                         </LinearLayout>
@@ -153,10 +215,12 @@
                             android:id="@+id/tv_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="출발 위치"
+                            android:text="내 위치"
                             android:textSize="16sp"
                             android:layout_marginStart="8dp"/>
                     </LinearLayout>
+
+
 
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -164,6 +228,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
+                        android:layout_marginStart="3dp"
                         android:orientation="vertical" />
 
 
@@ -171,25 +236,40 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="2dp"
                         android:paddingStart="8dp">
 
                         <!-- 교통 수단 아이콘 및 선 -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <!-- 아이콘 -->
                             <ImageView
                                 android:id="@+id/iv_transport_icon1"
-                                android:layout_width="match_parent"
+                                android:layout_width="27dp"
                                 android:layout_height="24dp"
-                                android:src="@drawable/cafe_m"
-                                android:layout_marginStart="2dp"/>
 
-                            <!-- 점선 (도보의 경우 점선) -->
+                                android:src="@drawable/cafe_mmm" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/round_time_box"
+                                android:layout_marginTop="3dp"
+                                >
+                                <TextView
+                                    android:id="@+id/expected_time"
+                                    android:layout_width="30dp"
+                                    android:layout_height="15dp"
+                                    android:text="14:12"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:textSize="10sp"
+                                    />
+                            </LinearLayout>
 
                         </LinearLayout>
 

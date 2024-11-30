@@ -18,27 +18,15 @@
             android:id="@+id/iv_transport_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/walking_72672" />
+            android:src="@drawable/walking" />
 
         <!-- 점선 (도보의 경우 점선) -->
-        <View
-            android:id="@+id/view_dotted_line"
-            android:layout_width="24dp"
-            android:layout_height="27dp"
-            android:background="@drawable/dott_line"
-            android:rotation="90" />
 
         <View
             android:id="@+id/view_dotted_line1"
             android:layout_width="24dp"
-            android:layout_height="27dp"
-            android:background="@drawable/dott_line"
-            android:rotation="90" />
-        <View
-            android:id="@+id/view_dotted_line2"
-            android:layout_width="24dp"
-            android:layout_height="27dp"
-            android:background="@drawable/dott_line"
+            android:layout_height="30dp"
+            android:background="@drawable/dot_line"
             android:rotation="90" />
 
     </LinearLayout>

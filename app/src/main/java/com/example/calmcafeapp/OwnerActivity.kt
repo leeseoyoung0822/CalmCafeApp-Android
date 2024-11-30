@@ -2,6 +2,8 @@ package com.example.calmcafeapp
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -14,6 +16,7 @@ import com.example.calmcafeapp.ui.M_StoreFragment
 class OwnerActivity : AppCompatActivity() {
     lateinit var binding: ActivityOwnerBinding
     private var activeFragment: Fragment? = null
+    private var backPressedTime: Long = 0
 
     private lateinit var m_homeFragment: M_HomeFragment
     private lateinit var m_storeFragment: M_StoreFragment
@@ -23,6 +26,7 @@ class OwnerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOwnerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d("OwnerActivity", "container_owner exists: ${findViewById<View>(R.id.container_owner) != null}")
 
         if (savedInstanceState == null) {
             Log.d("OwnerActivity", "Initializing fragments")
@@ -71,10 +75,10 @@ class OwnerActivity : AppCompatActivity() {
         initBottomNav()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 기본 화면 설정 (M_HomeFragment)
-        if (savedInstanceState == null) {
-            addFragment(M_HomeFragment())
-        }
+//        // 기본 화면 설정 (M_HomeFragment)
+//        if (savedInstanceState == null) {
+//            addFragment(M_HomeFragment())
+//        }
 
         // 바텀 네비게이션 초기화
         initBottomNav()
@@ -93,6 +97,14 @@ class OwnerActivity : AppCompatActivity() {
             showFragment(m_homeFragment)
         } else {
             super.onBackPressed()
+        }
+        val currentTime = System.currentTimeMillis()
+
+        if (currentTime - backPressedTime < 2000) { // 2초 이내에 다시 누르면 앱 종료
+            super.onBackPressed() // 앱 종료
+        } else {
+            backPressedTime = currentTime
+            //Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

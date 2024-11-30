@@ -2,10 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:background="@drawable/rounded_background2"
+    android:background="@drawable/round_background3"
+    android:layout_marginBottom="8dp"
+    android:paddingBottom="8dp"
     android:padding="8dp">
 
     <androidx.cardview.widget.CardView
@@ -20,8 +22,8 @@
 
         <ImageView
             android:id="@+id/menu_image"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="60dp"
+            android:layout_height="55dp"
             android:scaleType="centerCrop"
             android:src="@drawable/coffee" />
     </androidx.cardview.widget.CardView>
@@ -31,40 +33,40 @@
         android:id="@+id/menuName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="22dp"
-        android:text="Menu Name"
+        android:layout_marginStart="15dp"
+        android:text="아메리카노"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/editButton"
         app:layout_constraintStart_toEndOf="@+id/cafeImageCard"
         app:layout_constraintTop_toTopOf="parent" />
 
+
         <!-- Edit Button -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/editButton"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green"
+        android:layout_width="65dp"
+        android:layout_height="37dp"
         android:text="수정"
         android:layout_marginEnd="8dp"
-        android:textColor="@color/white"
+        android:textColor="#2E8465"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
-
+        android:background="@drawable/round_modify"
         app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Delete Button -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/deleteButton"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_width="65dp"
+        android:layout_height="37dp"
         android:layout_marginEnd="12dp"
         android:backgroundTint="#9b111e"
         android:text="삭제"
         android:textColor="@color/white"
+        android:background="@drawable/rounded_background2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

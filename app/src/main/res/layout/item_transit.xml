@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingBottom="4dp">
+    android:paddingStart="5dp"
+    >
 
     <!-- 교통 수단 아이콘 및 선 -->
     <LinearLayout
@@ -14,19 +14,21 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <!-- 아이콘 (버스, 지하철 등 교통수단에 맞게 변경) -->
+
         <ImageView
             android:id="@+id/iv_transport_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_tran" />
+            android:layout_width="30dp"
+            android:layout_height="28dp"
+            android:src="@drawable/subway" />
 
         <!-- 선 (버스의 경우 파란색 선) -->
         <View
             android:id="@+id/view_line"
-            android:layout_width="4dp"
-            android:layout_height="100dp"
-            android:background="@color/blue" />
+            android:layout_marginTop="-2dp"
+            android:layout_width="9dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="0.3dp"
+            android:background="@drawable/rounded_bottom_line" />
     </LinearLayout>
 
     <!-- 버스/지하철 정보 텍스트 -->

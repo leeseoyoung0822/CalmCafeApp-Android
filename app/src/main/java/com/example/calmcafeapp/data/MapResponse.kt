@@ -13,6 +13,7 @@ data class Result(
 
 data class StorePosDto(
     val id: Int,
+    val congestionLevel : String,
     val latitude: Double,
     val longitude: Double,
     val address: String,

@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- TabLayout -->
+
+    <!-- ViewPager2 -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#2E8465"
-        app:tabSelectedTextColor="@color/black"
-        app:tabTextColor="@color/white"
-        app:tabIndicatorColor="@color/green"
-        app:tabIndicatorHeight="2dp" />
+        android:layout_height="55dp"
+        android:background="#C0DAD0"
+        app:tabTextAppearance="@style/TabTextStyle"
 
-    <!-- ViewPager2 -->
+        app:tabIndicatorColor="@color/green"
+        app:tabSelectedTextColor="#2E8465"
+        app:tabTextColor="@color/white" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="60dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 

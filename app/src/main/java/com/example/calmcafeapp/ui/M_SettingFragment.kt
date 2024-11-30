@@ -6,11 +6,13 @@ import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.databinding.FragmentMSettingBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.calmcafeapp.viewmodel.M_SettingViewModel
 
 class M_SettingFragment : BaseFragment<FragmentMSettingBinding>(R.layout.fragment_m__setting) {
-
+    private val viewModel: M_SettingViewModel by activityViewModels()
     override fun initStartView() {
         super.initStartView()
 
@@ -32,6 +34,7 @@ class M_SettingFragment : BaseFragment<FragmentMSettingBinding>(R.layout.fragmen
 
     override fun initDataBinding() {
         super.initDataBinding()
+        viewModel.fetchMenus()
     }
 
     override fun initAfterBinding() {
