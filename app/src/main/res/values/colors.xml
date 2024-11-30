@@ -11,6 +11,9 @@
     <color name="lightgray">@color/material_dynamic_neutral70</color>
     <color name="whitegray">@color/material_dynamic_neutral80</color>
     <color name="morewhitegray">#E4E4E4</color>
+    <color name="dividerColor">#E0E0E0</color>
+    <color name="activeColor">#2E8465</color>
+    <color name="inactiveColor">#BDBDBD</color>
 
     <color name="blue">#0000FF</color>
 

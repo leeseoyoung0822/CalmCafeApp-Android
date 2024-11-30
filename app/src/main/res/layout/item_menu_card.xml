@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/menu_image"
             android:layout_width="170dp"
-            android:layout_height="190dp"
+            android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:src="@drawable/coffee" />
     </androidx.cardview.widget.CardView>

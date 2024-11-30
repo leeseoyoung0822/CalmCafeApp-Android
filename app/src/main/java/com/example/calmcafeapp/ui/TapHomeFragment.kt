@@ -1,8 +1,16 @@
 package com.example.calmcafeapp.ui
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.view.LayoutInflater
+import android.widget.PopupWindow
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.TooltipCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +29,7 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
     private val viewModel: HomeViewModel by activityViewModels()
     private var cafeImg : String? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initStartView() {
         super.initStartView()
 
@@ -36,6 +45,20 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
         binding.couponList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = couponCafeAdapter
+        }
+
+        binding.infoOwnerCongestion.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(v, "실시간 매장 상황을 AI로 분석한 실시간 좌석 이용률입니다.")
+            }
+            true
+        }
+
+        binding.infoVisitorCongestion.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(v, "실제 방문한 손님들이 직접 입력한 매장 혼잡도입니다.")
+            }
+            true
         }
 
         // RecyclerView 스크롤 이벤트 처리
@@ -84,6 +107,25 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
     override fun initAfterBinding() {
         super.initAfterBinding()
     }
+
+    private fun showTooltip(view: View, message: String) {
+        // 툴팁 레이아웃 설정
+        val popupView = LayoutInflater.from(requireContext()).inflate(R.layout.tooltip_layout, null)
+        val popupWindow = PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        popupView.findViewById<TextView>(R.id.tooltip_text).text = message
+
+        // 팝업 외부 터치 시 닫히도록 설정
+        popupWindow.isOutsideTouchable = true
+
+        // 툴팁 위치를 계산
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val x = location[0] + view.width / 2 - popupView.measuredWidth / 2
+        val y = location[1] - view.height // Y 좌표 (뷰의 위쪽에 위치하도록)
+
+        popupWindow.showAtLocation(view, Gravity.NO_GRAVITY, x, y - 35)
+    }
+
 
     // 쿠폰 더미 데이터 생성
     private fun createDummyCouponData(): ArrayList<CafeCouponData> {
