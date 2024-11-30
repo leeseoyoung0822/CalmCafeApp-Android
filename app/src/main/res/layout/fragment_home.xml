@@ -1,31 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- MapView -->
+        <!-- MapView: 배경으로 전체 화면을 채움 -->
         <com.naver.maps.map.MapView
             android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- 하단 중앙에 배치된 버튼 -->
+        <!-- 검색 바: 상단에 오버레이 -->
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/searchBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/round_searchbackground"
+            android:hint="  카페, 지역 검색"
+            android:padding="10dp"
+            android:paddingStart="16dp"
+            android:drawableEnd="@drawable/ic_search"
+            android:drawablePadding="40dp"
+            android:inputType="text"
+            android:singleLine="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:imeOptions="actionSearch"/>
+
+
+
+
+        <!-- 검색 결과를 표시할 RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_results"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/round_searchbackground"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchBar"
+            app:layout_constraintHeight_max="300dp"/>
+
+
+
+        <!-- 하단 중앙에 배치된 버튼: 오버레이 -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_show_navigator"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"
-        android:background="@drawable/round_greenbackground"
-        android:drawableLeft="@drawable/ic_tran"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="교통"
-        android:visibility="gone" />
+            android:background="@drawable/round_greenbackground"
+            android:drawableLeft="@drawable/ic_tran"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="교통"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_no_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="검색 결과가 없습니다."
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
