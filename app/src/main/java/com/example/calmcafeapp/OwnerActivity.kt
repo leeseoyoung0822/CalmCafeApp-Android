@@ -8,12 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.example.calmcafeapp.databinding.ActivityOwnerBinding
-import com.example.calmcafeapp.ui.HomeFragment
 import com.example.calmcafeapp.ui.M_HomeFragment
 import com.example.calmcafeapp.ui.M_SettingFragment
 import com.example.calmcafeapp.ui.M_StoreFragment
-import com.example.calmcafeapp.ui.RankFragment
-import com.example.calmcafeapp.ui.SettingFragment
 
 
 class OwnerActivity : AppCompatActivity() {
@@ -119,6 +116,7 @@ class OwnerActivity : AppCompatActivity() {
         binding.navigationOwner.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.navigation_m_store -> {
+
                     showFragment(m_storeFragment)
                     true
                 }
