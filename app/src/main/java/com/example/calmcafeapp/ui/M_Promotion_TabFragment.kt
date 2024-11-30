@@ -1,60 +1,105 @@
 package com.example.calmcafeapp.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.calmcafeapp.OwnerActivity
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.base.BaseFragment
+import com.example.calmcafeapp.data.Promotion
+import com.example.calmcafeapp.databinding.FragmentMPromotionTabBinding
+import com.example.calmcafeapp.viewmodel.M_SettingViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class M_Promotion_TabFragment : BaseFragment<FragmentMPromotionTabBinding>(R.layout.fragment_m__promotion__tab) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [M_Promotion_TabFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class M_Promotion_TabFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel: M_SettingViewModel by activityViewModels()
+    private lateinit var promotionAdapter: PromotionAdapter
+    private var selectedPromotions: List<Promotion> = emptyList()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun initStartView() {
+        super.initStartView()
+
+        promotionAdapter = PromotionAdapter(emptyList()) { selected ->
+            selectedPromotions = selected
+            binding.deleteButton.isEnabled = selectedPromotions.isNotEmpty()
         }
+        binding.rvPromotion.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvPromotion.adapter = promotionAdapter
+
+        // Fetch promotions
+        viewModel.fetchPromotions()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_m__promotion__tab, container, false)
-    }
+    override fun initDataBinding() {
+        super.initDataBinding()
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment M_Promotion_TabFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            M_Promotion_TabFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        // Observe promotions
+        viewModel.promotionListLiveData.observe(viewLifecycleOwner) { promotions ->
+            if (promotions != null && promotions.isNotEmpty()) {
+                promotionAdapter.updateData(promotions)
+                binding.tvPromotions.visibility = View.GONE
+            } else {
+                binding.tvPromotions.visibility = View.VISIBLE
             }
+        }
+
+        // Observe error messages
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage != null) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 등록 버튼 클릭 시
+        binding.addButton.setOnClickListener {
+            val fragment = PromotionRegistrationFragment()
+            (activity as OwnerActivity).addFragment(fragment)
+        }
+
+//        binding.deleteButton.setOnClickListener {
+//            Log.d("selectedPromotions", "${selectedPromotions}")
+//            if (selectedPromotions.isEmpty()) {
+//                Toast.makeText(requireContext(), "삭제할 프로모션을 선택해주세요.", Toast.LENGTH_SHORT).show()
+//            } else {
+//                selectedPromotions.forEach { promotion ->
+//                    viewModel.deletePromotion(promotion.id.toLong())
+//                    selectedPromotions = emptyList()
+//                }
+//                Toast.makeText(requireContext(), "선택된 프로모션이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+//
+//                // 선택된 프로모션 초기화
+//                selectedPromotions = emptyList()
+//                binding.deleteButton.isEnabled = false
+//
+//                // 프로모션 리스트 갱신
+//                viewModel.fetchPromotions()
+//                promotionAdapter.updateData(emptyList())
+//            }
+//        }
+        binding.deleteButton.setOnClickListener {
+            if (selectedPromotions.isEmpty()) {
+                Toast.makeText(requireContext(), "삭제할 프로모션을 선택해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                selectedPromotions.forEach { promotion ->
+                    viewModel.deletePromotion(promotion.id.toLong())
+                }
+                Toast.makeText(requireContext(), "선택된 프로모션이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+
+                // 선택된 프로모션 초기화
+                selectedPromotions = emptyList()
+                binding.deleteButton.isEnabled = false
+
+                // 프로모션 리스트 갱신
+                viewModel.fetchPromotions()
+            }
+        }
+
+    }
+
+    override fun initAfterBinding() {
+        super.initAfterBinding()
     }
 }

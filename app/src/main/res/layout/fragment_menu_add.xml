@@ -1,0 +1,126 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="16dp">
+
+        <!-- Title -->
+
+        <!-- Image Preview -->
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/btn_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="메뉴 등록"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/menuImageView1"
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:layout_marginTop="30dp"
+            app:cardCornerRadius="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            >
+
+            <ImageView
+                android:id="@+id/menuImageView"
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+        <!-- Upload Button -->
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/uploadImageButton"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/round_modify"
+            android:text="이미지 불러오기"
+            android:textColor="#2E8465"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/menuImageView1" />
+
+
+        <!-- Menu Name -->
+        <TextView
+            android:id="@+id/menuNameLabel"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="메뉴 이름"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/uploadImageButton" />
+
+        <EditText
+            android:id="@+id/menuNameEditText"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/menuNameLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Menu Price -->
+
+        <TextView
+            android:id="@+id/menuPriceLabel"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="가격"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/menuNameEditText" />
+
+        <EditText
+            android:id="@+id/menuPriceEditText"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/menuPriceLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Save Button -->
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saveButton"
+            android:layout_width="320dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/round_modify"
+            android:text="저장하기"
+            android:textColor="#2E8465"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/menuPriceEditText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

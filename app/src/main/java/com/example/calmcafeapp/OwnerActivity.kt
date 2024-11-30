@@ -2,6 +2,7 @@ package com.example.calmcafeapp
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -28,6 +29,7 @@ class OwnerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOwnerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d("OwnerActivity", "container_owner exists: ${findViewById<View>(R.id.container_owner) != null}")
 
         if (savedInstanceState == null) {
             Log.d("OwnerActivity", "Initializing fragments")
@@ -76,10 +78,10 @@ class OwnerActivity : AppCompatActivity() {
         initBottomNav()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 기본 화면 설정 (M_HomeFragment)
-        if (savedInstanceState == null) {
-            addFragment(M_HomeFragment())
-        }
+//        // 기본 화면 설정 (M_HomeFragment)
+//        if (savedInstanceState == null) {
+//            addFragment(M_HomeFragment())
+//        }
 
         // 바텀 네비게이션 초기화
         initBottomNav()

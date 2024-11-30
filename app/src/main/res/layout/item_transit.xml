@@ -19,16 +19,15 @@
             android:id="@+id/iv_transport_icon"
             android:layout_width="30dp"
             android:layout_height="28dp"
-            android:layout_marginTop="-1.8dp"
             android:src="@drawable/subway" />
 
         <!-- 선 (버스의 경우 파란색 선) -->
         <View
             android:id="@+id/view_line"
-            android:layout_marginTop="-6dp"
+            android:layout_marginTop="-2dp"
             android:layout_width="9dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="0.5dp"
+            android:layout_marginLeft="0.3dp"
             android:background="@drawable/rounded_bottom_line" />
     </LinearLayout>
 

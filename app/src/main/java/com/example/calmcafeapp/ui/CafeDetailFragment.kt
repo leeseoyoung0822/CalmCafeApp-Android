@@ -99,22 +99,6 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
 
         }
 
-//        // 내 위치 계사
-//        viewModel.distance.observe(viewLifecycleOwner) { distance ->
-//            Log.d("paths_navi", "$distance")
-//            if (distance != null) {
-//                val distance1 = distance
-//                binding.distance.text = "내 위치에서 ${distance1}m"
-//                binding.startBtn.tag = distance
-//                Log.d("distance111", "위에꺼${distance1}")
-//
-//            } else {
-//                //Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
-//                binding.startBtn.tag = 0
-//            }
-//        }
-
-
         binding.startBtn.setOnClickListener {
 
             Log.d("distance111", "${distance}")
@@ -145,7 +129,11 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             if (cafeDetailResult != null) {
                 // 카페 이름 설정
                 binding.cafeName.text = cafeDetailResult.name
-
+                Glide.with(this)
+                    .load(cafeDetailResult.image) // 이미지 URL
+                    .placeholder(R.drawable.img_loading) // 로딩 중 표시할 이미지
+                    .error(R.drawable.img_error) // 로딩 실패 시 표시할 이미지
+                    .into(binding.imageView4) // 이미지 뷰 대상
                 cafetitle = cafeDetailResult.name
                 cafeDetailResult.userCongestionLevel
                 cafeDetailResult.storeCongestionLevel

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
+    android:layout_height="50dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
     android:layout_marginTop="5dp"
@@ -12,25 +12,15 @@
     android:background="@drawable/round_background3">
 
     <!-- 체크박스 추가 -->
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:visibility="visible"
-        android:theme="@style/MyCheckBox"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="40dp"
+        android:layout_marginStart="5dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="2dp"
         android:src="@drawable/coupon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/checkbox"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -39,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:text="Take - out"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -64,7 +54,6 @@
         android:text="12:00 - 14:00"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/coupon_txt2"
         app:layout_constraintStart_toStartOf="@+id/coupon_txt2"
         app:layout_constraintTop_toBottomOf="@+id/coupon_txt2" />
