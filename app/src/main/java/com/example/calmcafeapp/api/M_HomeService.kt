@@ -1,13 +1,10 @@
 package com.example.calmcafeapp.api
-
-import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.M_CafeDetailResponse
 import com.example.calmcafeapp.data.StoreResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface M_HomeService {

@@ -14,7 +14,7 @@ class SettingPointCouponAdapter (private var couponList: List<PointCoupon>) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(coupon: PointCoupon) {
             binding.cafeName.text = coupon.storeName
-            binding.cafeMenu.text = "coupon.menuName ${coupon.discount}% 할인"
+            binding.cafeMenu.text = "${coupon.menuName} ${coupon.discount}% 할인"
             binding.expiration.text = "${coupon.expirationStart} ~ ${coupon.expirationEnd}"
         }
     }
