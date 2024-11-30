@@ -8,7 +8,7 @@ import androidx.fragment.app.commit
 import com.example.calmcafeapp.databinding.ActivityOwnerBinding
 import com.example.calmcafeapp.ui.M_HomeFragment
 import com.example.calmcafeapp.ui.M_SettingFragment
-import com.example.calmcafeapp.ui.M_DataFragment
+import com.example.calmcafeapp.ui.M_StoreFragment
 
 
 class OwnerActivity : AppCompatActivity() {
