@@ -7,7 +7,7 @@ import androidx.fragment.app.commit
 import com.example.calmcafeapp.databinding.ActivityOwnerBinding
 import com.example.calmcafeapp.ui.M_HomeFragment
 import com.example.calmcafeapp.ui.M_SettingFragment
-import com.example.calmcafeapp.ui.M_DataFragment
+import com.example.calmcafeapp.ui.M_StoreFragment
 
 
 class OwnerActivity : AppCompatActivity() {
@@ -15,7 +15,7 @@ class OwnerActivity : AppCompatActivity() {
 
     // 프래그먼트 변수 선언
     private lateinit var M_homeFragment: M_HomeFragment
-    private lateinit var M_dataFragment: M_DataFragment
+    private lateinit var M_dataFragment: M_StoreFragment
     private lateinit var M_settingFragment: M_SettingFragment
 
     // 현재 활성화된 프래그먼트를 저장할 변수
@@ -49,7 +49,7 @@ class OwnerActivity : AppCompatActivity() {
         binding.navigationOwner.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.navigation_m_store -> {
-                    addFragment(M_DataFragment())
+                    addFragment(M_StoreFragment())
                 }
 
                 R.id.navigation_m_home -> {
