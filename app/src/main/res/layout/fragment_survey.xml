@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/back"
                 android:layout_marginStart="8dp"
                 android:contentDescription="뒤로 가기"
@@ -35,27 +35,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="설문조사"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/back_button"
+                android:layout_margin="4dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
-            <!-- 초록색 버튼 -->
-            <TextView
-                android:id="@+id/survey_reward"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:background="@drawable/round_greenbackground"
-                android:text="필수 정보만 입력해도 2000p,\n모든 항목 입력하면 4700P 지급!"
-                android:textColor="@android:color/white"
-                android:paddingHorizontal="16dp"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
@@ -272,6 +259,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="환경 및 편의시설 선호도를 입력하세요" />
+
+                <TextView
+                    android:id="@+id/survey_reward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" * 필수 정보만 입력해도 2000p,모든 항목 입력하면 4700P 지급!"
+                    android:textColor="@color/green"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
 
                 <Button
