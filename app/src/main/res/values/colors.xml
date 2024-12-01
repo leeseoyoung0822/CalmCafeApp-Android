@@ -11,6 +11,8 @@
     <color name="lightgray">@color/material_dynamic_neutral70</color>
     <color name="whitegray">@color/material_dynamic_neutral80</color>
     <color name="morewhitegray">#E4E4E4</color>
+    <color name="jinwhitegray">#70EFEFEF</color>
+
 
     <color name="blue">#0000FF</color>
 
