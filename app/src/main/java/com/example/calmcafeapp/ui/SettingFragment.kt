@@ -29,7 +29,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 필요한 초기화 코드가 있다면 여기에 작성
+        (activity as UserActivity).binding.btnBack.visibility = View.GONE
     }
 
     override fun initStartView() {
@@ -37,6 +37,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         // 시작 뷰 초기화 작업 (ex. 리사이클러뷰 초기화)
         (activity as UserActivity).binding.navigationUser.visibility = View.VISIBLE
         (activity as UserActivity).binding.btnBack.visibility = View.GONE
+
 
         // ViewModel에서 사용자 프로필 데이터를 가져옴
         settingViewModel.fetchUserProfile()
@@ -56,12 +57,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
 
     override fun initDataBinding() {
         super.initDataBinding()
-        // 데이터 바인딩 설정을 여기에 구현
+        (activity as UserActivity).binding.btnBack.visibility = View.GONE
 
     }
 
     override fun initAfterBinding() {
         super.initAfterBinding()
+        (activity as UserActivity).binding.btnBack.visibility = View.GONE
 
         // 즐겨찾기 섹션 클릭 시 FavoriteFragment로 이동
         binding.favoriteMenu.setOnClickListener {

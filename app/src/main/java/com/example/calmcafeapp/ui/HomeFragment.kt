@@ -877,9 +877,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             activity?.finish() // 또는 requireActivity().finish()
         } else {
             backPressedTime = currentTime
-            Toast.makeText(requireContext(), "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
     companion object {
