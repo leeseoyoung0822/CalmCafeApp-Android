@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.M_HomeFragment"
-    android:background="@color/morewhitegray">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_bar"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/green">
+        android:background="@color/white">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,9 +24,12 @@
             android:padding="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/black"
             android:textSize="24sp"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            android:drawableStart="@drawable/baseline_home_24"
+            android:drawablePadding="5dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -35,7 +38,9 @@
         android:id="@+id/card1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
@@ -46,7 +51,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@color/jinwhitegray">
 
             <!-- 가게 이름 -->
             <TextView
@@ -168,7 +174,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@color/jinwhitegray">
 
             <TextView
                 android:id="@+id/title"
