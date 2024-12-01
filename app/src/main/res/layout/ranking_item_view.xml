@@ -6,25 +6,25 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cafeImageCard"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_gravity="center"
         app:cardCornerRadius="16dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
     <ImageView
         android:id="@+id/cafePhoto_Imv"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:scaleType="centerCrop"
         />
 
     <TextView
         android:id="@+id/rankingBadge"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@drawable/ranking_badge"
         android:text="1"
         android:textColor="@android:color/white"
@@ -46,8 +46,9 @@
         app:layout_constraintEnd_toStartOf="@id/likes_btn"
         android:layout_marginTop="20dp"
         android:layout_marginStart="32dp"
-        android:textSize="20dp"
-        android:text="한산한 가 카페"/>
+        android:textSize="17dp"
+        android:text="한산한 가 카페"
+         />
 
     <TextView
         android:id="@+id/congestion_txt"
@@ -60,14 +61,16 @@
         android:drawablePadding="8dp"
         android:drawableTint="@color/green"
         android:text="현재혼잡도 : "
-        android:textSize="15sp" />
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+         />
 
     <TextView
         android:id="@+id/cafe_stateTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="보통"
-        android:textSize="15sp"
+
         app:layout_constraintStart_toEndOf="@id/congestion_txt"
         app:layout_constraintTop_toTopOf="@id/congestion_txt"/>
 
@@ -86,7 +89,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/whitegray"
+        android:background="@color/morewhitegray"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/cafeImageCard"
         app:layout_constraintStart_toStartOf="parent"

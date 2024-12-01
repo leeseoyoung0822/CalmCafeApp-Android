@@ -17,53 +17,37 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/green">
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/setting_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_margin="4dp"
                 android:text="설정"
-                android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/logout_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:background="@drawable/button"
-                android:text="로그아웃"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/lightgreen"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_bar" />
 
         <TextView
             android:id="@+id/profile_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="내 프로필"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:padding="10dp"
-            android:textStyle="bold"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintTop_toBottomOf="@+id/top_bar" />
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profileCard"
@@ -74,7 +58,7 @@
             app:layout_constraintStart_toStartOf="@id/profile_tv"
             android:background="@drawable/button"
             app:layout_constraintTop_toBottomOf="@id/profile_tv"
-            android:padding="30dp">
+            android:padding="25dp">
 
             <ImageView
                 android:id="@+id/profile_img"
@@ -89,11 +73,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="000님"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
+                android:layout_marginTop="5dp"
                 app:layout_constraintStart_toEndOf="@id/profile_img"
                 android:layout_marginStart="30dp"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/logout_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/button2"
+                android:text="로그아웃"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/profile_name"
+                app:layout_constraintTop_toTopOf="parent"
+               />
 
             <TextView
                 android:id="@+id/profile_point"
@@ -102,7 +98,7 @@
                 android:layout_marginTop="16dp"
                 android:text="보유 포인트 :  P"
                 android:textColor="@color/green"
-                android:textSize="16sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/profile_name"
@@ -127,7 +123,7 @@
                 android:padding="10dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="16dp"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:drawableEnd="@drawable/baseline_navigate_next_24"
@@ -143,7 +139,7 @@
                 android:padding="10dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="16dp"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:drawableEnd="@drawable/baseline_navigate_next_24"
@@ -171,15 +167,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="설문조사"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/survey_extra_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="145dp"
                     android:layout_height="34dp"
                     android:text="설문조사하면 4700p 지급!"
                     android:padding="6dp"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginStart="8dp"
                     android:background="@drawable/button"/>
@@ -189,7 +185,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/baseline_navigate_next_24"
-                    android:layout_marginStart="83dp"/>
+                    android:layout_marginStart="115dp"/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
