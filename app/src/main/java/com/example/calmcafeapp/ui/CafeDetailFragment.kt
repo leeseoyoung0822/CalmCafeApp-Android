@@ -133,7 +133,7 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                     .load(cafeDetailResult.image) // 이미지 URL
                     .placeholder(R.drawable.img_loading) // 로딩 중 표시할 이미지
                     .error(R.drawable.img_error) // 로딩 실패 시 표시할 이미지
-                    .into(binding.imageView4) // 이미지 뷰 대상
+                    .into(binding.imageView5) // 이미지 뷰 대상
                 cafetitle = cafeDetailResult.name
                 cafeDetailResult.userCongestionLevel
                 cafeDetailResult.storeCongestionLevel

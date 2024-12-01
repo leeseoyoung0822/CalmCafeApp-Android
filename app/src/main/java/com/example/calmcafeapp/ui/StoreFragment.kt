@@ -1,5 +1,6 @@
 package com.example.calmcafeapp.ui
 
+import GridSpacingWithDividerDecoration
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
@@ -34,8 +35,18 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(R.layout.fragment_store
         super.initStartView()
         menuPointStoreAdapter = MenuPointStoreAdapter(createDummyData())
         binding.rvPointmenu.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = GridLayoutManager(requireContext(), 2) // 2열 그리드 레이아웃
             adapter = menuPointStoreAdapter
+
+            // ItemDecoration 추가
+            addItemDecoration(
+                GridSpacingWithDividerDecoration(
+                    spanCount = 2,
+                    spacing = 20, // 각 아이템 간의 간격
+                    dividerHeight = 2, // 구분선 높이
+                    dividerColor = requireContext().getColor(R.color.dividerColor) // 구분선 색상
+                )
+            )
         }
 
         // 클릭 리스너 설정

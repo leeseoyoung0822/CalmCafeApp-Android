@@ -12,7 +12,7 @@
         android:id="@+id/container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="50dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -34,16 +34,17 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation_user"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:itemIconSize="25dp"
+        android:layout_height="55dp"
+        app:itemIconSize="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:labelVisibilityMode="labeled"
-        android:background="@color/green"
-        app:itemTextColor="@color/white"
+        android:background="@color/white"
         android:layout_gravity="bottom"
-        app:itemBackground="@android:color/transparent"
+        app:itemIconTint="@color/nav_item_color"
+    app:itemTextColor="@color/nav_item_color"
+    app:itemBackground="@android:color/transparent"
         app:itemTextAppearanceActive="@style/BottomNavigationTextAppearance"
         app:itemTextAppearanceInactive="@style/BottomNavigationTextAppearance"
         app:menu="@menu/menu_bottom_nav"

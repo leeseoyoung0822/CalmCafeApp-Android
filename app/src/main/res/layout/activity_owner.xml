@@ -34,20 +34,20 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation_owner"
+        style="@style/BottomNavigationViewNoRipple"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:itemIconSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:labelVisibilityMode="labeled"
-        android:background="@color/green"
-        app:itemTextColor="@color/white"
+        android:layout_height="55dp"
         android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:visibility="visible"
+        app:itemIconSize="22dp"
+        app:itemTextColor="@color/nav_item_color"
         app:itemBackground="@android:color/transparent"
         app:itemTextAppearanceActive="@style/BottomNavigationTextAppearance"
         app:itemTextAppearanceInactive="@style/BottomNavigationTextAppearance"
-        app:menu="@menu/menuowner_bottom_nav"
-        style="@style/BottomNavigationViewNoRipple"
-        android:visibility="visible"/>
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/menuowner_bottom_nav" />
 </androidx.constraintlayout.widget.ConstraintLayout>

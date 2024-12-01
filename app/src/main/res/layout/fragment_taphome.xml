@@ -19,9 +19,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu_list"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:layout_marginTop="8dp"
-                android:padding="8dp"
+                android:layout_height="260dp"
+
+                android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/menu_txt3"
@@ -31,7 +31,8 @@
                 android:id="@+id/menu_txt3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
                 android:text="카페 메뉴"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -43,7 +44,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
                 android:text="카페 현황"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -51,34 +54,36 @@
                 app:layout_constraintTop_toBottomOf="@+id/coupon_list" />
 
             <TextView
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
                 android:id="@+id/promotion_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="10dp"
                 android:text="프로모션"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/coupon_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="27dp"
+                android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- 사장님의 혼잡도 -->
             <androidx.constraintlayout.widget.ConstraintLayout
+
                 android:id="@+id/constraintLayout"
-                android:layout_width="150dp"
+                android:layout_width="157dp"
                 android:layout_height="150dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="25dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/promotion_txt2">
 
@@ -99,11 +104,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="사장님의 혼잡도"
+                    android:text="실시간 좌석 이용률"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 정보 아이콘 -->
+                <ImageView
+                    android:id="@+id/info_owner_congestion"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="AI를 통해 실제 매장 상황을 분석한 실시간 좌석 이용률입니다."
+                    android:src="@drawable/ic_info"
+                    app:layout_constraintBottom_toBottomOf="@+id/owner_congestion"
+                    app:layout_constraintStart_toEndOf="@+id/owner_congestion"
+                    app:layout_constraintTop_toTopOf="@+id/owner_congestion" />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -122,10 +141,9 @@
             <!-- 방문자의 혼잡도 -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout2"
-                android:layout_width="150dp"
+                android:layout_width="157dp"
                 android:layout_height="150dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/promotion_txt2">
 
@@ -140,18 +158,30 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/visitor_congestion" />
 
-                <!-- 방문자의 혼잡도 텍스트 -->
                 <TextView
                     android:id="@+id/visitor_congestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="방문자의 혼잡도"
+                    android:text="손님 체감 혼잡도"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- 정보 아이콘 -->
+                <ImageView
+                    android:id="@+id/info_visitor_congestion"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="실제 방문한 손님들이 직접 입력한 매장 혼잡도입니다."
+                    android:src="@drawable/ic_info"
+                    app:layout_constraintBottom_toBottomOf="@id/visitor_congestion"
+                    app:layout_constraintStart_toEndOf="@id/visitor_congestion"
+                    app:layout_constraintTop_toTopOf="@id/visitor_congestion" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

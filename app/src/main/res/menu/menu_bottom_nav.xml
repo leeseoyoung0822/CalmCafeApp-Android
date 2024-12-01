@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/navigation_rank"
-        android:icon="@drawable/rank"
+        android:icon="@drawable/ic_ranking_selector"
         android:title="랭킹" />
 
     <item
         android:id="@+id/navigation_map"
-        android:icon="@drawable/mappin_selector"
+        android:icon="@drawable/ic_home_selector"
         android:title="홈" />
 
     <item
         android:id="@+id/navigation_setting"
-        android:icon="@drawable/setting_selector"
-        android:title="설정" />
+        android:icon="@drawable/ic_profile_selector"
+        android:title="마이" />
 
 </menu>
