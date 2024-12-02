@@ -1,5 +1,6 @@
 package com.example.calmcafeapp.ui
 
+import GridSpacingWithDividerDecoration
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,6 +26,16 @@ class RecommendedCafeFragment : BaseFragment<FragmentRecommendedCafeBinding>(R.l
         binding.recommendRecyclerView.apply {
             layoutManager = GridLayoutManager(context, 2) // 2열 그리드 레이아웃 설정
             adapter = recommendCafeAdapter
+
+            // ItemDecoration 추가
+            addItemDecoration(
+                GridSpacingWithDividerDecoration(
+                    spanCount = 2,
+                    spacing = 15, // 각 아이템 간의 간격
+                    dividerHeight = 0, // 구분선 높이
+                    dividerColor = requireContext().getColor(R.color.dividerColor) // 구분선 색상
+                )
+            )
         }
 
 //        // ViewModel의 recommendStoreList 관찰

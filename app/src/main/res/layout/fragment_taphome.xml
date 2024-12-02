@@ -19,9 +19,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu_list"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-
-                android:layout_marginTop="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/menu_txt3"
@@ -32,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="12dp"
-                android:paddingTop="6dp"
+                android:paddingTop="16dp"
                 android:text="카페 메뉴"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/promotion_txt2"
