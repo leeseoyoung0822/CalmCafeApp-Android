@@ -1,8 +1,5 @@
 package com.example.calmcafeapp.ui
 
-import android.os.Handler
-import android.os.Bundle
-import android.util.Log
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -10,41 +7,44 @@ import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
-import androidx.core.app.ActivityCompat
-import android.view.View
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
-import com.example.calmcafeapp.R
-import com.example.calmcafeapp.base.BaseFragment
-import com.example.calmcafeapp.data.LocalItem
-import com.example.calmcafeapp.data.Path
-import com.example.calmcafeapp.databinding.FragmentHomeBinding
-import com.example.calmcafeapp.viewmodel.HomeViewModel
-import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
-import com.naver.maps.map.*
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.PolylineOverlay
 import android.location.Location
+import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.calmcafeapp.MainActivity
+import com.example.calmcafeapp.R
 import com.example.calmcafeapp.UserActivity
+import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.GraphPos
 import com.example.calmcafeapp.data.OnRouteStartListener
-import com.example.calmcafeapp.data.SearchStoreResDto
+import com.example.calmcafeapp.data.Path
 import com.example.calmcafeapp.data.StorePosDto
+import com.example.calmcafeapp.databinding.FragmentHomeBinding
+import com.example.calmcafeapp.viewmodel.HomeViewModel
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.MapView
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
-
+import com.naver.maps.map.overlay.PathOverlay
+import com.naver.maps.map.overlay.PolylineOverlay
 import com.naver.maps.map.util.FusedLocationSource
-
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), OnMapReadyCallback, OnRouteStartListener {
@@ -55,6 +55,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private val viewModel: HomeViewModel by activityViewModels()
     private var backPressedTime: Long = 0
     private var hasFetchedAddress = false
+    private var walkingFromStartPathList: MutableList<PathOverlay> = mutableListOf()
+    private var walkingToDestinationPathList: MutableList<PathOverlay> = mutableListOf()
     private var polylineList: MutableList<PolylineOverlay> = mutableListOf()
     private var publicTransportPolylineList: MutableList<PolylineOverlay> = mutableListOf()  // 대중교통 경로
     private var walkingFromStartPolylineList: MutableList<PolylineOverlay> = mutableListOf()
@@ -185,6 +187,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                     if (distanceInMeters <= 1000) {
                         hasArrivedAtCafe = true  // 알림이 한 번만 표시되도록 설정
                         showArrivalAlertAndPopup()  // 알림 및 혼잡도 선택 팝업 표시
+                        cancelRouteSearch()
                     }
                 }
             }
@@ -365,7 +368,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 val coords = graphPosList.map { LatLng(it.y, it.x) }
                 val publicTransportPolyline = PolylineOverlay().apply {
                     this.coords = coords
-                    this.color = Color.parseColor("#2E8465")
+                    this.color = Color.parseColor("#2E9AFE") //2E9AFE
                     this.width = 30
                     this.map = naverMap
                 }
@@ -393,7 +396,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
             // congestionLevel 값에 따라 마커 아이콘 변경
             val markerIcon = when (cafe.congestionLevel) {
-                "CALM" -> R.drawable.cafe_yellow  // 한산일 때 마커 아이콘
+                "CALM" -> R.drawable.cafe_green  // 한산일 때 마커 아이콘
                 "NORMAL" -> R.drawable.cafe_red  // 보통일 때 마커 아이콘
                 "BUSY" -> R.drawable.cafe_red2 // 혼잡일 때 마커 아이콘
                 else -> R.drawable.cafe_green  // 기본 마커 아이콘
@@ -444,7 +447,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         // 안쪽 파란색 폴리라인
         val innerPolyline = PolylineOverlay().apply {
             this.coords = coords
-            this.color = Color.parseColor("#2E8465")
+            this.color = Color.parseColor("#2E9AFE")
             this.width = 20  // 안쪽 경로의 너비
             this.map = naverMap
         }
@@ -517,46 +520,83 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         publicTransportPolylineList.clear()  // 리스트 초기화
     }
 
-    private fun displayWalkingRoute(coordinates: List<LatLng>, isFromStart: Boolean) {
-        if (isFromStart) {
-            // 출발지에서 대중교통 타는 지점까지의 도보 경로 삭제
-            walkingFromStartPolylineList.forEach { it.map = null }
-            walkingFromStartPolylineList.clear()
-            val outerPolyline = PolylineOverlay().apply {
-                this.coords = coordinates
-                this.color = Color.WHITE
-                this.width = 30  // 바깥쪽 경로의 너비
-                this.map = naverMap
-            }
-            val innerPolyline = PolylineOverlay().apply {
-                this.coords = coordinates
-                this.color = Color.parseColor("#C4C4C4")
-                this.width = 18  // 안쪽 경로의 너비
-                this.map = naverMap
-            }
-            walkingFromStartPolylineList.add(outerPolyline)
-            walkingFromStartPolylineList.add(innerPolyline)
-        } else {
+//    private fun displayWalkingRoute(coordinates: List<LatLng>, isFromStart: Boolean) {
+//        if (isFromStart) {
+//            // 출발지에서 대중교통 타는 지점까지의 도보 경로 삭제
+//            walkingFromStartPolylineList.forEach { it.map = null }
+//            walkingFromStartPolylineList.clear()
+//            val outerPolyline = PolylineOverlay().apply {
+//                this.coords = coordinates
+//                this.color = Color.WHITE
+//                this.width = 30  // 바깥쪽 경로의 너비
+//                this.map = naverMap
+//            }
+//            val innerPolyline = PolylineOverlay().apply {
+//                this.coords = coordinates
+//                this.color = Color.parseColor("#C4C4C4")
+//                this.width = 18  // 안쪽 경로의 너비
+//                this.map = naverMap
+//            }
+//            walkingFromStartPolylineList.add(outerPolyline)
+//            walkingFromStartPolylineList.add(innerPolyline)
+//        } else {
+//
+//            walkingToDestinationPolylineList.forEach { it.map = null }
+//            walkingToDestinationPolylineList.clear()
+//
+//            val outerPolyline = PolylineOverlay().apply {
+//                this.coords = coordinates
+//                this.color = Color.WHITE
+//                this.width = 30
+//                this.map = naverMap
+//            }
+//            val innerPolyline = PolylineOverlay().apply {
+//                this.coords = coordinates
+//                this.color = Color.parseColor("#C4C4C4")
+//                this.width = 18
+//                this.map = naverMap
+//            }
+//            walkingToDestinationPolylineList.add(outerPolyline)
+//            walkingToDestinationPolylineList.add(innerPolyline)
+//        }
+//    }
+private fun displayWalkingRoute(coordinates: List<LatLng>, isFromStart: Boolean) {
+    if (isFromStart) {
+        walkingFromStartPathList.forEach { it.map = null }
+        walkingFromStartPathList.clear()
+        val pathOverlay = PathOverlay().apply {
+            this.coords = coordinates
+            this.color = Color.TRANSPARENT  // 기본 선 색상을 투명으로 설정
+            this.outlineColor = Color.TRANSPARENT  // 외곽선 색상도 투명으로 설정
+            this.width = 190
 
-            walkingToDestinationPolylineList.forEach { it.map = null }
-            walkingToDestinationPolylineList.clear()
+            // 패턴 이미지와 간격 설정
+            this.patternImage = OverlayImage.fromResource(R.drawable.dot_line1)
 
-            val outerPolyline = PolylineOverlay().apply {
-                this.coords = coordinates
-                this.color = Color.WHITE
-                this.width = 30
-                this.map = naverMap
-            }
-            val innerPolyline = PolylineOverlay().apply {
-                this.coords = coordinates
-                this.color = Color.parseColor("#C4C4C4")
-                this.width = 18
-                this.map = naverMap
-            }
-            walkingToDestinationPolylineList.add(outerPolyline)
-            walkingToDestinationPolylineList.add(innerPolyline)
+            this.patternInterval = 60  // 패턴 이미지가 반복되는 간격
+
+            this.map = naverMap
         }
+
+        walkingFromStartPathList.add(pathOverlay)
+    } else {
+        // 도착지까지의 도보 경로 처리
+        walkingToDestinationPathList.forEach { it.map = null }
+        walkingToDestinationPathList.clear()
+
+        val pathOverlay = PathOverlay().apply {
+            this.coords = coordinates
+            this.color = Color.TRANSPARENT
+            this.outlineColor = Color.TRANSPARENT
+            this.width = 190
+            this.patternImage = OverlayImage.fromResource(R.drawable.dot_line1)
+            this.patternInterval = 60
+            this.map = naverMap
+        }
+        walkingToDestinationPathList.add(pathOverlay)
     }
+}
+
     private fun clearRoutes() {
         clearPublicTransportRoutes()
         walkingFromStartPolylineList.forEach { polyline ->
@@ -567,10 +607,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         walkingToDestinationPolylineList.forEach { polyline ->
             polyline.map = null  // 지도에서 제거
         }
+
+        walkingFromStartPathList.forEach { polyline ->
+            polyline.map = null  // 지도에서 제거
+        }
+        walkingFromStartPathList.clear()
+
+        walkingToDestinationPolylineList.forEach { polyline ->
+            polyline.map = null  // 지도에서 제거
+        }
+
+
+
         walkingToDestinationPolylineList.clear()
         polylineList.forEach { polyline ->
             polyline.map = null
         }
+
+
+
         polylineList.clear()
         viewModel.resetGraphicDataCounters()
     }
@@ -679,6 +734,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         // 혼잡도 선택 팝업 표시
         showArrivalPopup()
+
     }
 
 
