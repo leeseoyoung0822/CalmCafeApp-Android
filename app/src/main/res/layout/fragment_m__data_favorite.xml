@@ -22,6 +22,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textStyle="bold"
+                android:textSize="16sp"
                 android:padding="10dp" />
 
             <ImageView
@@ -43,6 +44,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="주변 즐겨찾기 카페의 성별 분포"
                 android:textStyle="bold"
+                android:textSize="16sp"
                 android:padding="10dp" />
 
             <ImageView

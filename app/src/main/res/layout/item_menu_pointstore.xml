@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,14 +6,15 @@
     android:layout_width="170dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginEnd="4dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
     android:layout_marginBottom="4dp"
     >
 
     <androidx.cardview.widget.CardView
 
         android:id="@+id/cardView"
-        android:layout_width="165dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
         app:cardCornerRadius="16dp"
@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/menu_image"
             android:layout_width="170dp"
-            android:layout_height="180dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:src="@drawable/coffee" />
     </androidx.cardview.widget.CardView>
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
@@ -47,7 +47,7 @@
             android:id="@+id/cafe_location_icon"
             android:layout_width="22dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_cup" />
+            android:src="@drawable/coffee_green" />
 
         <TextView
             android:id="@+id/menu_name"
@@ -55,9 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="아이스 아메리카노"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textColor="@color/darkgray"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -73,7 +72,7 @@
             android:id="@+id/cafe_outlet_icon"
             android:layout_width="22dp"
             android:layout_height="24dp"
-            android:src="@drawable/w" />
+            android:src="@drawable/baseline_attach_money_24" />
 
         <TextView
             android:id="@+id/menu_price"
@@ -81,9 +80,8 @@
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:text="4000원"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textColor="@color/darkgray"
+            android:textSize="14sp" />
 
     </LinearLayout>
 </LinearLayout>

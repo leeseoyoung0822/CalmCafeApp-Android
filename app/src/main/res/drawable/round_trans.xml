@@ -7,6 +7,6 @@
 
     <!-- Border/Stroke with gray color -->
     <stroke
-        android:width="0.5dp"
-        android:color="@color/lightgray" /> <!-- Gray border -->
+        android:width="1dp"
+        android:color="#2E8465" /> <!-- Gray border -->
 </shape>

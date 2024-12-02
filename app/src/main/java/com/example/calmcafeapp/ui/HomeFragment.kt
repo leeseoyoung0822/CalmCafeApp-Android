@@ -393,9 +393,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
             // congestionLevel 값에 따라 마커 아이콘 변경
             val markerIcon = when (cafe.congestionLevel) {
-                "CALM" -> R.drawable.cafe_green  // 한산일 때 마커 아이콘
-                "NORMAL" -> R.drawable.cafe_yellow  // 보통일 때 마커 아이콘
-                "BUSY" -> R.drawable.cafe_red // 혼잡일 때 마커 아이콘
+                "CALM" -> R.drawable.cafe_yellow  // 한산일 때 마커 아이콘
+                "NORMAL" -> R.drawable.cafe_red  // 보통일 때 마커 아이콘
+                "BUSY" -> R.drawable.cafe_red2 // 혼잡일 때 마커 아이콘
                 else -> R.drawable.cafe_green  // 기본 마커 아이콘
             }
 
