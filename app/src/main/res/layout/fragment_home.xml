@@ -57,20 +57,34 @@
 
 
         <!-- 하단 중앙에 배치된 버튼: 오버레이 -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_show_navigator"
+        <LinearLayout
+            android:id="@+id/btn_trans"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginBottom="50dp"
-            android:background="@drawable/round_greenbackground"
-            android:drawableLeft="@drawable/ic_tran"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="교통"
+            android:background="@drawable/round_trans"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="4dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/map"
+                android:layout_marginStart="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="길찾기"
+                android:layout_marginStart="2dp"
+                android:textColor="#000" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_no_results"

@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.TooltipCompat
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +19,10 @@ import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.CafeCouponData
 import com.example.calmcafeapp.data.MenuDetailResDto
+import com.example.calmcafeapp.data.PromotionDetailResDto
+import com.example.calmcafeapp.data.TimeDetail
 import com.example.calmcafeapp.databinding.FragmentTaphomeBinding
 import com.example.calmcafeapp.viewmodel.HomeViewModel
-import com.example.calmcafeapp.viewmodel.RankViewModel
 
 class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_taphome) {
     private lateinit var menuCafeAdapter: MenuCafeAdapter
@@ -35,7 +36,7 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
 
         // 어댑터 초기화
         menuCafeAdapter = MenuCafeAdapter(ArrayList())
-        couponCafeAdapter = CouponCafeAdapter(createDummyCouponData())
+        couponCafeAdapter = CouponCafeAdapter(createDummyPromotionData())
 
         // 리사이클러뷰 설정
         binding.menuList.apply {
@@ -81,10 +82,11 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
                 cafeDetailResult.userCongestionLevel?.let {
                     updateCircularProgress(binding.visitorCircularProgressViewVisitor, it)
                 }
+//                cafeDetailResult.promotionDetailResDtoList?.let{
+//                    upda
+//                }
                 cafeImg = cafeDetailResult.image
-
             }
-
         }
 
         viewModel.cafeMenuList.observe(viewLifecycleOwner) { menuList ->
@@ -93,7 +95,7 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
 
 
         couponCafeAdapter.setMyItemClickListener(object : CouponCafeAdapter.MyItemClickListener {
-            override fun onItemClick(menu: CafeCouponData) {
+            override fun onItemClick(menu: PromotionDetailResDto) {
                 showCouponPopup(menu)
             }
         })
@@ -127,21 +129,24 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
     }
 
 
-    // 쿠폰 더미 데이터 생성
-    private fun createDummyCouponData(): ArrayList<CafeCouponData> {
+    private fun createDummyPromotionData(): ArrayList<PromotionDetailResDto> {
         return arrayListOf(
-            CafeCouponData(
-                1,
-                "Take-out",
-                "10% 할인",
-                "12:00 - 14:00"
+            PromotionDetailResDto(
+                id = 1,
+                startTime = "07:00",
+                endTime = "10:00",
+                discount = 10,
+                promotionType = "모닝 커피 할인",
+                promotionUsedState = "사용 가능"
             ),
-            CafeCouponData(
-                2,
-                "매장 이용 시 아메리카노",
-                "1+1",
-                "15:30 - 16:30"
-            ),
+            PromotionDetailResDto(
+                id = 3,
+                startTime = "11:30",
+                endTime = "13:10",
+                discount = 15,
+                promotionType = "점심 시간 할인",
+                promotionUsedState = "사용 가능"
+            )
         )
     }
 
@@ -156,22 +161,38 @@ class TapHomeFragment : BaseFragment<FragmentTaphomeBinding>(R.layout.fragment_t
         view.setPercentage(percentage, text)
     }
 
-    private fun showCouponPopup(coupon: CafeCouponData) {
+    private fun showCouponPopup(promotion: PromotionDetailResDto) {
         val dialog = Dialog(requireContext(), R.style.TransparentDialog)
-        dialog.setContentView(R.layout.dialog_coupon)
+        dialog.setContentView(R.layout.dialog_coupon) // 사용하신 XML 파일
+
+        // 다이얼로그 UI 요소 참조
         val imageView = dialog.findViewById<ImageView>(R.id.img_coupon)
+        val titleTextView = dialog.findViewById<TextView>(R.id.couponTitle)
+        val expiryTextView = dialog.findViewById<TextView>(R.id.couponExpiry)
+        val expiryDateTextView = dialog.findViewById<TextView>(R.id.couponExpiryDate)
+        val useCouponButton = dialog.findViewById<View>(R.id.btnUseCoupon)
+
+        // 이미지 로드 (기본 이미지 또는 특정 리소스 사용)
         if (cafeImg != null) {
-            // Glide 라이브러리를 사용하여 이미지 로드
             Glide.with(this)
                 .load(cafeImg)
                 .into(imageView)
         } else {
-            // 이미지가 없을 경우 기본 이미지 설정
-            imageView.setImageResource(R.drawable.cafe_img1)
+            imageView.setImageResource(R.drawable.coupon_img) // 기본 이미지
         }
-        dialog.findViewById<TextView>(R.id.couponTitle).text = "${coupon.coupon_type} ${coupon.sale} "
-        dialog.findViewById<TextView>(R.id.couponExpiryDate).text = coupon.expiry_date
+
+        // 시간을 두 자리 형식으로 변환
+        val startTime = promotion.startTime
+
+        val endTime = promotion.endTime
+
+        // 프로모션 데이터를 다이얼로그에 설정
+        titleTextView.text = promotion.promotionType
+        expiryDateTextView.text = "유효기간: $startTime ~ $endTime"
+
+        // 다이얼로그 표시
         dialog.show()
     }
+
 
 }

@@ -100,21 +100,19 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         }
 
         binding.startBtn.setOnClickListener {
-
-            Log.d("distance111", "${distance}")
+            val navigatorFragment = NavigatorFragment().apply {
+                arguments = Bundle().apply {
+                    putString("cafeTitle", cafetitle)
+                }
+            }
 
             if (distance!! <= 700.0) {
                 // 700m 이하일 경우 도보 경로만 제공
-                Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공", Toast.LENGTH_SHORT).show()
                 listener?.onRouteStart()
                 dismiss()  // 현재 바텀시트
 
             } else {
-                val navigatorFragment = NavigatorFragment().apply {
-                    arguments = Bundle().apply {
-                        putString("cafeTitle", cafetitle)
-                    }
-                }
                 navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
                 listener?.onRouteStart()
                 dismiss()  // 현재 바텀시트 닫기
@@ -122,8 +120,6 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             }
 
         }
-
-
 
         viewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetailResult ->
             if (cafeDetailResult != null) {
@@ -134,6 +130,7 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                     .placeholder(R.drawable.img_loading) // 로딩 중 표시할 이미지
                     .error(R.drawable.img_error) // 로딩 실패 시 표시할 이미지
                     .into(binding.imageView5) // 이미지 뷰 대상
+
                 cafetitle = cafeDetailResult.name
                 cafeDetailResult.userCongestionLevel
                 cafeDetailResult.storeCongestionLevel
