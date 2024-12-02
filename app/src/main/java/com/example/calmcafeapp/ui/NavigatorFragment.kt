@@ -27,9 +27,6 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
     private val viewModel: HomeViewModel by activityViewModels()
     private lateinit var pathsAdapter: PathsAdapter
 
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -68,7 +65,7 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                     if (viewModel.pubTransPaths.value.isNullOrEmpty()) {
                         // 여전히 null이라면 dismiss()
                         dismiss()
-                        Toast.makeText(requireContext(), "도보 경로 입니다.", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(requireContext(), "도보 경로 입니다.", Toast.LENGTH_SHORT).show()
                     }
                 }, 1000) // 1초 대기
             }

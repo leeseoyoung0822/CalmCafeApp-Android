@@ -105,8 +105,6 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                     putString("cafeTitle", cafetitle)
                 }
             }
-            Log.d("distance111", "${distance}")
-            navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
 
             if (distance!! <= 700.0) {
                 // 700m 이하일 경우 도보 경로만 제공
@@ -122,8 +120,6 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             }
 
         }
-
-
 
         viewModel.cafeDetail.observe(viewLifecycleOwner) { cafeDetailResult ->
             if (cafeDetailResult != null) {

@@ -3,16 +3,16 @@ package com.example.calmcafeapp.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.calmcafeapp.data.CafeCouponData
+import com.example.calmcafeapp.data.PromotionDetailResDto
 import com.example.calmcafeapp.databinding.ItemCoupon1Binding
-import com.example.calmcafeapp.databinding.ItemCouponBinding
 
-
-class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerView.Adapter<CouponCafeAdapter.MenuCouponHolder>() {
+class CouponCafeAdapter(private var list: ArrayList<PromotionDetailResDto>) :
+    RecyclerView.Adapter<CouponCafeAdapter.MenuCouponHolder>() {
 
     interface MyItemClickListener {
-        fun onItemClick(menu: CafeCouponData)
+        fun onItemClick(menu: PromotionDetailResDto)
     }
+
     private var myItemClickListener: MyItemClickListener? = null
 
     fun setMyItemClickListener(itemClickListener: MyItemClickListener) {
@@ -21,7 +21,6 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
 
     inner class MenuCouponHolder(val binding: ItemCoupon1Binding) :
         RecyclerView.ViewHolder(binding.root) {
-        //        val sale = binding.couponDiscountRate
         val type = binding.couponType
         val date = binding.couponTime
 
@@ -30,9 +29,7 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
                 myItemClickListener?.onItemClick(list[adapterPosition])
             }
         }
-
     }
-
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -49,10 +46,14 @@ class CouponCafeAdapter(private var list: ArrayList<CafeCouponData>):RecyclerVie
 
     override fun onBindViewHolder(holder: CouponCafeAdapter.MenuCouponHolder, position: Int) {
         val coupon = list[position]
-        holder.type.text = "${coupon.coupon_type} ${coupon.sale}"
-//        holder.sale.text = coupon.sale
-        holder.date.text = coupon.expiry_date
 
+        // 시간을 두 자리 형식으로 변환
+        val startTime = coupon.startTime
+        val endTime = coupon.endTime
+
+        // 데이터 설정
+        holder.type.text = coupon.promotionType
+        holder.date.text = "$startTime ~ $endTime"
     }
 
     override fun getItemCount(): Int {

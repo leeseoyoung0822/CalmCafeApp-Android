@@ -141,10 +141,10 @@ data class PromotionDetailResDto(
     val id: Int = 0,
 
     @SerializedName("startTime")
-    val startTime: TimeDetail? = null,
+    val startTime: String? = null,
 
     @SerializedName("endTime")
-    val endTime: TimeDetail? = null,
+    val endTime: String? = null,
 
     @SerializedName("discount")
     val discount: Int = 0,

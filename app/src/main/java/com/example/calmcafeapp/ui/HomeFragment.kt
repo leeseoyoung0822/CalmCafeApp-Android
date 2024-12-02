@@ -82,7 +82,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             cancelRouteSearch() // 취소 버튼 클릭 시 호출
         }
         // 교통정보 버튼 초기화 및 클릭 리스너 설정
-        binding.btnShowNavigator.setOnClickListener {
+        binding.btnTrans.setOnClickListener {
             showNavigatorBottomSheet()
         }
         mapView.getMapAsync(this)
@@ -393,17 +393,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
             // congestionLevel 값에 따라 마커 아이콘 변경
             val markerIcon = when (cafe.congestionLevel) {
-                "CALM" -> R.drawable.marker_calm  // 한산일 때 마커 아이콘
-                "NORMAL" -> R.drawable.marker_normal  // 보통일 때 마커 아이콘
-                "BUSY" -> R.drawable.marker_busy  // 혼잡일 때 마커 아이콘
-                else -> R.drawable.marker_busy  // 기본 마커 아이콘
+                "CALM" -> R.drawable.cafe_green  // 한산일 때 마커 아이콘
+                "NORMAL" -> R.drawable.cafe_yellow  // 보통일 때 마커 아이콘
+                "BUSY" -> R.drawable.cafe_red // 혼잡일 때 마커 아이콘
+                else -> R.drawable.cafe_green  // 기본 마커 아이콘
             }
 
             val marker = Marker().apply {
                 position = latLng  // 위에서 생성한 latLng를 사용
                 icon = OverlayImage.fromResource(markerIcon)
-                width = 100
-                height = 100
+                width = 80
+                height = 80
                 map = naverMap
             }
 
@@ -493,7 +493,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             // 길찾기 시작
             Log.d("touch start", "${cafe}")
             startRouteSearchToCafe(cafe)
-            binding.btnShowNavigator.visibility = View.VISIBLE
+            binding.btnTrans.visibility = View.VISIBLE
 
 
         } ?: run {
@@ -611,7 +611,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // ODSAY 대중교통 경로 요청
                 viewModel.searchRoute(startX, startY, endX, endY)
                 Log.d("Request", "ODSAY 대중교통 경로 요청: Start($startX, $startY) -> End($endX, $endY)")
-                binding.btnShowNavigator.visibility = View.VISIBLE
+                binding.btnTrans.visibility = View.VISIBLE
             }
         } else {
             Toast.makeText(requireContext(), "현재 위치를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -623,9 +623,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         selectedCafeMarker = Marker().apply {
             position = latLng
-            icon = OverlayImage.fromResource(R.drawable.marker_busy)  // 커스텀 아이콘 사용
-            width = 100
-            height = 120
+            icon = OverlayImage.fromResource(R.drawable.cafe_mmm)  // 커스텀 아이콘 사용
+            width = 80
+            height = 80
             captionText = cafe.name ?: "Unknown"// 마커 아래에 카페 타이틀 표시
             captionTextSize = 14f  // 캡션 텍스트 크기
             captionColor = Color.parseColor("#000000")
@@ -648,7 +648,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         // 취소 버튼 숨기기
         (activity as UserActivity).binding.btnBack.visibility = View.GONE
-        binding.btnShowNavigator.visibility = View.GONE
+        binding.btnTrans.visibility = View.GONE
         // 모든 경로 삭제
         clearRoutes()
         // ViewModel 데이터 초기화
@@ -834,6 +834,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
 
         dialog.show()
+        cancelRouteSearch()
     }
 
     private fun showPointPopup() {
