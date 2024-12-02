@@ -21,6 +21,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:padding="10dp" />
 
@@ -42,6 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="카페 방문객 성별 분포"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:padding="10dp" />
 
@@ -62,6 +64,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="카페 방문객이 선호하는 메뉴"
+                android:textSize="16sp"
                 android:padding="10dp" />
 
             <ImageView

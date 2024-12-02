@@ -3,33 +3,37 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="5dp">
 
     <!-- 매장 이미지 -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cafeImageCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center"
         app:cardCornerRadius="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="8dp"
+        >
         <ImageView
             android:id="@+id/iv_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:scaleType="centerCrop" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            />
     </androidx.cardview.widget.CardView>
 
 
     <!-- 매장 정보 -->
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="75dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingStart="8dp">
+        android:paddingStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <!-- 매장 이름 -->
         <TextView
@@ -37,17 +41,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="매장 이름"
-            android:layout_marginTop="6dp"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="10dp"
+            android:textSize="14sp" />
 
         <!-- 매장 주소 -->
         <TextView
             android:id="@+id/tv_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/location"
+            android:drawableTint="@color/green"
             android:text="매장 주소"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp" />
+            android:textSize="12sp"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
 </LinearLayout>
