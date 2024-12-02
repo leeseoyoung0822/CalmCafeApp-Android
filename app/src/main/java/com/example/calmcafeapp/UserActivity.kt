@@ -17,6 +17,7 @@ class UserActivity : AppCompatActivity() {
     lateinit var binding: ActivityUserBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private var backPressedTime: Long = 0
+    private var tirr : Boolean = false
 
     // 프래그먼트 변수 선언
     private lateinit var homeFragment: HomeFragment
@@ -112,14 +113,29 @@ class UserActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.navigation_map -> {
                     showFragment(homeFragment)
+                    Log.d("tirr", "${tirr}")
+                    if(tirr){
+                        binding.btnBack.visibility = View.VISIBLE
+                        tirr = false
+                    }
                     true
                 }
                 R.id.navigation_rank -> {
                     showFragment(rankFragment)
+                    if(binding.btnBack.visibility == View.VISIBLE){
+                        binding.btnBack.visibility = View.GONE
+                        tirr = true
+                    }
+
                     true
                 }
                 R.id.navigation_setting -> {
                     showFragment(settingFragment)
+                    if(binding.btnBack.visibility == View.VISIBLE){
+                        binding.btnBack.visibility = View.GONE
+                        tirr = true
+                    }
+
                     true
                 }
                 else -> false

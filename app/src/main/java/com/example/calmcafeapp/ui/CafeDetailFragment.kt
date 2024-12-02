@@ -100,21 +100,21 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         }
 
         binding.startBtn.setOnClickListener {
-
+            val navigatorFragment = NavigatorFragment().apply {
+                arguments = Bundle().apply {
+                    putString("cafeTitle", cafetitle)
+                }
+            }
             Log.d("distance111", "${distance}")
+            navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
 
             if (distance!! <= 700.0) {
                 // 700m 이하일 경우 도보 경로만 제공
-                Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공", Toast.LENGTH_SHORT).show()
                 listener?.onRouteStart()
                 dismiss()  // 현재 바텀시트
 
             } else {
-                val navigatorFragment = NavigatorFragment().apply {
-                    arguments = Bundle().apply {
-                        putString("cafeTitle", cafetitle)
-                    }
-                }
                 navigatorFragment.show(parentFragmentManager, "NavigatorFragment")
                 listener?.onRouteStart()
                 dismiss()  // 현재 바텀시트 닫기

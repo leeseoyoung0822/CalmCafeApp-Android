@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.os.Handler
+import android.os.Looper
+
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
@@ -43,14 +46,14 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
         binding.rvRouteInfo.setHasFixedSize(true)
 
         viewModel.pubTransPaths.observe(viewLifecycleOwner) { paths ->
-            Log.d("paths_navi", "$paths")
-            if (paths != null && paths.isNotEmpty()) {
+            Log.d("paths_navi1", "$paths")
+            if (!paths.isNullOrEmpty()) {
                 val subPaths = paths.first().subPath
                 Log.d("paths_navi", "$subPaths")
                 pathsAdapter.setSubPaths(subPaths)
                 // totalTime 포맷팅하여 설정
                 val totalTime = paths.first().info.totalTime
-               formatTotalTime(totalTime)
+                formatTotalTime(totalTime)
 
                 updateTimeViews(totalTime)
 
@@ -60,11 +63,17 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                 val payment = paths.first().info.payment
                 binding.tvCost.text = "|   금액 ${payment}원"
             } else {
-                // 경로 데이터가 없는 경우 처리
-                dismissBottomSheet()
-                //Toast.makeText(requireContext(), "도보 경로입니다.", Toast.LENGTH_SHORT).show()
+                // paths가 null일 경우 1초 대기 후 다시 확인
+                Handler().postDelayed({
+                    if (viewModel.pubTransPaths.value.isNullOrEmpty()) {
+                        // 여전히 null이라면 dismiss()
+                        dismiss()
+                        Toast.makeText(requireContext(), "도보 경로 입니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }, 1000) // 1초 대기
             }
         }
+
         viewModel.startAddress.observe(viewLifecycleOwner) { address ->
             binding.tvAddress.text = "내 위치"
 //            binding.tvMylocation.text = "${address}..."
@@ -171,7 +180,7 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
             // 현재 시간 설정
             val currentFormatter = SimpleDateFormat("hh:mm", Locale.getDefault())
             val currentFormattedTime = currentFormatter.format(currentTime.time)
-            Log.d("updateTimeViews", "${currentFormattedTime}")
+            Log.d("updateTimeViews", "$currentFormattedTime")
             binding.currentTime.text = currentFormattedTime // 현재 시간 TextView에 설정
 
             currentTime.add(Calendar.MINUTE, totalTime)

@@ -112,6 +112,36 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d("HomeFragment", "onStart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("HomeFragment", "onResume called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("HomeFragment", "onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("HomeFragment", "onStop called")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("HomeFragment", "onDestroyView called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("HomeFragment", "onDestroy called")
+    }
+
 
 
 
@@ -575,8 +605,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // TMAP 도보 경로 요청
                 viewModel.getWalkingStartRoute(startX, startY, endX, endY, "현재 위치", cafe.name?: "Unknown")
                 Log.d("Request", "TMAP 도보 경로 요청: Start($startX, $startY) -> End($endX, $endY)")
-                //Toast.makeText(requireContext(), "700m 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
-                binding.btnShowNavigator.visibility = View.GONE
+                //Toast.makeText(requireContext(), " 이하일 경우 도보 경로만 제공합니다.", Toast.LENGTH_SHORT).show()
+                //binding.btnShowNavigator.visibility = View.GONE
             } else {
                 // ODSAY 대중교통 경로 요청
                 viewModel.searchRoute(startX, startY, endX, endY)
