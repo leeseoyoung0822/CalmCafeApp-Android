@@ -28,7 +28,13 @@ class CafeRecyclerViewAdapter(
                 .load(storeRanking.image)
                 .into(binding.cafePhotoImv) // 서버에서 가져온 이미지 로딩
             binding.cafeNameTv.text = storeRanking.name
-            binding.cafeStateTv.text = storeRanking.storeCongestionLevel
+            val congestionText = when (storeRanking.storeCongestionLevel) {
+                "CALM" -> "한산"
+                "NORMAL" -> "보통"
+                "BUSY" -> "혼잡"
+                else -> "알 수 없음" // 예상치 못한 값 처리
+            }
+            binding.cafeStateTv.text = "$congestionText"
 
             // 아이템 클릭 이벤트 설정
             itemView.setOnClickListener {

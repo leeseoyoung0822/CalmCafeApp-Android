@@ -25,7 +25,14 @@ class Setting_favoriteCafeAdapter(
                 .into(binding.cafeImage)
 
             binding.cafeName.text = cafe.name
-            binding.storeCongestion.text = "현재 혼잡도: ${cafe.storeCongestionLevel}"
+            // 혼잡도 텍스트 설정
+            val congestionText = when (cafe.storeCongestionLevel) {
+                "CALM" -> "한산"
+                "NORMAL" -> "보통"
+                "BUSY" -> "혼잡"
+                else -> "알 수 없음" // 예상치 못한 값 처리
+            }
+            binding.storeCongestion.text = "현재 혼잡도: $congestionText"
 
             // 즐겨찾기 버튼 클릭 이벤트
             binding.favoriteBtn.setOnClickListener {
