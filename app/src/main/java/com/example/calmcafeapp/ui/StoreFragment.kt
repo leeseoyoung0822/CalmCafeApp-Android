@@ -43,7 +43,7 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(R.layout.fragment_store
                 GridSpacingWithDividerDecoration(
                     spanCount = 2,
                     spacing = 20, // 각 아이템 간의 간격
-                    dividerHeight = 2, // 구분선 높이
+                    dividerHeight = 0, // 구분선 높이
                     dividerColor = requireContext().getColor(R.color.dividerColor) // 구분선 색상
                 )
             )

@@ -19,9 +19,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/menu_list"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-
-                android:layout_marginTop="4dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/menu_txt3"
@@ -32,10 +31,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="12dp"
-                android:paddingTop="6dp"
+                android:paddingTop="16dp"
                 android:text="카페 메뉴"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/promotion_txt2"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
@@ -44,12 +42,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-
                 android:paddingStart="12dp"
                 android:paddingTop="6dp"
                 android:text="카페 현황"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/coupon_list" />
 
@@ -62,7 +58,6 @@
                 android:layout_marginStart="8dp"
                 android:text="프로모션"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,7 +100,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="실시간 좌석 이용률"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -164,7 +158,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="손님 체감 혼잡도"
-                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
