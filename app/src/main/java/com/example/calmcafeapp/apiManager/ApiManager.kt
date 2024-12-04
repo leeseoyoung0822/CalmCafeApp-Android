@@ -4,6 +4,7 @@ import com.example.calmcafeapp.BuildConfig
 import com.example.calmcafeapp.api.CafeDetailService
 import com.example.calmcafeapp.api.LocationService
 import com.example.calmcafeapp.api.LoginService
+import com.example.calmcafeapp.api.M_DataService
 import com.example.calmcafeapp.api.M_HomeService
 import com.example.calmcafeapp.api.M_SettingService
 import com.example.calmcafeapp.api.MapService
@@ -175,5 +176,7 @@ object ApiManager {
     val settingService: SettingService by lazy { ServerRetrofit.create(SettingService::class.java) }
     val m_HomeService: M_HomeService by lazy { ServerRetrofit.create(M_HomeService::class.java) }
     val m_SettingService: M_SettingService by lazy { ServerRetrofit.create(M_SettingService::class.java) }
+    val mDataService: M_DataService by lazy { ServerRetrofit.create(M_DataService::class.java) }
+
 
 }

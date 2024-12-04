@@ -17,7 +17,7 @@ class M_StoreFragment : BaseFragment<FragmentMStoreBinding>(R.layout.fragment_m_
 
         // StorePagerAdapter를 생성하여 ViewPager에 연결
         val adapter = M_DataPagerAdapter(this)
-        adapter.addFragment(M_dataVistorFragment(), "카페 방문자")
+        adapter.addFragment(M_DataVistorFragment(), "카페 방문자")
         adapter.addFragment(M_DataFavoriteFragment(), "주변 즐겨찾기 카페")
         adapter.addFragment(M_DataCongestionFragment(), "주간 혼잡도 예측")
 

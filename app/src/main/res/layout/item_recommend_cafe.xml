@@ -12,7 +12,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cafeImageCard"
-        android:layout_width="170dp"
+        android:layout_width="165dp"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
         app:cardCornerRadius="16dp"
@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/cafe_image"
             android:layout_width="170dp"
-            android:layout_height="140dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:src="@drawable/sample_cafe_img" />
     </androidx.cardview.widget.CardView>
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="스타벅스"
-            android:textSize="15sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="address"
-            android:textColor="#000000"
+            android:textColor="@color/lightgray"
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -88,7 +88,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:text="현재 혼잡도: 실시간 혼잡도"
-            android:textColor="@color/darkgray"
+            android:textColor="@color/lightgray"
             android:textSize="14sp" />
 
     </LinearLayout>

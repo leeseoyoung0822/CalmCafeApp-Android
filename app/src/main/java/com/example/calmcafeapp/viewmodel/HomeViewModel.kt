@@ -22,6 +22,7 @@ import com.example.calmcafeapp.data.PedestrianRouteRequest
 import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.data.PubTransPathResponse
 import com.example.calmcafeapp.data.PurchaseResponse
+import com.example.calmcafeapp.data.RecommendStoreResDto
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
 import com.example.calmcafeapp.data.SearchHomeResponse
@@ -51,6 +52,10 @@ class HomeViewModel : ViewModel() {
 
     private val _searchStoreResDto = MutableLiveData<List<SearchStoreResDto>>()
     val searchStoreResDto: LiveData<List<SearchStoreResDto>> get() = _searchStoreResDto
+
+    private val _recommendCafeList = MutableLiveData<List<RecommendStoreResDto>>()
+    val recommendCafeList: LiveData<List<RecommendStoreResDto>> get() = _recommendCafeList
+
 
     private val _firstCafeLocation = MutableLiveData<LatLng>()
     val firstCafeLocation: LiveData<LatLng> get() = _firstCafeLocation
@@ -278,11 +283,14 @@ class HomeViewModel : ViewModel() {
                         _cafeDetail.value = result  // LiveData에 설정
 
                         // 포맷팅된 거리와 시간 설정
+
                         _formattedDistance.value = formatDistance(result?.distance)
                         _formattedOpeningTime.value = formatTime(result?.openingTime)
                         _formattedClosingTime.value = formatTime(result?.closingTime)
                         val pointMenuList = cafeDetailResponse.result?.pointMenuDetailResDtoList
                         _pointMenuList.value = pointMenuList ?: emptyList()
+                        val recommendList = cafeDetailResponse.result?.recommendStoreResDtoList
+                        _recommendCafeList.value = recommendList ?: emptyList()
                         val menuList = cafeDetailResponse.result?.menuDetailResDtoList
                         _cafeMenuList.value = menuList ?: emptyList() // 메뉴 리스트를 LiveData에 저장
                     } else {
@@ -302,6 +310,8 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
+
+
 
     fun formatDistance(distance: Int?): String {
         return distance?.let {

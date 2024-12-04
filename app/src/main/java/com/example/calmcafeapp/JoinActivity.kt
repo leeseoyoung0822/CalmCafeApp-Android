@@ -1,7 +1,10 @@
 package com.example.calmcafeapp
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.calmcafeapp.apiManager.ApiManager
@@ -37,6 +40,12 @@ class JoinActivity : AppCompatActivity() {
 
         // 로그인 상태 확인
         checkKakaoLoginStatus()
+
+        // "한산\n한家"의 "家" 글자만 회색으로 변경
+        val text = "한산\n한家"
+        val spannable = SpannableString(text)
+        spannable.setSpan(ForegroundColorSpan(Color.GRAY), 4, 5, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.logo.text = spannable
 
         binding.loginBtn.setOnClickListener {
             kakaoLogin()
