@@ -1,84 +1,85 @@
 package com.example.calmcafeapp.ui
 
 import GridSpacingWithDividerDecoration
+import RecommendCafeAdapter
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.calmcafeapp.MainActivity
 import com.example.calmcafeapp.R
-import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
-import com.example.calmcafeapp.data.RecommendCafe
+import com.example.calmcafeapp.data.OnRouteStartListener
+import com.example.calmcafeapp.data.RecommendStoreResDto
 import com.example.calmcafeapp.databinding.FragmentRecommendedCafeBinding
-import com.example.calmcafeapp.viewmodel.RankViewModel
+import com.example.calmcafeapp.viewmodel.HomeViewModel
 
-class RecommendedCafeFragment : BaseFragment<FragmentRecommendedCafeBinding>(R.layout.fragment_recommended_cafe) {
+class RecommendedCafeFragment : BaseFragment<FragmentRecommendedCafeBinding>(R.layout.fragment_recommended_cafe),OnRouteStartListener {
+
     private lateinit var recommendCafeAdapter: RecommendCafeAdapter
-    private val rankViewModel: RankViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun initStartView() {
         super.initStartView()
 
         // 어댑터 초기화
-        recommendCafeAdapter = RecommendCafeAdapter(createDummyData())
+        recommendCafeAdapter = RecommendCafeAdapter(arrayListOf())
+        recommendCafeAdapter.setMyItemClickListener(object : RecommendCafeAdapter.MyItemClickListener {
+            override fun onItemClick(cafe: RecommendStoreResDto) {
+                showCafeDetailFragment(cafe.id)
+                // 아이템 클릭 이벤트 처리
+            }
+        })
 
-        // 리사이클러뷰 설정
+        // RecyclerView 설정
         binding.recommendRecyclerView.apply {
-            layoutManager = GridLayoutManager(context, 2) // 2열 그리드 레이아웃 설정
+            layoutManager = GridLayoutManager(requireContext(), 2) // 2열 그리드 레이아웃
             adapter = recommendCafeAdapter
 
-            // ItemDecoration 추가
+            // ItemDecoration 추가 (간격 설정)
             addItemDecoration(
                 GridSpacingWithDividerDecoration(
                     spanCount = 2,
-                    spacing = 15, // 각 아이템 간의 간격
-                    dividerHeight = 0, // 구분선 높이
-                    dividerColor = requireContext().getColor(R.color.dividerColor) // 구분선 색상
+                    spacing = 15,
+                    dividerHeight = 0,
+                    dividerColor = requireContext().getColor(R.color.dividerColor)
                 )
             )
         }
 
-//        // ViewModel의 recommendStoreList 관찰
-//        rankViewModel.recommendStoreList.observe(viewLifecycleOwner) { recommendList ->
-//            recommendCafeAdapter.updateRecommendList(recommendList)
-//        }
-    }
-
-    override fun initDataBinding() {
-        super.initDataBinding()
-
-//        // ViewModel의 recommendStoreList 관찰하여 RecyclerView 업데이트
-//        rankViewModel.recommendStoreList.observe(viewLifecycleOwner) { recommendList ->
-//            recommendCafeAdapter.updateRecommendList(recommendList)
-//        }
-
-        /* 아이템 클릭 리스너 설정
-        recommendCafeAdapter.setMyItemClickListener(object : RecommendCafeAdapter.MyItemClickListener {
-            override fun onItemClick(cafe: RecommendCafe) {
-                val fragment = CafeDetailFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt("cafeId", cafe.cafeId)  // 전달할 데이터 설정
-                        putString("title", cafe.title)
-                    }
-                }
-                (activity as UserActivity).addFragment(fragment)
+        // ViewModel 관찰
+        viewModel.recommendCafeList.observe(viewLifecycleOwner) { cafeList ->
+            cafeList?.let {
+                recommendCafeAdapter.updateData(it)
             }
-        })*/
+        }
     }
 
-    override fun initAfterBinding() {
-        super.initAfterBinding()
+    private fun showCafeDetailFragment(storeId: Int) {
+        val userLatitude = 37.5665 // 임시 값
+        val userLongitude = 126.9780 // 임시 값
+
+        // API 호출
+        viewModel.fetchCafeDetailInfo(storeId, userLatitude, userLongitude)
+        Log.d("RecommendedCafeFragment", "Opening CafeDetailFragment with storeId: $storeId")
+
+        // CafeDetailFragment 열기
+        val cafeDetailFragment = CafeDetailFragment().apply {
+            setTargetFragment(this@RecommendedCafeFragment, 0)
+            arguments = Bundle().apply {
+                putString("visibility", "gone")
+            }
+        }
+        cafeDetailFragment.show(parentFragmentManager, "CafeDetailFragment")
     }
 
-    // 더미 데이터 생성 함수
-    private fun createDummyData(): ArrayList<RecommendCafe> {
-        return arrayListOf(
-            RecommendCafe(1, "A Twosome Place", "서울특별시 00구", "현재 혼잡도: 보통", R.drawable.cafe_img1),
-            RecommendCafe(2, "Moment Coffee", "서울특별시 00구", "현재 혼잡도: 혼잡", R.drawable.cafe_img2),
-            RecommendCafe(3, "Hidden Leaf Cafe", "서울특별시 00구", "현재 혼잡도: 매우 혼잡",  R.drawable.cafe_img3),
-            RecommendCafe(4, "Luna Coffee", "서울특별시 00구", "현재 혼잡도: 한산", R.drawable.cafe_img4),
-            RecommendCafe(5, "Jane's Coffee", "서울특별시 00구", "현재 혼잡도: 보통", R.drawable.cafe_img5),
-            RecommendCafe(6, "Coffee Smith", "서울특별시 00구", "현재 혼잡도: 혼잡", R.drawable.cafe_img6)
-        )
+    override fun onRouteStart() {
+        Toast.makeText(requireContext(), "추천카페에서는 길 찾기 불가", Toast.LENGTH_SHORT).show()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+
 }

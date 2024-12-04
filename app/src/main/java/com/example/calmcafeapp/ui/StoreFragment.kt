@@ -3,6 +3,7 @@ package com.example.calmcafeapp.ui
 import GridSpacingWithDividerDecoration
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -126,9 +127,11 @@ class StoreFragment : BaseFragment<FragmentStoreBinding>(R.layout.fragment_store
 
     @SuppressLint("MissingInflatedId")
     private fun showPurchaseDialog(menu: PointMenuDetailResDto) {
+
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_purchase, null)
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = AlertDialog.Builder(requireContext(), R.style.CustomDialogStyle)
             .setView(dialogView)
+
 
         val dialog = builder.create()
 

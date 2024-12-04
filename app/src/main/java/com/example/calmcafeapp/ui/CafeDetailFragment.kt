@@ -138,7 +138,7 @@ class CafeDetailFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                 cafeDetailResult.userCongestionLevel
                 cafeDetailResult.storeCongestionLevel
 
-                binding.likesNum.text = cafeDetailResult.favoriteCount.toString()
+                binding.likesNum.text = "${cafeDetailResult.favoriteCount}개"
 
 //
 //                Glide.with(this)

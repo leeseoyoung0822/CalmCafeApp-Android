@@ -4,18 +4,34 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.data.PointCoupon
+import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.databinding.ItemPointCouponListBinding
-import com.example.calmcafeapp.databinding.ItemPointMenuBinding
 
-class SettingPointCouponAdapter (private var couponList: List<PointCoupon>) :
-    RecyclerView.Adapter<SettingPointCouponAdapter.ViewHolder>() {
+class SettingPointCouponAdapter (
+    private var couponList: List<PointCoupon>,
+    private val onItemClick: (PointCoupon) -> Unit
+    ) : RecyclerView.Adapter<SettingPointCouponAdapter.ViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClick(coupon: PointCoupon)
+    }
+
+    private var itemClickListener: OnItemClickListener? = null
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        itemClickListener = listener
+    }
 
     inner class ViewHolder(private val binding: ItemPointCouponListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(coupon: PointCoupon) {
-            binding.cafeName.text = coupon.storeName
-            binding.cafeMenu.text = "${coupon.menuName} ${coupon.discount}% 할인"
+            binding.cafeName.text = "${coupon.storeName}"
+            binding.cafeMenu.text = "${coupon.menuName} "
             binding.expiration.text = "${coupon.expirationStart} ~ ${coupon.expirationEnd}"
+            binding.discount.text = "${coupon.discount}% "
+
+            binding.root.setOnClickListener {
+                onItemClick(coupon) // PointMenuDetailResDto를 클릭 리스너에 전달
+            }
         }
     }
 

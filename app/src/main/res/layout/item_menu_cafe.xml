@@ -43,20 +43,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-        <ImageView
-            android:id="@+id/cafe_location_icon"
-            android:layout_width="22dp"
-            android:layout_height="20dp"
-            android:src="@drawable/coffee_green" />
-
         <TextView
             android:id="@+id/menu_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="아이스 아메리카노"
             android:textColor="@color/darkgray"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
     </LinearLayout>
 
@@ -70,17 +63,16 @@
 
         <ImageView
             android:id="@+id/cafe_outlet_icon"
-            android:layout_width="22dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:src="@drawable/baseline_attach_money_24" />
 
         <TextView
             android:id="@+id/menu_price"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:layout_marginStart="8dp"
             android:text="4000원"
-            android:textColor="@color/darkgray"
+            android:textColor="@color/lightgray"
             android:textSize="12sp" />
 
     </LinearLayout>

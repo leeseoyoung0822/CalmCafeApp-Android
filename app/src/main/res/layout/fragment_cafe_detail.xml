@@ -12,7 +12,6 @@
             android:id="@+id/bottom_sheet_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:background="@drawable/bottom_sheet_background">
 
             <androidx.cardview.widget.CardView
@@ -41,7 +40,6 @@
                 android:id="@+id/title_box"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +52,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="4dp"
                     android:text="한산한가 연남점"
+                    android:layout_margin="20dp"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +65,7 @@
                     android:layout_marginEnd="8dp"
                     android:backgroundTint="@color/green"
                     android:text="출발하기"
+                    android:layout_margin="20dp"
                     android:textColor="@color/white"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"

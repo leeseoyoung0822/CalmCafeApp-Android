@@ -15,6 +15,13 @@ class Setting_favoriteCafeAdapter(
     private val onFavoriteClick: (storeId: Int) -> Unit
 ) : RecyclerView.Adapter<Setting_favoriteCafeAdapter.ViewHolder>()  {
 
+    private var onItemClickListener: ((Int) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (Int) -> Unit) {
+        onItemClickListener = listener
+    }
+
+
     inner class ViewHolder(private val binding: ItemFavoriteCafeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -38,6 +45,10 @@ class Setting_favoriteCafeAdapter(
             binding.favoriteBtn.setOnClickListener {
                 onFavoriteClick(cafe.id) // 클릭된 매장의 ID 전달
                 removeItem(adapterPosition) // 항목 삭제
+            }
+            // 아이템 클릭 이벤트 연결
+            binding.root.setOnClickListener {
+                onItemClickListener?.invoke(cafe.id)
             }
         }
     }
