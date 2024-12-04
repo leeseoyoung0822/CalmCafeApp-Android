@@ -1,9 +1,11 @@
 package com.example.calmcafeapp.ui
 
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.R
+import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.databinding.FragmentFavoriteBinding
 import com.example.calmcafeapp.viewmodel.SettingViewModel
@@ -17,6 +19,8 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         val adapter = Setting_favoriteCafeAdapter(mutableListOf()) { storeId ->
             settingViewModel.removeFavorite(storeId)
         }
+        (activity as UserActivity).binding.navigationUser.visibility = View.GONE
+
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter

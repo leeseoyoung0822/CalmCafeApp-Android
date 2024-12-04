@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -54,6 +55,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private val markerList = mutableListOf<Marker>()
     private val viewModel: HomeViewModel by activityViewModels()
     private var backPressedTime: Long = 0
+    private var lastLocation: Location? = null
+    private val LOCATION_UPDATE_DISTANCE = 50f // 50미터 이상 이동 시 업데이트
+
     private var hasFetchedAddress = false
     private var walkingFromStartPathList: MutableList<PathOverlay> = mutableListOf()
     private var walkingToDestinationPathList: MutableList<PathOverlay> = mutableListOf()
@@ -83,6 +87,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         (activity as UserActivity).binding.btnBack.setOnClickListener {
             cancelRouteSearch() // 취소 버튼 클릭 시 호출
         }
+        binding.lottieLoading.visibility = View.VISIBLE
+        binding.lottieLoading.setAnimation("Loading.json")
+
         // 교통정보 버튼 초기화 및 클릭 리스너 설정
         binding.btnTrans.setOnClickListener {
             showNavigatorBottomSheet()
@@ -92,7 +99,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
         initRecyclerView()
         observeSearchResults()
-        onBackPressed()
+
 
 
 
@@ -106,6 +113,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 여기서 뒤로 가기 버튼을 눌렀을 때의 동작을 정의합니다.
+                // 예를 들어, 앱 종료를 막고 토스트 메시지를 표시합니다.
+                Toast.makeText(requireContext(), "뒤로 가기 버튼이 비활성화되어 있습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         viewLifecycleOwnerLiveData.observe(this) { owner ->
             owner?.let {
@@ -170,6 +184,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                     val latitude = location.latitude
                     val longitude = location.longitude
                     viewModel.getAddressFromCoordinates(latitude, longitude)
+                    binding.lottieLoading.visibility = View.GONE
                 }
                 // 카페 도착 여부 체크
                 if (isRouteSearching && !hasArrivedAtCafe && selectedCafe != null) {
@@ -234,14 +249,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // 위치 변경 리스너 추가
                 naverMap.addOnLocationChangeListener { location ->
                     currentLocation = location
-                    if (!hasFetchedAddress) {
-                        hasFetchedAddress = true
+                    viewModel.setCurrentLocation(location)
+
+                    val shouldUpdate = if (lastLocation == null) {
+                        true
+                    } else {
+                        val distance = location.distanceTo(lastLocation!!)
+                        distance > LOCATION_UPDATE_DISTANCE
+                    }
+
+                    if (shouldUpdate && !isRouteSearching) {
+                        // 로딩 애니메이션 표시
+                        binding.lottieLoading.visibility = View.VISIBLE
+
                         val latitude = location.latitude
                         val longitude = location.longitude
-                        // 현재 위치의 주소 가져오기
+
+                        // 주소 및 카페 정보 요청
                         viewModel.getAddressFromCoordinates(latitude, longitude)
+
+                        // 마지막 위치 업데이트
+                        lastLocation = location
                     }
                 }
+
             }
             return
         }
@@ -255,6 +286,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             val area = viewModel.extractAreaFromAddress(address)
             Log.d("add2", "${area}")
             // 해당 지역의 카페 요청
+
             viewModel.fetchCafeLocation(area)
             //viewModel.searchCafesInArea(area)
             viewModel.setStartAddress(address)
@@ -266,11 +298,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             Log.d("FRAGMENT", "Received cafes: $cafes")
             // 마커 표시
             displayMarkers(cafes)
+            binding.lottieLoading.visibility = View.GONE
         }
 
         // 에러 메시지 관찰
         viewModel.errorMessage.observe(owner) { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            binding.lottieLoading.visibility = View.GONE
         }
 
         // 로딩 상태 관찰
@@ -292,10 +326,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
                 // 경로가 비어 있을 때 메시지 표시
                 Handler().postDelayed({
                     if (isRouteSearching && polylineList.isEmpty()) {
-                        //Toast.makeText(requireContext(), "로딩 중..", Toast.LENGTH_SHORT).show()
+                        binding.lottieLoading.visibility = View.VISIBLE
+                        binding.lottieLoading.setAnimation("Loading.json")
+
                     }
                 }, 1000)  // 1초 정도 기다린 후 다시 확인
             }
+            binding.lottieLoading.visibility = View.GONE
+
         }
 
         // 도보 경로 관찰 (현재 위치에서 대중교통 출발지까지)
@@ -455,13 +493,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         polylineList.add(outerPolyline)
         polylineList.add(innerPolyline)
 
-        // 카메라 이동: 전체 경로가 보이도록 조정
+        // 카메라 이동: 전체 경로가 보이도록 조정 (애니메이션 추가)
         val bounds = LatLngBounds.Builder()
         for (coord in coords) {
             bounds.include(coord)
         }
         val latLngBounds = bounds.build()
-        val cameraUpdate = CameraUpdate.fitBounds(latLngBounds, 100)  // 패딩 100
+        val cameraUpdate = CameraUpdate.fitBounds(latLngBounds, 100)
+            .animate(CameraAnimation.Easing, 1000) // 애니메이션 옵션 추가 (1초 동안 부드럽게 이동)
         naverMap.moveCamera(cameraUpdate)
     }
     // 카페 정보 표시
@@ -573,7 +612,7 @@ private fun displayWalkingRoute(coordinates: List<LatLng>, isFromStart: Boolean)
             // 패턴 이미지와 간격 설정
             this.patternImage = OverlayImage.fromResource(R.drawable.dot_line1)
 
-            this.patternInterval = 60  // 패턴 이미지가 반복되는 간격
+            this.patternInterval = 55  // 패턴 이미지가 반복되는 간격
 
             this.map = naverMap
         }
@@ -590,7 +629,7 @@ private fun displayWalkingRoute(coordinates: List<LatLng>, isFromStart: Boolean)
             this.outlineColor = Color.TRANSPARENT
             this.width = 190
             this.patternImage = OverlayImage.fromResource(R.drawable.dot_line1)
-            this.patternInterval = 60
+            this.patternInterval = 55
             this.map = naverMap
         }
         walkingToDestinationPathList.add(pathOverlay)
@@ -956,18 +995,6 @@ private fun displayWalkingRoute(coordinates: List<LatLng>, isFromStart: Boolean)
         binding.searchBar.visibility = visibility
         binding.rvSearchResults.visibility = View.GONE
     }
-
-    fun onBackPressed() {
-        val currentTime = System.currentTimeMillis()
-
-        if (currentTime - backPressedTime < 2000) { // 2초 이내에 다시 누르면 앱 종료
-            activity?.finish() // 또는 requireActivity().finish()
-        } else {
-            backPressedTime = currentTime
-            //Toast.makeText(requireContext(), "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
 
     companion object {

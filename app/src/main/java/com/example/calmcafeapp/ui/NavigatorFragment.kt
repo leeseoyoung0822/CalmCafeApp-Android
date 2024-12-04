@@ -1,14 +1,11 @@
 package com.example.calmcafeapp.ui
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.os.Handler
-import android.os.Looper
-
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calmcafeapp.data.BottomSheetExpander
@@ -51,7 +48,6 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                 // totalTime 포맷팅하여 설정
                 val totalTime = paths.first().info.totalTime
                 formatTotalTime(totalTime)
-
                 updateTimeViews(totalTime)
 
                 val expectedArrivalTimeRange = calculateExpectedArrivalTimeRange(totalTime)
@@ -60,7 +56,6 @@ class NavigatorFragment : BottomSheetDialogFragment(), BottomSheetExpander {
                 val payment = paths.first().info.payment
                 binding.tvCost.text = "|   금액 ${payment}원"
             } else {
-                // paths가 null일 경우 1초 대기 후 다시 확인
                 Handler().postDelayed({
                     if (viewModel.pubTransPaths.value.isNullOrEmpty()) {
                         // 여전히 null이라면 dismiss()

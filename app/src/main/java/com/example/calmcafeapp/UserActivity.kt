@@ -3,9 +3,7 @@ package com.example.calmcafeapp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.example.calmcafeapp.databinding.ActivityUserBinding
 import com.example.calmcafeapp.ui.HomeFragment
@@ -89,22 +87,18 @@ class UserActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
         // 현재 프래그먼트가 HomeFragment가 아닌 경우, HomeFragment로 전환
         if (activeFragment != homeFragment) {
             binding.navigationUser.selectedItemId = R.id.navigation_map
             showFragment(homeFragment)
-        } else {
-            super.onBackPressed()
-        }
-        val currentTime = System.currentTimeMillis()
+        } else{
 
-        if (currentTime - backPressedTime < 2000) { // 2초 이내에 다시 누르면 앱 종료
-            super.onBackPressed() // 앱 종료
-        } else {
-            backPressedTime = currentTime
-            //Toast.makeText(this, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
         }
+
     }
+
+
 
     private fun initBottomNav() {
         binding.navigationUser.itemIconTintList = null

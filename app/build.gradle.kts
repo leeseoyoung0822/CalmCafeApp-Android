@@ -145,6 +145,8 @@ dependencies {
 
     implementation ("com.google.maps.android:android-maps-utils:2.2.5")
 
+    implementation ("com.airbnb.android:lottie:5.2.0")
+
     //이미지 출력
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")

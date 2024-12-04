@@ -6,15 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.calmcafeapp.BuildConfig
-import com.example.calmcafeapp.api.CafeDetailService
-import com.example.calmcafeapp.api.MapService
 import com.example.calmcafeapp.apiManager.ApiManager
 import com.example.calmcafeapp.data.CafeDetailResponse
 import com.example.calmcafeapp.data.CafeDetailResult
 import com.example.calmcafeapp.data.CongestionLevelResponse
 import com.example.calmcafeapp.data.Geometry
 import com.example.calmcafeapp.data.GraphPos
-import com.example.calmcafeapp.data.LocalItem
 import com.example.calmcafeapp.data.MapResponse
 import com.example.calmcafeapp.data.MenuDetailResDto
 import com.example.calmcafeapp.data.Path
@@ -25,7 +22,6 @@ import com.example.calmcafeapp.data.PurchaseResponse
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
 import com.example.calmcafeapp.data.SearchHomeResponse
-import com.example.calmcafeapp.data.SearchMapResponse
 import com.example.calmcafeapp.data.SearchResult
 import com.example.calmcafeapp.data.SearchStoreResDto
 import com.example.calmcafeapp.data.StorePosDto
@@ -630,12 +626,11 @@ class HomeViewModel : ViewModel() {
                             "Response Error",
                             "isSuccess: ${body?.isSuccess}, Message: ${body?.message}"
                         )
-                        _errorMessage.postValue(body?.message ?: "검색 결과를 가져오지 못했습니다.")
+                        _errorMessage.postValue(body?.message ?: "검색 결과가 없습니다.")
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("Server Error", "Code: ${response.code()}, Error Body: $errorBody")
-                    _errorMessage.postValue("검색 결과를 가져오지 못했습니다. 서버 에러.")
                 }
             }
 

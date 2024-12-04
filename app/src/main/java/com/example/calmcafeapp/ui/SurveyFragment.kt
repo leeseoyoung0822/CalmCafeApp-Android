@@ -2,14 +2,11 @@ package com.example.calmcafeapp.ui
 
 
 import android.app.Dialog
-import android.graphics.Color
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -19,13 +16,9 @@ import com.example.calmcafeapp.UserActivity
 import com.example.calmcafeapp.apiManager.ApiManager
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.data.SurveyRequest
-import com.example.calmcafeapp.data.SurveyResponse
 import com.example.calmcafeapp.databinding.DialogSurveyCompleteBinding
 import com.example.calmcafeapp.databinding.FragmentSurveyBinding
 import com.example.calmcafeapp.viewmodel.SettingViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_survey) {
@@ -36,6 +29,7 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
     override fun initStartView() {
         super.initStartView()
         // 시작 뷰 초기화 작업 (ex. 리사이클러뷰 초기화)
+        (activity as UserActivity).binding.navigationUser.visibility = View.GONE
         applyHighlightToRequiredText()
     }
 
