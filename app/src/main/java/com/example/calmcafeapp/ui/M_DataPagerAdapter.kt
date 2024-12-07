@@ -9,7 +9,7 @@ class M_DataPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdap
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> M_dataVistorFragment() // 첫 번째 탭
+            0 -> M_DataVistorFragment() // 첫 번째 탭
             1 -> M_DataFavoriteFragment() // 두 번째 탭
             2 -> M_DataCongestionFragment() // 세 번째 탭
             else -> throw IllegalStateException("Unexpected position $position")

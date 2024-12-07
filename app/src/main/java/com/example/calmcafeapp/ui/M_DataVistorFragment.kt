@@ -1,38 +1,38 @@
 package com.example.calmcafeapp.ui
 
 import MDataViewModel
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
-import com.example.calmcafeapp.databinding.FragmentMDataFavoriteBinding
+import com.example.calmcafeapp.databinding.FragmentMDataVistorBinding
 
-class M_DataFavoriteFragment : BaseFragment<FragmentMDataFavoriteBinding>(R.layout.fragment_m__data_favorite) {
+class M_DataVistorFragment : BaseFragment<FragmentMDataVistorBinding>(R.layout.fragment_m_data_vistor) {
     private val viewModel: MDataViewModel by activityViewModels()
+
     override fun initStartView() {
         super.initStartView()
 
         // ViewModel 데이터 관찰
-        viewModel.favoriteData.observe(viewLifecycleOwner) { data ->
+        viewModel.visitData.observe(viewLifecycleOwner) { data ->
             if (data != null) {
                 // 이미지 로드
                 Glide.with(this)
-                    .load(data.ageDistributionImageUrl) // 연령별 분석 이미지 URL
+                    .load(data.ageImageUrl) // 연령별 분석 이미지 URL
                     .into(binding.imageAge)
 
                 Glide.with(this)
-                    .load(data.genderDistributionImageUrl) // 성별 분석 이미지 URL
+                    .load(data.genderImageUrl) // 성별 분석 이미지 URL
                     .into(binding.imageGender)
+
+                Glide.with(this)
+                    .load(data.favoriteMenuDistributionImageUrl) // 성별 분석 이미지 URL
+                    .into(binding.imageMenu)
             }
         }
 
         // 데이터 가져오기
-        viewModel.fetchFavoriteData()
+        viewModel.fetchVisitData()
     }
 
     override fun initDataBinding() {

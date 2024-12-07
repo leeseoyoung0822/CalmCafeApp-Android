@@ -51,7 +51,7 @@ class MenuPointStoreAdapter(private var list: ArrayList<PointMenuDetailResDto>):
         Glide.with(holder.itemView.context)
             .load(menu.image)
             .into(holder.img)
-        holder.menu.text = "(${menu.pointDiscount}%할인) ${menu.name}"
+        holder.menu.text = "${menu.name} (${menu.pointDiscount}%할인)"
         holder.price.text = "${menu.pointPrice.toString()}P"
 
         holder.itemView.setOnClickListener {

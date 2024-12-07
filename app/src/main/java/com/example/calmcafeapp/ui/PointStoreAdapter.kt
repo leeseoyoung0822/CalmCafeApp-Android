@@ -3,12 +3,8 @@ package com.example.calmcafeapp.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calmcafeapp.data.PointDiscount
-import com.example.calmcafeapp.data.Promotion
-import com.example.calmcafeapp.databinding.ItemCouponBinding
-import com.example.calmcafeapp.databinding.ItemPointMenuBinding
 import com.example.calmcafeapp.databinding.ItemPointstoremenuBinding
 
 class PointStoreAdapter(
@@ -24,7 +20,8 @@ class PointStoreAdapter(
         fun bind(pointDiscount: PointDiscount) {
 
             binding.menuName.text = pointDiscount.name
-            binding.menuDiscount.text = pointDiscount.pointDiscount.toString()
+            binding.menuDiscount.text = "  ${pointDiscount.pointDiscount.toString()}% 할인"
+            binding.editButton.visibility = View.GONE
 
             // 체크박스 상태 설정
             // 체크박스 상태 설정

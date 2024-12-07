@@ -9,10 +9,13 @@ import com.example.calmcafeapp.data.Menu
 import com.example.calmcafeapp.data.MenuRegisterResponse
 import com.example.calmcafeapp.data.PointDiscount
 import com.example.calmcafeapp.data.PointDiscountResponse
+import com.example.calmcafeapp.data.PointMenuDetails
+import com.example.calmcafeapp.data.PointMenuRemovalResponse
 import com.example.calmcafeapp.data.Promotion
 import com.example.calmcafeapp.data.PromotionDeleteResponse
 import com.example.calmcafeapp.data.PromotionRegisterResponse
 import com.example.calmcafeapp.data.PromotionResponse
+import com.example.calmcafeapp.data.RegisterMenuResponse
 import com.example.calmcafeapp.data.StoreDetailResponse
 import com.example.calmcafeapp.login.LocalDataSource
 import okhttp3.MultipartBody
@@ -21,6 +24,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class M_SettingViewModel : ViewModel() {
+
+    private val _registerMenuResponse = MutableLiveData<RegisterMenuResponse>()
+    val registerMenuResponse: LiveData<RegisterMenuResponse> = _registerMenuResponse
+
+    private val _removePointMenuLiveData = MutableLiveData<Result<PointMenuDetails>>()
+    val removePointMenuLiveData: LiveData<Result<PointMenuDetails>> get() = _removePointMenuLiveData
 
     private val _promotionRegisterResult = MutableLiveData<Boolean>()
     val promotionRegisterResult: LiveData<Boolean> get() = _promotionRegisterResult
@@ -36,6 +45,14 @@ class M_SettingViewModel : ViewModel() {
 
     private val _pointDiscountListLiveData = MutableLiveData<List<PointDiscount>>()
     val pointDiscountListLiveData: LiveData<List<PointDiscount>> get() = _pointDiscountListLiveData
+
+
+    private val _pointDiscountMenuListLiveData = MutableLiveData<List<PointDiscount>>()
+    val pointDiscountMenuListLiveData: LiveData<List<PointDiscount>> get() = _pointDiscountMenuListLiveData
+
+
+    private val _pointDiscountNonMenuListLiveData = MutableLiveData<List<PointDiscount>>()
+    val pointDiscountNonMenuListLiveData: LiveData<List<PointDiscount>> get() = _pointDiscountNonMenuListLiveData
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
@@ -110,6 +127,36 @@ class M_SettingViewModel : ViewModel() {
         })
     }
 
+    // 포인트 할인이 적용된 메뉴 가져오기
+    fun fetchRegPointDiscountMenus() {
+        _isLoading.value = true
+
+        val call: Call<PointDiscountResponse> = ApiManager.m_SettingService.getPointMenu(
+            accessToken = "Bearer " + LocalDataSource.getAccessToken()!!
+        )
+
+        call.enqueue(object : Callback<PointDiscountResponse> {
+            override fun onResponse(call: Call<PointDiscountResponse>, response: Response<PointDiscountResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        _pointDiscountMenuListLiveData.postValue(body.result)
+                    } else {
+                        _errorMessage.postValue(body?.message ?: "할인 메뉴 데이터를 불러오지 못했습니다.")
+                    }
+                } else {
+                    _errorMessage.postValue("할인 메뉴 데이터를 불러오지 못했습니다. (서버 에러)")
+                }
+            }
+
+            override fun onFailure(call: Call<PointDiscountResponse>, t: Throwable) {
+                _isLoading.value = false
+                _errorMessage.postValue("할인 메뉴 데이터를 불러오지 못했습니다. (네트워크 에러)")
+            }
+        })
+    }
+
 
     // 포인트 할인이 적용된 메뉴 가져오기
     fun fetchPointDiscountMenus() {
@@ -126,6 +173,36 @@ class M_SettingViewModel : ViewModel() {
                     val body = response.body()
                     if (body != null && body.isSuccess) {
                         _pointDiscountListLiveData.postValue(body.result)
+                    } else {
+                        _errorMessage.postValue(body?.message ?: "할인 메뉴 데이터를 불러오지 못했습니다.")
+                    }
+                } else {
+                    _errorMessage.postValue("할인 메뉴 데이터를 불러오지 못했습니다. (서버 에러)")
+                }
+            }
+
+            override fun onFailure(call: Call<PointDiscountResponse>, t: Throwable) {
+                _isLoading.value = false
+                _errorMessage.postValue("할인 메뉴 데이터를 불러오지 못했습니다. (네트워크 에러)")
+            }
+        })
+    }
+
+    // 포인트 할인이 적용된 메뉴 가져오기
+    fun fetchRegPointDiscountNonMenus() {
+        _isLoading.value = true
+
+        val call: Call<PointDiscountResponse> = ApiManager.m_SettingService.getPointNonMenu(
+            accessToken = "Bearer " + LocalDataSource.getAccessToken()!!
+        )
+
+        call.enqueue(object : Callback<PointDiscountResponse> {
+            override fun onResponse(call: Call<PointDiscountResponse>, response: Response<PointDiscountResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        _pointDiscountNonMenuListLiveData.postValue(body.result)
                     } else {
                         _errorMessage.postValue(body?.message ?: "할인 메뉴 데이터를 불러오지 못했습니다.")
                     }
@@ -305,6 +382,73 @@ class M_SettingViewModel : ViewModel() {
 
             override fun onFailure(call: Call<PromotionDeleteResponse>, t: Throwable) {
                 Log.e("PromotionDelete", "Network error: ${t.message}")
+            }
+        })
+    }
+
+
+    fun removePointMenu(menuId: Long) {
+        Log.d("selected", "$menuId")
+        val call = ApiManager.m_SettingService.removePointMenu(
+            accessToken = "Bearer " + LocalDataSource.getAccessToken()!!,
+            menuId = menuId
+        )
+
+        call.enqueue(object : Callback<PointMenuRemovalResponse> {
+            override fun onResponse(
+                call: Call<PointMenuRemovalResponse>,
+                response: Response<PointMenuRemovalResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        // Promotion deletion successful
+                        Log.d("pointmenu", "pointmenu deleted successfully: ${body.result}")
+                    } else {
+                        Log.e("pointmenu", "Failed to delete pointmenu: ${body?.message}")
+                    }
+                } else {
+                    Log.e("pointmenu", "Server error: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<PointMenuRemovalResponse>, t: Throwable) {
+                Log.e("PromotionDelete", "Network error: ${t.message}")
+            }
+        })
+    }
+
+    fun registerMenuPointStore(menuId: Long, pointDiscount: Int, pointPrice: Int) {
+        val call = ApiManager.m_SettingService.registerMenuToPointStore(
+            accessToken = "Bearer " + LocalDataSource.getAccessToken()!!,
+            menuId = menuId,
+            pointDiscount = pointDiscount,
+            pointPrice= pointPrice
+        )
+
+        call.enqueue(object : Callback<RegisterMenuResponse> {
+            override fun onResponse(
+                call: Call<RegisterMenuResponse>,
+                response: Response<RegisterMenuResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.isSuccess) {
+                        Log.d("MenuDelete", "Menu deleted successfully: ${body.result}")
+                        _registerMenuResponse.value = response.body()
+                    } else {
+                        Log.e("MenuDelete", "Failed to delete menu: ${body?.message}")
+                        _registerMenuResponse.value = response.body()
+                    }
+                } else {
+                    Log.e("MenuDelete", "Server error: ${response.errorBody()?.string()}")
+                    _errorMessage.value = "네트워크 오류: ${response.errorBody()}"
+                }
+            }
+
+            override fun onFailure(call: Call<RegisterMenuResponse>, t: Throwable) {
+                Log.e("MenuDelete", "Network error: ${t.message}")
+                _deleteMenuResult.postValue(false)
             }
         })
     }

@@ -1,7 +1,5 @@
 package com.example.calmcafeapp.ui
 
-import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
@@ -29,7 +27,6 @@ class M_Promotion_TabFragment : BaseFragment<FragmentMPromotionTabBinding>(R.lay
         binding.rvPromotion.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPromotion.adapter = promotionAdapter
 
-        // Fetch promotions
         viewModel.fetchPromotions()
     }
 
@@ -59,26 +56,6 @@ class M_Promotion_TabFragment : BaseFragment<FragmentMPromotionTabBinding>(R.lay
             (activity as OwnerActivity).addFragment(fragment)
         }
 
-//        binding.deleteButton.setOnClickListener {
-//            Log.d("selectedPromotions", "${selectedPromotions}")
-//            if (selectedPromotions.isEmpty()) {
-//                Toast.makeText(requireContext(), "삭제할 프로모션을 선택해주세요.", Toast.LENGTH_SHORT).show()
-//            } else {
-//                selectedPromotions.forEach { promotion ->
-//                    viewModel.deletePromotion(promotion.id.toLong())
-//                    selectedPromotions = emptyList()
-//                }
-//                Toast.makeText(requireContext(), "선택된 프로모션이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-//
-//                // 선택된 프로모션 초기화
-//                selectedPromotions = emptyList()
-//                binding.deleteButton.isEnabled = false
-//
-//                // 프로모션 리스트 갱신
-//                viewModel.fetchPromotions()
-//                promotionAdapter.updateData(emptyList())
-//            }
-//        }
         binding.deleteButton.setOnClickListener {
             if (selectedPromotions.isEmpty()) {
                 Toast.makeText(requireContext(), "삭제할 프로모션을 선택해주세요.", Toast.LENGTH_SHORT).show()

@@ -19,6 +19,7 @@ import com.example.calmcafeapp.data.PedestrianRouteRequest
 import com.example.calmcafeapp.data.PointMenuDetailResDto
 import com.example.calmcafeapp.data.PubTransPathResponse
 import com.example.calmcafeapp.data.PurchaseResponse
+import com.example.calmcafeapp.data.RecommendStoreResDto
 import com.example.calmcafeapp.data.ReverseGeocodingResponse
 import com.example.calmcafeapp.data.RouteGraphicResponse
 import com.example.calmcafeapp.data.SearchHomeResponse
@@ -47,6 +48,10 @@ class HomeViewModel : ViewModel() {
 
     private val _searchStoreResDto = MutableLiveData<List<SearchStoreResDto>>()
     val searchStoreResDto: LiveData<List<SearchStoreResDto>> get() = _searchStoreResDto
+
+    private val _recommendCafeList = MutableLiveData<List<RecommendStoreResDto>>()
+    val recommendCafeList: LiveData<List<RecommendStoreResDto>> get() = _recommendCafeList
+
 
     private val _firstCafeLocation = MutableLiveData<LatLng>()
     val firstCafeLocation: LiveData<LatLng> get() = _firstCafeLocation
@@ -178,7 +183,7 @@ class HomeViewModel : ViewModel() {
                     _distance.value = distance
                     _pubTransPaths.value = paths
 
-                    Log.d("API_SUCCESS", "경로 검색 성공: ${result?.path}")
+                   // Log.d("API_SUCCESS", "경로 검색 성공: ${result?.path}")
                 } else {
                     _errorMessage.value = "경로 검색에 실패했습니다: ${response.message()}"
                     Log.e("API_ERROR", "Response error: ${response.errorBody()?.string()}")
@@ -217,16 +222,16 @@ class HomeViewModel : ViewModel() {
                         Log.d("add1", "${address}")
                         _address.value = address
                     } else {
-                        Log.d("add", "${response.body()}")
-                        _errorMessage.value = "주소 정보를 가져올 수 없습니다."
+                        //Log.d("add", "${response.body()}")
+                       // _errorMessage.value = "주소 정보를 가져올 수 없습니다."
                     }
                 } else {
-                    _errorMessage.value = "Reverse Geocoding API 응답 오류"
+                   // _errorMessage.value = "Reverse Geocoding API 응답 오류"
                 }
             }
 
             override fun onFailure(call: Call<ReverseGeocodingResponse>, t: Throwable) {
-                _errorMessage.value = "Reverse Geocoding API 호출 실패"
+               // _errorMessage.value = "Reverse Geocoding API 호출 실패"
             }
         })
     }
@@ -274,11 +279,14 @@ class HomeViewModel : ViewModel() {
                         _cafeDetail.value = result  // LiveData에 설정
 
                         // 포맷팅된 거리와 시간 설정
+
                         _formattedDistance.value = formatDistance(result?.distance)
                         _formattedOpeningTime.value = formatTime(result?.openingTime)
                         _formattedClosingTime.value = formatTime(result?.closingTime)
                         val pointMenuList = cafeDetailResponse.result?.pointMenuDetailResDtoList
                         _pointMenuList.value = pointMenuList ?: emptyList()
+                        val recommendList = cafeDetailResponse.result?.recommendStoreResDtoList
+                        _recommendCafeList.value = recommendList ?: emptyList()
                         val menuList = cafeDetailResponse.result?.menuDetailResDtoList
                         _cafeMenuList.value = menuList ?: emptyList() // 메뉴 리스트를 LiveData에 저장
                     } else {
@@ -298,6 +306,8 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
+
+
 
     fun formatDistance(distance: Int?): String {
         return distance?.let {
@@ -470,10 +480,10 @@ class HomeViewModel : ViewModel() {
                         _walkingRouteCoordinatesToDestination.value = coordinates
                         Log.d("API_SUCCESS", "도보 경로 (목적지) 성공: $coordinates")
                     } else {
-                        _errorMessage.value = "도보 경로 응답이 비어 있습니다."
+                  //      _errorMessage.value = "도보 경로 응답이 비어 있습니다."
                     }
                 } else {
-                    _errorMessage.value = "도보 경로 검색 실패: ${response.message()}"
+                 //   _errorMessage.value = "도보 경로 검색 실패: ${response.message()}"
                 }
             }
 
@@ -513,7 +523,7 @@ class HomeViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<MapResponse>, t: Throwable) {
-                _errorMessage.value = "네트워크 에러: ${t.message}"
+             //  _errorMessage.value = "네트워크 에러: ${t.message}"
             }
         })
     }

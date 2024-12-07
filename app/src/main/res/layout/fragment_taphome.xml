@@ -111,7 +111,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="3dp"
                     android:contentDescription="AI를 통해 실제 매장 상황을 분석한 실시간 좌석 이용률입니다."
-                    android:src="@drawable/ic_info"
+                    android:src="@drawable/ic_ques"
                     app:layout_constraintBottom_toBottomOf="@+id/owner_congestion"
                     app:layout_constraintStart_toEndOf="@+id/owner_congestion"
                     app:layout_constraintTop_toTopOf="@+id/owner_congestion" />
@@ -169,7 +169,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="3dp"
                     android:contentDescription="실제 방문한 손님들이 직접 입력한 매장 혼잡도입니다."
-                    android:src="@drawable/ic_info"
+                    android:src="@drawable/ic_ques"
                     app:layout_constraintBottom_toBottomOf="@id/visitor_congestion"
                     app:layout_constraintStart_toEndOf="@id/visitor_congestion"
                     app:layout_constraintTop_toTopOf="@id/visitor_congestion" />

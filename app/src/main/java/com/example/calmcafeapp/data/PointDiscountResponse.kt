@@ -8,6 +8,7 @@ data class PointDiscountResponse(
 )
 
 data class PointDiscount(
+    val id : Int,
     val name: String,
-    val pointDiscount: Int
+    var pointDiscount: Int
 )

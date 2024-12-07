@@ -5,11 +5,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import com.bumptech.glide.Glide
 import com.example.calmcafeapp.R
 import com.example.calmcafeapp.base.BaseFragment
 import com.example.calmcafeapp.databinding.FragmentMenuAddBinding
@@ -40,6 +39,8 @@ class MenuAddFragment : BaseFragment<FragmentMenuAddBinding>(R.layout.fragment_m
         // 저장 버튼 클릭 이벤트
         binding.saveButton.setOnClickListener {
             saveMenu()
+            Toast.makeText(requireContext(), "저장 완료!", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.popBackStack()
         }
 
         // 뒤로 가기 버튼 클릭 이벤트

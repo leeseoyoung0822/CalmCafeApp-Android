@@ -65,16 +65,24 @@
 
 
     <!-- Edit Button -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/toggle"
+        android:layout_marginStart="3dp"
+        app:layout_constraintBottom_toBottomOf="@+id/menuDiscount"
+        app:layout_constraintStart_toEndOf="@+id/menuDiscount"
+        app:layout_constraintTop_toTopOf="@+id/menuDiscount" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/editButton"
         android:layout_width="65dp"
         android:layout_height="37dp"
         android:background="@drawable/round_modify"
-        android:text="수정"
+        android:text="등록"
         android:layout_marginEnd="12dp"
         android:textColor="#2E8465"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
