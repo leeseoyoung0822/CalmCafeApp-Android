@@ -78,7 +78,7 @@ class SurveyFragment : BaseFragment<FragmentSurveyBinding>(R.layout.fragment_sur
 
 
         // 다이얼로그 메시지 설정 (필요 시 동적 설정 가능)
-        dialogBinding.dialogMessage.text = "감사합니다.\n4700p가 지급되었습니다!"
+        dialogBinding.dialogMessage.text = "감사합니다.\n포인트가 지급되었습니다!"
 
         // 닫기 버튼 클릭 이벤트
         dialogBinding.btncheck.setOnClickListener {
