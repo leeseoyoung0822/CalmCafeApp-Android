@@ -35,12 +35,5 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-
-
-
-
-
-
-
     <style name="Theme.CalmCafeApp" parent="Base.Theme.CalmCafeApp" />
 </resources>

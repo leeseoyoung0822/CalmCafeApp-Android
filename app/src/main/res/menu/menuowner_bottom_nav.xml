@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/navigation_m_store"
-        android:icon="@drawable/analytics"
+        android:icon="@drawable/ic_data_selector"
         android:title="통계" />
 
     <item
